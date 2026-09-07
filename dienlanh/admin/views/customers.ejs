@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'customers' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Khách hàng</p>
+                        <h1><i class="fa-solid fa-users"></i> Danh sách khách hàng</h1>
+                    </div>
+                    <span class="dashboard-mini-stat"><i class="fa-solid fa-user-plus"></i><span>Tổng khách hàng</span><strong><%= customers.length %></strong></span>
+                </section>
+                <% if (success_msg?.length) { %>
+                    <div class="notice success">
+                        <%= success_msg[0] %>
+                    </div>
+                    <% } %>
+                        <% if (error_msg?.length) { %>
+                            <div class="notice error">
+                                <%= error_msg[0] %>
+                            </div>
+                            <% } %>
+
+                                <section class="card">
+                                    <div class="card-body table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Tên khách hàng</th>
+                                                    <th>Email</th>
+                                                    <th>Điện thoại</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Tênh trạng</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% customers.forEach(c => { %>
+                                                    <tr>
+                                                        <td><strong>KH-<%= String(c.id).padStart(3, '0') %></strong></td>
+                                                        <td class="product-name">
+                                                            <%= c.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= c.email || '—' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= c.phone %>
+                                                        </td>
+                                                        <td>
+                                                            <%= new Date(c.created_at).toLocaleDateString('vi-VN') %>
+                                                        </td>
+                                                        <td>
+                                                            <% const statusMap = { active: ['Hoạt động', 'badge-success'], inactive: ['Tạm khóa', 'badge-warning'], banned: ['Đã khóa', 'badge-danger'] }; %>
+                                                                <span class="badge <%= (statusMap[c.status] || ['—', 'badge-info'])[1] %>"><%= (statusMap[c.status] || ['—', 'badge-info'])[0] %></span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                                        <% if (!customers.length) { %>
+                                                            <tr>
+                                                                <td colspan="6" style="text-align:center;color:#888;">Chưa có khách hàng nào.</td>
+                                                            </tr>
+                                                            <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+
+</html>

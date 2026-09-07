@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <% const statusLabels = { pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', in_progress: 'Đang thực hiện', completed: 'Hoàn thành', cancelled: 'Đã hủy' }; %>
+        <% const statusClasses = { pending: 'badge-warning', confirmed: 'badge-info', in_progress: 'badge-primary', completed: 'badge-success', cancelled: 'badge-danger' }; %>
+            <div class="wrapper service-dashboard">
+                <%- include('partials/admin-header', { activePage: 'dashboard' }) %>
+
+                    <main class="content-wrapper">
+                        <section class="content-header dashboard-heading">
+                            <div>
+                                <p class="dashboard-eyebrow">Vận hành dịch vụ</p>
+                                <h1><i class="fa-solid fa-chart-pie"></i> Tổng quan lịch sửa chữa</h1>
+                            </div>
+                            <% if (can('bookings', 'view')) { %><a class="dashboard-primary-action" href="/admin/orders"><i class="fa-solid fa-calendar-plus"></i> Xem lịch đặt</a><% } %>
+                        </section>
+
+                        <section class="row stats-row dashboard-stats" aria-label="Thống kê dịch vụ">
+                            <div class="col-lg-3">
+                                <article class="card stat-card bg-blue">
+                                    <div class="card-body">
+                                        <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                                        <div class="stat-detail">
+                                            <p class="stat-number">
+                                                <%= dashboard.totalBookings %>
+                                            </p>
+                                            <p class="stat-label">Tổng lịch đặt</p>
+                                        </div><% if (can('bookings', 'view')) { %><a href="/admin/orders" class="stat-link">Xem lịch đặt <i class="fa-solid fa-arrow-right"></i></a><% } %></div>
+                                </article>
+                            </div>
+                            <div class="col-lg-3">
+                                <article class="card stat-card bg-cyan">
+                                    <div class="card-body">
+                                        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                                        <div class="stat-detail">
+                                            <p class="stat-number">
+                                                <%= dashboard.pendingBookings %>
+                                            </p>
+                                            <p class="stat-label">Lịch chờ xử là</p>
+                                        </div><% if (can('bookings', 'view')) { %><a href="/admin/orders" class="stat-link">Cần xác nhận <i class="fa-solid fa-arrow-right"></i></a><% } %></div>
+                                </article>
+                            </div>
+                            <div class="col-lg-3">
+                                <article class="card stat-card bg-navy">
+                                    <div class="card-body">
+                                        <div class="stat-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                                        <div class="stat-detail">
+                                            <p class="stat-number">
+                                                <%= dashboard.activeBookings %>
+                                            </p>
+                                            <p class="stat-label">Lịch đang thực hiện</p>
+                                        </div><% if (can('bookings', 'view')) { %><a href="/admin/orders" class="stat-link">Theo dõi tiến độ <i class="fa-solid fa-arrow-right"></i></a><% } %></div>
+                                </article>
+                            </div>
+                            <div class="col-lg-3">
+                                <article class="card stat-card bg-success">
+                                    <div class="card-body">
+                                        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                                        <div class="stat-detail">
+                                            <p class="stat-number">
+                                                <%= dashboard.completedBookings %>
+                                            </p>
+                                            <p class="stat-label">Dịch vụ hoàn thành</p>
+                                        </div><% if (can('bookings', 'view')) { %><a href="/admin/orders" class="stat-link">Xem lịch sử <i class="fa-solid fa-arrow-right"></i></a><% } %></div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="dashboard-mini-stat"><i class="fa-solid fa-user-plus"></i><span>Khách hàng mới trong 30 ngày</span><strong><%= dashboard.newCustomers %></strong></section>
+
+                        <section class="row dashboard-tables">
+                            <div class="col-lg-6">
+                                <article class="card dashboard-table-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-star"></i> Dịch vụ được đặt nhiều</h3><% if (can('services', 'view')) { %><a href="/admin/products">Quản lý dịch vụ</a><% } %></div>
+                                    <div class="card-body table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hình ảnh</th>
+                                                    <th>Tên dịch vụ</th>
+                                                    <th>Lượt đặt</th>
+                                                    <th>Giá tham khảo</th>
+                                                    <th>Trạng thái</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% recentServices.forEach(service => { %>
+                                                    <% const serviceImageBySlug = {
+                                                        'sua-may-lanh': 'dich-vu/suamaylanh.png',
+                                                        've-sinh-may-lanh': 'dich-vu/vsmaylanh.png',
+                                                        'lap-dat-may-lanh': 'dich-vu/ldmaylanh.png',
+                                                        'sua-tu-lanh': 'dich-vu/suatulanh.png',
+                                                        'sua-may-giat': 'dich-vu/suamaygiat.png',
+                                                        'sua-may-nuoc-nong': 'dich-vu/suamaynong.png'
+                                                    };
+                                                    const serviceImageByName = {
+                                                        'Sửa máy lạnh': 'dich-vu/suamaylanh.png',
+                                                        'Vệ sinh máy lạnh': 'dich-vu/vsmaylanh.png',
+                                                        'Lắp đặt máy lạnh': 'dich-vu/ldmaylanh.png',
+                                                        'Sửa tủ lạnh': 'dich-vu/suatulanh.png',
+                                                        'Sửa máy giặt': 'dich-vu/suamaygiat.png',
+                                                        'Sửa máy nước nóng': 'dich-vu/suamaynong.png'
+                                                    };
+                                                    const serviceImage = serviceImageBySlug[service.slug] || serviceImageByName[service.name] || service.image || 'logo.png';
+                                                    const serviceImageUrl = serviceImage.startsWith('/') || serviceImage.startsWith('http')
+                                                        ? serviceImage
+                                                        : `/images/${serviceImage}`; %>
+                                                    <tr>
+                                                        <td><img src="<%= serviceImageUrl %>" alt="<%= service.name %>" class="product-thumb" onerror="this.onerror=null;this.src='/images/logo.png';"></td>
+                                                        <td class="product-name">
+                                                            <%= service.name %>
+                                                        </td>
+                                                        <td><strong><%= service.booking_count %></strong></td>
+                                                        <td class="text-price">
+                                                            <%= service.price_range || 'Liên hệ' %>
+                                                        </td>
+                                                        <td><span class="badge <%= service.status === 'active' ? 'badge-success' : 'badge-danger' %>"><%= service.status === 'active' ? 'Đang hoạt động' : 'Tạm dừng' %></span></td>
+                                                        <td><% if (can('services', 'view')) { %><a href="/admin/products" class="btn-detail">Xem</a><% } else { %>—<% } %></td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="col-lg-6">
+                                <article class="card dashboard-table-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-calendar-clock"></i> Lịch đặt dịch vụ mới</h3><% if (can('bookings', 'view')) { %><a href="/admin/orders">Toàn bộ lịch</a><% } %></div>
+                                    <div class="card-body table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Khách hàng</th>
+                                                    <th>Số điện thoại</th>
+                                                    <th>Dịch vụ</th>
+                                                    <th>Ngày đặt</th>
+                                                    <th>Giờ hẹn</th>
+                                                    <th>Thời gian đặt</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% recentBookings.forEach(booking => { %>
+                                                    <tr>
+                                                        <td class="product-name">
+                                                            <%= booking.fullname %>
+                                                        </td>
+                                                        <td>
+                                                            <%= booking.phone %>
+                                                        </td>
+                                                        <td>
+                                                            <%= booking.service_display_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= new Date(booking.booking_date).toLocaleDateString('vi-VN') %>
+                                                        </td>
+                                                        <td>
+                                                            <%= booking.booking_time || 'Chưa chọn' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= booking.created_at ? new Date(booking.created_at).toLocaleString('vi-VN', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : '—' %>
+                                                        </td>
+                                                        <td><span class="badge <%= statusClasses[booking.status] || 'badge-info' %>"><%= statusLabels[booking.status] || booking.status %></span></td>
+                                                        <td class="booking-actions"><% if (can('bookings', 'view')) { %><a href="/admin/orders" class="btn-detail">Chi tiết</a><% } %>
+                                                            <% if (can('bookings', 'update')) { %><a href="/admin/orders" class="btn-detail btn-confirm">
+                                                                <%= booking.status === 'pending' ? 'Xác nhận' : 'Phân công' %>
+                                                            </a><% } %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+                    </main>
+
+                    <footer class="main-footer">
+                        <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                        <div class="float-right">Dashboard dịch vụ</div>
+                    </footer>
+            </div>
+            <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+
+</html>
+

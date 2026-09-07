@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh Giá Dịch Vụ | Điện Máy Nguyên Hùng</title>
+    <meta name="description" content="Gửi và xem các đánh giá dịch vụ thật đã được duyệt tại Điện Máy Nguyên Hùng.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20260817-premium-reviews">
+</head>
+<body>
+    <div id="siteHeader"></div>
+
+    <main class="reviews-page">
+        <section class="reviews-hero">
+            <div class="reviews-hero__glow reviews-hero__glow--one"></div>
+            <div class="reviews-hero__glow reviews-hero__glow--two"></div>
+            <div class="container reviews-hero__content">
+                <div class="reviews-hero__icon"><i class="fa-solid fa-star"></i></div>
+                <span class="reviews-hero__eyebrow">ĐÁNH GIÁ DỊCH VỤ</span>
+                <h1>Chia sẻ trải nghiệm của bạn</h1>
+                <p>Ý kiến của bạn giúp Điện Máy Nguyên Hùng không ngừng nâng cao chất lượng phục vụ.</p>
+            </div>
+        </section>
+
+        <section class="reviews-main section">
+            <div class="container reviews-layout">
+                <article class="reviews-form-card reviews-reveal">
+                    <div class="reviews-card-heading"><span><i class="fa-solid fa-star"></i></span><div><h2>Chia sẻ trải nghiệm của bạn</h2><p>Đánh giá của bạn sẽ được hiển thị sau khi quản trị viên duyệt.</p></div></div>
+                    <p class="reviews-notice" id="reviewNotice" hidden></p>
+                    <form id="reviewForm" class="reviews-form" novalidate>
+                        <div class="reviews-form__row">
+                            <div class="form-group"><label for="reviewName">Họ và tên <span class="required">*</span></label><div class="reviews-control"><i class="fa-regular fa-user"></i><input class="form-control" id="reviewName" name="name" maxlength="100" autocomplete="name" placeholder="Nhập họ và tên của bạn" required></div><span class="form-error"></span></div>
+                            <div class="form-group"><label for="reviewContact">Số điện thoại hoặc email <span class="required">*</span></label><div class="reviews-control"><i class="fa-regular fa-address-card"></i><input class="form-control" id="reviewContact" name="contact" maxlength="150" autocomplete="email" placeholder="Nhập số điện thoại hoặc email" required></div><span class="form-error"></span></div>
+                        </div>
+                        <div class="reviews-form__row">
+                            <div class="form-group"><label for="reviewService">Dịch vụ đã sử dụng</label><div class="reviews-control reviews-control--select"><i class="fa-solid fa-screwdriver-wrench"></i><select class="form-control" id="reviewService" name="service_id"><option value="">Chọn dịch vụ (không bắt buộc)</option></select></div></div>
+                            <fieldset class="review-rating"><legend>Bạn cảm thấy dịch vụ như thế nào? <span class="required">*</span></legend><div class="review-rating__content"><div class="review-rating__stars" aria-label="Chọn số sao"><input id="rating-5" name="rating" type="radio" value="5"><label for="rating-5" title="5 sao"><i class="fa-solid fa-star"></i></label><input id="rating-4" name="rating" type="radio" value="4"><label for="rating-4" title="4 sao"><i class="fa-solid fa-star"></i></label><input id="rating-3" name="rating" type="radio" value="3"><label for="rating-3" title="3 sao"><i class="fa-solid fa-star"></i></label><input id="rating-2" name="rating" type="radio" value="2"><label for="rating-2" title="2 sao"><i class="fa-solid fa-star"></i></label><input id="rating-1" name="rating" type="radio" value="1"><label for="rating-1" title="1 sao"><i class="fa-solid fa-star"></i></label></div><strong class="review-rating__status" id="ratingStatus" aria-live="polite"></strong></div><span class="form-error" id="ratingError"></span></fieldset>
+                        </div>
+                        <div class="form-group reviews-content-field"><label for="reviewContent">Nội dung đánh giá <span class="required">*</span></label><textarea class="form-control" id="reviewContent" name="content" rows="6" maxlength="500" placeholder="Hãy chia sẻ trải nghiệm thực tế của bạn..." required></textarea><div class="reviews-character-count"><span id="reviewCharacterCount">0</span> / 500</div><span class="form-error"></span></div>
+                        <button class="reviews-submit" id="reviewSubmit" type="submit"><span class="reviews-submit__normal">GỬI ĐÁNH GIÁ <i class="fa-solid fa-arrow-right"></i></span><span class="reviews-submit__loading"><i class="fa-solid fa-circle-notch fa-spin"></i> ĐANG GỬI...</span></button>
+                    </form>
+                </article>
+
+                <section class="reviews-process reviews-reveal" aria-labelledby="review-process-title">
+                    <div class="reviews-section-heading"><span>QUY TRÌNH MINH BẠCH</span><h2 id="review-process-title">Đánh giá của bạn được xử lý như thế nào?</h2></div>
+                    <div class="reviews-process__grid">
+                        <article class="reviews-process__card"><span>01</span><div class="reviews-process__icon"><i class="fa-regular fa-pen-to-square"></i></div><h3>Gửi đánh giá</h3><p>Bạn chia sẻ trải nghiệm thực tế.</p></article>
+                        <article class="reviews-process__card"><span>02</span><div class="reviews-process__icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Quản trị viên kiểm duyệt</h3><p>Đánh giá được kiểm tra trước khi công khai.</p></article>
+                        <article class="reviews-process__card"><span>03</span><div class="reviews-process__icon"><i class="fa-solid fa-globe"></i></div><h3>Hiển thị trên website</h3><p>Đánh giá được duyệt sẽ xuất hiện công khai.</p></article>
+                    </div>
+                </section>
+
+                <section class="reviews-list-section reviews-reveal" aria-labelledby="real-reviews-title">
+                    <div class="reviews-list-heading"><div><span class="section__tag">ĐÃ ĐƯỢC DUYỆT</span><h2 id="real-reviews-title">Đánh giá từ khách hàng</h2></div></div>
+                    <div class="reviews-real-list" id="reviewsList" aria-live="polite"><div class="reviews-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải đánh giá...</span></div></div>
+                </section>
+
+                <section class="reviews-thank-you reviews-reveal"><div class="reviews-thank-you__stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><h2>Ý kiến của bạn rất quan trọng với chúng tôi <span aria-hidden="true">❤️</span></h2><p>Cảm ơn bạn đã dành thời gian chia sẻ trải nghiệm với Điện Máy Nguyên Hùng.</p></section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__top">
+                <div class="footer__col footer__col--brand"><div class="footer__logo"><div class="header__logo-img"><img src="/images/logo.png" alt="Logo"></div><div class="footer__logo-text"><span>ĐIỆN MÁY</span><strong>NGUYÊN HÙNG</strong></div></div><p class="footer__desc">Với hơn 12 năm kinh nghiệm, Điện Máy Nguyên Hùng cam kết mang đến dịch vụ sửa chữa, bảo trì và lắp đặt điện máy chất lượng nhất cho mọi gia đình.</p><div class="footer__social"><a href="https://www.facebook.com/CoDienLanhNguyenHungree" class="footer__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a><a href="#" class="footer__social-link" aria-label="Zalo"><i class="fas fa-comment-dots"></i></a><a href="#" class="footer__social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a><a href="#" class="footer__social-link" aria-label="TikTok"><i class="fab fa-tiktok"></i></a></div></div>
+                <div class="footer__col"><h3 class="footer__heading">Về chúng tôi</h3><ul class="footer__links"><li><a href="/">Trang chủ</a></li><li><a href="/services">Dịch vụ</a></li><li><a href="/pricing">Bảng giá</a></li><li><a href="/about">Giới thiệu</a></li><li><a href="/news">Tin tức</a></li><li><a href="/danh-gia">Đánh giá</a></li></ul></div>
+                <div class="footer__col"><h3 class="footer__heading">Dịch vụ</h3><ul class="footer__links"><li><a href="/service-detail?service=sua-may-lanh">Sửa máy lạnh</a></li><li><a href="/service-detail?service=ve-sinh-may-lanh">Vệ sinh máy lạnh</a></li><li><a href="/service-detail?service=lap-dat-may-lanh">Lắp đặt máy lạnh</a></li><li><a href="/service-detail?service=sua-tu-lanh">Sửa tủ lạnh</a></li><li><a href="/service-detail?service=sua-may-giat">Sửa máy giặt</a></li><li><a href="/service-detail?service=sua-may-nuoc-nong">Sửa máy nước nóng</a></li></ul></div>
+                <div class="footer__col"><h3 class="footer__heading">Liên hệ</h3><ul class="footer__contact"><li><i class="fas fa-phone-alt"></i><div><span>Hotline</span><a href="tel:02822422822">028 2242 2822</a></div></li><li><i class="fas fa-envelope"></i><div><span>Email</span><a href="mailto:nguyenhung355@gmail.com">nguyenhung355@gmail.com</a></div></li><li><i class="fas fa-map-marker-alt"></i><div><span>Địa chỉ</span><p>2 Hoàng Ngân, Phú Định, Quận 8, TP.HCM</p></div></li></ul></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Điện Máy Nguyên Hùng. Tất cả quyền được bảo lưu.</p><p>Thiết kế bởi <span>Nguyên Hùng Team</span></p></div>
+        </div>
+    </footer>
+    <button class="back-to-top" id="backToTop" aria-label="Lên đầu trang"><i class="fas fa-arrow-up"></i></button>
+    <script src="/js/script.js"></script>
+    <script src="/js/backend.js"></script>
+    <script src="/js/reviews.js?v=20260817-premium-reviews"></script>
+</body>
+</html>

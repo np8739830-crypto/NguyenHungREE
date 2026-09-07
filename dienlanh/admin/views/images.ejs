@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'images' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Nội dung hình ảnh</p>
+                        <h1><i class="fa-solid fa-images"></i> Quản là hình ảnh</h1>
+                    </div>
+                    <span class="dashboard-mini-stat"><i class="fa-solid fa-image"></i><span>Tổng hình ảnh</span><strong><%= images.length %></strong></span>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-list"></i> Thư viện hình ảnh</h3>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">Hình</th>
+                                    <th>Mô tả</th>
+                                    <th>Kích thước</th>
+                                    <th>Loại</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% images.forEach(img => { %>
+                                    <tr>
+                                        <td><img src="<%= img.url %>" class="product-thumb" alt="<%= img.name %>" onerror="this.src='/images/logo.png'"></td>
+                                        <td class="product-name">
+                                            <%= img.name %>
+                                        </td>
+                                        <td>
+                                            <%= img.size %>
+                                        </td>
+                                        <td><span class="badge badge-info"><%= img.type %></span></td>
+                                    </tr>
+                                    <% }) %>
+                                        <% if (!images.length) { %>
+                                            <tr>
+                                                <td colspan="4" style="text-align:center;color:#888;">Chưa có hình ảnh nào.</td>
+                                            </tr>
+                                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+
+</html>

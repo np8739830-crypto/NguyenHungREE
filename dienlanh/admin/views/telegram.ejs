@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+    <style>
+        .telegram-card { max-width: 850px; }
+        .telegram-form { display: grid; gap: 18px; }
+        .telegram-form label { display: block; margin-bottom: 7px; color: #263b5e; font-weight: 600; }
+        .telegram-form input, .telegram-form textarea { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid #ccd3dc; border-radius: 7px; font: inherit; resize: vertical; }
+        .telegram-form textarea { min-height: 180px; }
+        .telegram-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .telegram-clear { background: #eef2f7; border: 1px solid #ccd3dc; color: #263b5e; }
+        .telegram-status { display: none; margin-bottom: 18px; }
+        .telegram-status.show { display: block; }
+        .telegram-status.error { color: #9b2c2c; background: #fff5f5; border-left: 4px solid #c53030; }
+        @media (max-width: 600px) { .telegram-actions .btn { width: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'telegram' }) %>
+        <main class="content-wrapper">
+            <section class="content-header dashboard-heading">
+                <div>
+                    <p class="dashboard-eyebrow">Giao tiếp nội bộ</p>
+                    <h1><i class="fa-brands fa-telegram"></i> Gửi thông báo Telegram</h1>
+                </div>
+            </section>
+            <section class="card telegram-card">
+                <div class="card-header"><h3><i class="fa-solid fa-paper-plane"></i> Nội dung thông báo</h3></div>
+                <div class="card-body">
+                    <div id="telegramStatus" class="notice telegram-status" role="status" aria-live="polite"></div>
+                    <form id="telegramForm" class="telegram-form">
+                        <input type="hidden" id="csrfToken" value="<%= csrfToken %>">
+                        <div>
+                            <label for="telegramTitle">Tiêu đề thông báo *</label>
+                            <input id="telegramTitle" name="title" maxlength="150" required autocomplete="off" placeholder="Ví dụ: Lịch họp đội kỹ thuật">
+                        </div>
+                        <div>
+                            <label for="telegramMessage">Nội dung thông báo *</label>
+                            <textarea id="telegramMessage" name="message" maxlength="3500" required placeholder="Nhập nội dung cần gửi đến nhóm Telegram..."></textarea>
+                        </div>
+                        <div class="telegram-actions">
+                            <% if (can('telegram', 'create')) { %><button id="telegramSubmit" class="btn btn-primary" type="submit"><i class="fa-brands fa-telegram"></i> <span>Gửi thông báo</span></button><% } %>
+                            <button id="telegramClear" class="btn telegram-clear" type="button"><i class="fa-solid fa-eraser"></i> Xóa nội dung</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+        <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div></footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+    <script>
+        (() => {
+            const form = document.getElementById('telegramForm');
+            const title = document.getElementById('telegramTitle');
+            const message = document.getElementById('telegramMessage');
+            const submit = document.getElementById('telegramSubmit');
+            const clear = document.getElementById('telegramClear');
+            const status = document.getElementById('telegramStatus');
+            const csrfToken = document.getElementById('csrfToken').value;
+            const setStatus = (text, isError) => {
+                status.textContent = text;
+                status.className = `notice telegram-status show ${isError ? 'error' : 'success'}`;
+            };
+            clear.addEventListener('click', () => { form.reset(); status.className = 'notice telegram-status'; title.focus(); });
+            if (!submit) {
+                title.disabled = true;
+                message.disabled = true;
+                clear.hidden = true;
+                setStatus('Tài khoản của bạn chỉ có quyền xem module Thông báo Telegram.', false);
+                return;
+            }
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                if (!title.value.trim() || !message.value.trim()) { setStatus('Tiêu đề và nội dung thông báo là bắt buộc.', true); return; }
+                submit.disabled = true;
+                submit.querySelector('span').textContent = 'Đang gửi...';
+                status.className = 'notice telegram-status';
+                try {
+                    const response = await fetch('/admin/telegram/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': csrfToken },
+                        body: JSON.stringify({ title: title.value, message: message.value })
+                    });
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) throw new Error(data.error || 'Không thể gửi thông báo. Vui lòng kiểm tra cấu hình Telegram.');
+                    setStatus(data.message || 'Đã gửi thông báo đến Telegram thành công.', false);
+                    form.reset();
+                } catch (error) {
+                    setStatus(error.message || 'Không thể gửi thông báo. Vui lòng kiểm tra cấu hình Telegram.', true);
+                } finally {
+                    submit.disabled = false;
+                    submit.querySelector('span').textContent = 'Gửi thông báo';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
+

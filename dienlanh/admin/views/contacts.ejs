@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'contacts' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Khách hàng & phản hồi</p>
+                        <h1><i class="fa-solid fa-address-book"></i> Danh sách liên hệ</h1>
+                    </div>
+                    <span class="dashboard-mini-stat"><i class="fa-solid fa-message"></i><span>Tổng liên hệ</span><strong><%= contacts.length %></strong></span>
+                </section>
+                <% if (success_msg?.length) { %>
+                    <div class="notice success">
+                        <%= success_msg[0] %>
+                    </div>
+                    <% } %>
+                        <% if (error_msg?.length) { %>
+                            <div class="notice error">
+                                <%= error_msg[0] %>
+                            </div>
+                            <% } %>
+
+                                <section class="card">
+                                    <div class="card-body table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Tên liên hệ</th>
+                                                    <th>Điện thoại</th>
+                                                    <th>Email</th>
+                                                    <th>Tiêu đề</th>
+                                                    <th>Thời gian đặt</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% const cStatus = { new: ['Mới', 'badge-warning'], read: ['Đã đọc', 'badge-info'], replied: ['Đã trả lời', 'badge-success'], closed: ['Đã đóng', 'badge-secondary'] }; %>
+                                                    <% contacts.forEach(c => { %>
+                                                        <% const contactImages = c.images || []; %>
+                                                        <tr>
+                                                            <td><strong><%= c.request_code || `LH-${String(c.id).padStart(3, '0')}` %></strong></td>
+                                                            <td class="product-name">
+                                                                <%= c.name %>
+                                                                <% if (contactImages.length) { %><div class="request-image-gallery contact-image-gallery"><% contactImages.slice(0, 3).forEach((image, index) => { %><a href="/attachments/<%= image.id %>" target="_blank" rel="noopener"><img src="/attachments/<%= image.id %>" alt="Ảnh liên hệ <%= index + 1 %>"></a><% }) %></div><% } %>
+                                                            </td>
+                                                            <td>
+                                                                <%= c.phone %>
+                                                            </td>
+                                                            <td>
+                                                                <%= c.email || '—' %>
+                                                            </td>
+                                                            <td>
+                                                                <%= c.subject || '—' %>
+                                                            </td>
+                                                            <td>
+                                                                <%= c.created_at ? new Date(c.created_at).toLocaleString('vi-VN', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : '—' %>
+                                                            </td>
+                                                            <td><span class="badge <%= (cStatus[c.status] || ['—', 'badge-info'])[1] %>"><%= (cStatus[c.status] || ['—', 'badge-info'])[0] %></span></td>
+                                                        </tr>
+                                                        <% }) %>
+                                                            <% if (!contacts.length) { %>
+                                                                <tr>
+                                                                    <td colspan="7" style="text-align:center;color:#888;">Chưa có liên hệ nào.</td>
+                                                                </tr>
+                                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+
+</html>
+

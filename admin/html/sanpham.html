@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản phẩm - NGUYÊN HÙNG</title>
+    <!-- Google Fonts: Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/1.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- ===== HEADER ===== -->
+        <header class="main-header">
+            <div class="header-left">
+                <a href="#" class="logo">
+                    <span class="logo-lg"><i class="fa-solid fa-cube"></i> NGUYÊN HÙNG</span>
+                </a>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <span class="user-name">Admin</span>
+                    <img
+    src="https://ui-avatars.com/api/?name=<%= account.name %>&background=2c3e50&color=fff&size=40"
+    alt="Avatar"
+    class="user-avatar">
+                    <a href="#" class="btn-logout" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="main-sidebar" id="mainSidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="bangdieukhien.html" class="nav-link">
+                            <i class="fa-solid fa-tachometer-alt"></i>
+                            <span>Bảng điều khiển</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu active expanded">
+                        <a href="sanpham.html" class="nav-link">
+                            <i class="fa-solid fa-box"></i>
+                            <span>Sản phẩm</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu" style="display: block;">
+                            <li class="sub-active"><a href="#" data-section="danhmuc">Danh mục</a></li>
+                            <li><a href="#" data-section="sanpham">Sản phẩm</a></li>
+                            <li><a href="#" data-section="danhgia">Đánh giá sản phẩm</a></li>
+                            <li><a href="#" data-section="thuoctinh">Thuộc tính</a></li>
+                            <li><a href="#" data-section="giamgia">Giảm giá sản phẩm</a></li>
+                            <li><a href="#" data-section="sualoathangloat">Sửa hàng loạt</a></li>
+                            <li><a href="#" data-section="conithang">Sản phẩm còn ít hàng</a></li>
+                            <li><a href="#" data-section="khuyenmai">Khuyến mãi sản phẩm</a></li>
+                            <li><a href="#" data-section="hethang">Hết hàng sản phẩm</a></li>
+                            <li><a href="#" data-section="tintuc">Tin tức</a></li>
+                            <li><a href="#" data-section="copysanpham">Copy sản phẩm</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="banhang.html" class="nav-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Bán hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="banhang.html" data-section="danhsachdonhang">Danh sách đơn hàng</a></li>
+                            <li><a href="banhang.html" data-section="donhangchoxuly">Đơn hàng chờ xử lý</a></li>
+                            <li><a href="banhang.html" data-section="donhangdaxacnhan">Đơn hàng đã xác nhận</a></li>
+                            <li><a href="banhang.html" data-section="donhangdangiao">Đơn hàng đang giao</a></li>
+                            <li><a href="banhang.html" data-section="donhanghoanthanh">Đơn hàng hoàn thành</a></li>
+                            <li><a href="banhang.html" data-section="donhangdahuy">Đơn hàng đã hủy</a></li>
+                            <li><a href="banhang.html" data-section="thanhtoan">Thanh toán</a></li>
+                            <li><a href="banhang.html" data-section="baocaodoanhthu">Báo cáo doanh thu</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="khachhang.html" class="nav-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Khách hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="khachhang.html" data-section="danhsach">Danh sách khách hàng</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="cauhinh.html" class="nav-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Cấu hình</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="cauhinh.html" data-section="hethong">Cấu hình hệ thống</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hinhanh.html" class="nav-link">
+                            <i class="fa-solid fa-image"></i>
+                            <span>Hình ảnh</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hinhanh.html" data-section="danhsach">Danh sách hình ảnh</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hotro.html" class="nav-link">
+                            <i class="fa-solid fa-headset"></i>
+                            <span>Danh sách hỗ trợ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hotro.html" data-section="danhsach">Danh sách hỗ trợ trực tuyến</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="lienhe.html" class="nav-link">
+                            <i class="fa-solid fa-address-book"></i>
+                            <span>Liên hệ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="lienhe.html" data-section="danhsach">Danh sách liên hệ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Theo dõi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="nhanvien.html" class="nav-link">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span>Nhân viên</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="nhanvien.html" data-section="nhomquyen">Nhóm quyền</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhom">Thêm mới nhóm</a></li>
+                            <li><a href="nhanvien.html" data-section="danhsach">Danh sách nhân viên</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhanvien">Thêm mới nhân viên</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cauhinhthongtin.html" class="nav-link">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Cấu hình thông tin</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT WRAPPER ===== -->
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <h1><i class="fa-solid fa-box"></i> Quản lý sản phẩm</h1>
+            </section>
+
+            <!-- Main Content -->
+            <section class="content">
+
+
+
+                <!-- ===== SECTION: Thuộc tính ===== -->
+                <div id="section-thuoctinh" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-sliders"></i> Thuộc tính sản phẩm</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên thuộc tính</th>
+                                        <th>Giá trị</th>
+                                        <th>Loại sản phẩm</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Công suất</td>
+                                        <td>1HP, 1.5HP, 2HP</td>
+                                        <td>Máy lạnh</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Màu sắc</td>
+                                        <td>Trắng, Bạc, Đen</td>
+                                        <td>Tất cả</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Inverter</td>
+                                        <td>Có, Không</td>
+                                        <td>Máy lạnh</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Giảm giá sản phẩm ===== -->
+                <div id="section-giamgia" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-tags"></i> Giảm giá sản phẩm</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Giá gốc</th>
+                                        <th>Giá khuyến mãi</th>
+                                        <th>Giảm</th>
+                                        <th>Hiệu lực</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Máy lạnh Daikin 1.5HP</td>
+                                        <td class="text-price">14,500,000₫</td>
+                                        <td class="text-price" style="color:#e74c3c;">12,500,000₫</td>
+                                        <td><span class="badge badge-danger">-14%</span></td>
+                                        <td>01/09/2024</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Máy lạnh Casper 1.5HP</td>
+                                        <td class="text-price">9,000,000₫</td>
+                                        <td class="text-price" style="color:#e74c3c;">7,500,000₫</td>
+                                        <td><span class="badge badge-danger">-17%</span></td>
+                                        <td>15/09/2024</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Sửa hàng loạt ===== -->
+                <div id="section-sualoathangloat" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-pen-to-square"></i> Sửa hàng loạt</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="margin-bottom:16px;color:#555;">Chọn sản phẩm và thực hiện thay đổi hàng loạt về giá, trạng thái, danh mục...</p>
+                            <div style="background:#f8f9fa;border:2px dashed #dee2e6;border-radius:8px;padding:40px;text-align:center;">
+                                <i class="fa-solid fa-upload" style="font-size:3rem;color:#1e3a5f;opacity:0.4;"></i>
+                                <p style="margin-top:12px;color:#888;">Kéo thả file Excel hoặc chọn sản phẩm để cập nhật hàng loạt</p>
+                                <a href="#" class="btn-detail" style="margin-top:12px;padding:8px 28px;">Chọn file</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Sản phẩm còn ít hàng ===== -->
+                <div id="section-conithang" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-exclamation-triangle"></i> Sản phẩm còn ít hàng</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Tồn kho</th>
+                                        <th>Mức tối thiểu</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Máy lạnh LG Dual Inverter 2HP</td>
+                                        <td>7</td>
+                                        <td>10</td>
+                                        <td><span class="badge badge-warning">Sắp hết</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Máy lạnh Toshiba Inverter 1HP</td>
+                                        <td>11</td>
+                                        <td>10</td>
+                                        <td><span class="badge badge-info">Bình thường</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Khuyến mãi sản phẩm ===== -->
+                <div id="section-khuyenmai" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-gift"></i> Khuyến mãi sản phẩm</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Chương trình</th>
+                                        <th>Sản phẩm áp dụng</th>
+                                        <th>Giảm giá</th>
+                                        <th>Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Mùa hè xanh</td>
+                                        <td>Máy lạnh Daikin, Panasonic</td>
+                                        <td>10%</td>
+                                        <td>01/08 - 30/09</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tri ân khách hàng</td>
+                                        <td>Tất cả máy lạnh</td>
+                                        <td>5%</td>
+                                        <td>01/09 - 30/09</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Hết hàng sản phẩm ===== -->
+                <div id="section-hethang" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-circle-xmark"></i> Hết hàng sản phẩm</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Mã SP</th>
+                                        <th>Ngày hết hàng</th>
+                                        <th>Dự kiến nhập</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Máy lạnh Daikin Inverter 2HP</td>
+                                        <td>SP006</td>
+                                        <td>10/08/2024</td>
+                                        <td>25/08/2024</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Máy lạnh Panasonic Inverter 2HP</td>
+                                        <td>SP007</td>
+                                        <td>08/08/2024</td>
+                                        <td>20/08/2024</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Tin tức ===== -->
+                <div id="section-tintuc" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-newspaper"></i> Tin tức</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tiêu đề</th>
+                                        <th>Danh mục</th>
+                                        <th>Ngày đăng</th>
+                                        <th>Lượt xem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ra mắt máy lạnh Inverter 2024</td>
+                                        <td>Sản phẩm mới</td>
+                                        <td>01/08/2024</td>
+                                        <td>1,250</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mẹo sử dụng máy lạnh tiết kiệm điện</td>
+                                        <td>Mẹo hay</td>
+                                        <td>28/07/2024</td>
+                                        <td>892</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Copy sản phẩm ===== -->
+                <div id="section-copysanpham" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-copy"></i> Copy sản phẩm</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="margin-bottom:16px;color:#555;">Chọn sản phẩm nguồn và tạo bản sao nhanh chóng.</p>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>Sản phẩm gốc</th>
+                                        <th>Giá</th>
+                                        <th>Copy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>Máy lạnh Daikin Inverter 1.5HP</td>
+                                        <td class="text-price">12,500,000₫</td>
+                                        <td><a href="#" class="btn-detail"><i class="fa-regular fa-copy"></i> Copy</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>Máy lạnh Panasonic Inverter 1HP</td>
+                                        <td class="text-price">8,900,000₫</td>
+                                        <td><a href="#" class="btn-detail"><i class="fa-regular fa-copy"></i> Copy</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td>Máy lạnh LG Dual Inverter 2HP</td>
+                                        <td class="text-price">15,200,000₫</td>
+                                        <td><a href="#" class="btn-detail"><i class="fa-regular fa-copy"></i> Copy</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div style="margin-top:16px;">
+                                <a href="#" class="btn-detail" style="padding:8px 28px;">Copy sản phẩm đã chọn</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="main-footer">
+            <div class="float-left">
+                Copyright &copy; 2024 <strong>NGUYÊN HÙNG</strong>. All rights reserved.
+            </div>
+            <div class="float-right">
+                Phiên bản 1.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- Javascript -->
+    <script src="../js/1.js"></script>
+</body>
+
+</html>

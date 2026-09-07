@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260817-reviews">
+</head>
+<body>
+<div class="wrapper service-dashboard">
+    <%- include('partials/admin-header', { activePage: 'reviews' }) %>
+    <main class="content-wrapper">
+        <section class="content-header dashboard-heading">
+            <div><p class="dashboard-eyebrow">Phản hồi khách hàng</p><h1><i class="fa-solid fa-star"></i> Quản lý đánh giá</h1></div>
+            <span class="dashboard-mini-stat"><i class="fa-solid fa-comments"></i><span>Kết quả</span><strong><%= reviews.length %></strong></span>
+        </section>
+
+        <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %>
+        <% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
+
+        <section class="card review-admin-card">
+            <div class="card-header review-admin-toolbar">
+                <h3><i class="fa-solid fa-filter"></i> Bộ lọc đánh giá</h3>
+                <form method="get" action="/admin/reviews" class="review-filter-form">
+                    <label>Trạng thái
+                        <select name="status">
+                            <option value="">Tất cả</option>
+                            <option value="pending" <%= selectedStatus === 'pending' ? 'selected' : '' %>>Chờ duyệt</option>
+                            <option value="approved" <%= selectedStatus === 'approved' ? 'selected' : '' %>>Đã duyệt</option>
+                            <option value="hidden" <%= selectedStatus === 'hidden' ? 'selected' : '' %>>Đã ẩn</option>
+                        </select>
+                    </label>
+                    <label>Số sao
+                        <select name="rating">
+                            <option value="">Tất cả</option>
+                            <% for (let star = 5; star >= 1; star -= 1) { %><option value="<%= star %>" <%= selectedRating === star ? 'selected' : '' %>><%= star %> sao</option><% } %>
+                        </select>
+                    </label>
+                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Lọc</button>
+                    <a class="btn btn-secondary" href="/admin/reviews">Đặt lại</a>
+                </form>
+            </div>
+            <div class="card-body review-admin-list">
+                <% const labels = { pending: 'Chờ duyệt', approved: 'Đã duyệt', hidden: 'Đã ẩn' }; %>
+                <% const badges = { pending: 'badge-warning', approved: 'badge-success', hidden: 'badge-muted' }; %>
+                <% reviews.forEach(review => { %>
+                    <article class="review-admin-item">
+                        <div class="review-admin-item__main">
+                            <div class="review-admin-item__heading">
+                                <div><h3><%= review.name %></h3><p><i class="fa-solid fa-address-card"></i> <%= review.contact || review.account_email || '—' %></p></div>
+                                <span class="badge <%= badges[review.status] %>"><%= labels[review.status] %></span>
+                            </div>
+                            <div class="review-admin-stars" aria-label="<%= review.rating %> trên 5 sao"><% for (let star = 1; star <= 5; star += 1) { %><i class="<%= star <= review.rating ? 'fa-solid' : 'fa-regular' %> fa-star"></i><% } %></div>
+                            <p class="review-admin-content"><%= review.content %></p>
+                            <div class="review-admin-meta"><span><i class="fa-solid fa-screwdriver-wrench"></i> <%= review.service_name || 'Không chọn dịch vụ' %></span><span><i class="fa-regular fa-clock"></i> <%= new Date(review.created_at).toLocaleString('vi-VN', { timeZone: 'UTC' }) %></span></div>
+                        </div>
+                        <div class="review-admin-actions">
+                            <% if (can('reviews', 'update') && review.status !== 'approved') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="status" value="approved"><button class="btn btn-confirm" type="submit"><i class="fa-solid fa-check"></i> Duyệt</button></form><% } %>
+                            <% if (can('reviews', 'update') && review.status !== 'hidden') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="status" value="hidden"><button class="btn btn-secondary" type="submit"><i class="fa-solid fa-eye-slash"></i> Ẩn</button></form><% } %>
+                            <% if (can('reviews', 'delete')) { %><form method="post" action="/admin/reviews/<%= review.id %>/delete" onsubmit="return confirm('Xóa vĩnh viễn đánh giá này?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash"></i> Xóa</button></form><% } %>
+                        </div>
+                    </article>
+                <% }) %>
+                <% if (!reviews.length) { %><div class="review-admin-empty"><i class="fa-regular fa-comment-dots"></i><h3>Không có đánh giá phù hợp</h3><p>Chưa có dữ liệu thật theo bộ lọc đã chọn.</p></div><% } %>
+            </div>
+        </section>
+    </main>
+    <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYÊN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div><div class="float-right">Quản lý đánh giá</div></footer>
+</div>
+<script src="/admin/js/1.js?v=20260817-reviews"></script>
+</body>
+</html>

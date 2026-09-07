@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhân viên - NGUYÊN HÙNG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/1.css">
+    <style>
+        /* ===== FORM STYLES ===== */
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 24px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+        
+        .form-group .form-hint {
+            font-size: 0.76rem;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        .form-input,
+        .form-select {
+            padding: 9px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.88rem;
+            font-family: 'Roboto', sans-serif;
+            color: #495057;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .form-input:focus,
+        .form-select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.12);
+            outline: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #e8eaed;
+        }
+        
+        .btn-save {
+            padding: 10px 28px;
+            background: linear-gradient(135deg, #1e3a5f, #2a5298);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-family: 'Roboto', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-save:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-cancel {
+            padding: 10px 28px;
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .btn-cancel:hover {
+            background: #e9ecef;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- ===== HEADER ===== -->
+        <header class="main-header">
+            <div class="header-left">
+                <a href="#" class="logo">
+                    <span class="logo-lg"><i class="fa-solid fa-cube"></i> NGUYÊN HÙNG</span>
+                </a>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <span class="user-name">Admin</span>
+                    <img
+    src="https://ui-avatars.com/api/?name=<%= account.name %>&background=2c3e50&color=fff&size=40"
+    alt="Avatar"
+    class="user-avatar">
+                    <a href="#" class="btn-logout" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="main-sidebar" id="mainSidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="bangdieukhien.html" class="nav-link">
+                            <i class="fa-solid fa-tachometer-alt"></i>
+                            <span>Bảng điều khiển</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="sanpham.html" class="nav-link">
+                            <i class="fa-solid fa-box"></i>
+                            <span>Sản phẩm</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="sanpham.html" data-section="danhmuc">Danh mục</a></li>
+                            <li><a href="sanpham.html" data-section="sanpham">Sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="danhgia">Đánh giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="thuoctinh">Thuộc tính</a></li>
+                            <li><a href="sanpham.html" data-section="giamgia">Giảm giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="sualoathangloat">Sửa hàng loạt</a></li>
+                            <li><a href="sanpham.html" data-section="conithang">Sản phẩm còn ít hàng</a></li>
+                            <li><a href="sanpham.html" data-section="khuyenmai">Khuyến mãi sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="hethang">Hết hàng sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="tintuc">Tin tức</a></li>
+                            <li><a href="sanpham.html" data-section="copysanpham">Copy sản phẩm</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="banhang.html" class="nav-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Bán hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="banhang.html" data-section="danhsachdonhang">Danh sách đơn hàng</a></li>
+                            <li><a href="banhang.html" data-section="donhangchoxuly">Đơn hàng chờ xử lý</a></li>
+                            <li><a href="banhang.html" data-section="donhangdaxacnhan">Đơn hàng đã xác nhận</a></li>
+                            <li><a href="banhang.html" data-section="donhangdangiao">Đơn hàng đang giao</a></li>
+                            <li><a href="banhang.html" data-section="donhanghoanthanh">Đơn hàng hoàn thành</a></li>
+                            <li><a href="banhang.html" data-section="donhangdahuy">Đơn hàng đã hủy</a></li>
+                            <li><a href="banhang.html" data-section="thanhtoan">Thanh toán</a></li>
+                            <li><a href="banhang.html" data-section="baocaodoanhthu">Báo cáo doanh thu</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="khachhang.html" class="nav-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Khách hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="khachhang.html" data-section="danhsach">Danh sách khách hàng</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="cauhinh.html" class="nav-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Cấu hình</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="cauhinh.html" data-section="hethong">Cấu hình hệ thống</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hinhanh.html" class="nav-link">
+                            <i class="fa-solid fa-image"></i>
+                            <span>Hình ảnh</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hinhanh.html" data-section="danhsach">Danh sách hình ảnh</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hotro.html" class="nav-link">
+                            <i class="fa-solid fa-headset"></i>
+                            <span>Danh sách hỗ trợ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hotro.html" data-section="danhsach">Danh sách hỗ trợ trực tuyến</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="lienhe.html" class="nav-link">
+                            <i class="fa-solid fa-address-book"></i>
+                            <span>Liên hệ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="lienhe.html" data-section="danhsach">Danh sách liên hệ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Theo dõi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu active expanded">
+                        <a href="nhanvien.html" class="nav-link">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span>Nhân viên</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu" style="display: block;">
+                            <li><a href="#" data-section="nhomquyen">Nhóm quyền</a></li>
+                            <li><a href="#" data-section="themmoinhom">Thêm mới nhóm</a></li>
+                            <li class="sub-active"><a href="#" data-section="danhsach">Danh sách nhân viên</a></li>
+                            <li><a href="#" data-section="themmoinhanvien">Thêm mới nhân viên</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cauhinhthongtin.html" class="nav-link">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Cấu hình thông tin</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT WRAPPER ===== -->
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <h1><i class="fa-solid fa-user-tie"></i> Danh sách tài khoản</h1>
+            </section>
+
+            <!-- Main Content -->
+            <section class="content">
+
+                <!-- ===== SECTION: Nhóm quyền ===== -->
+                <div id="section-nhomquyen" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-shield-halved"></i> Danh sách nhóm quyền</h3>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên nhóm quyền</th>
+                                        <th>Mô tả</th>
+                                        <th>Số thành viên</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td class="product-name">Quản trị viên</td>
+                                        <td>Full quyền truy cập hệ thống</td>
+                                        <td>3</td>
+                                        <td>01/01/2024</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a> <a href="#" class="btn-detail" style="color:#e74c3c;">Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td class="product-name">Nhân viên bán hàng</td>
+                                        <td>Quyền quản lý đơn hàng, khách hàng</td>
+                                        <td>12</td>
+                                        <td>01/01/2024</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a> <a href="#" class="btn-detail" style="color:#e74c3c;">Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td class="product-name">Nhân viên kho</td>
+                                        <td>Quyền quản lý sản phẩm, tồn kho</td>
+                                        <td>5</td>
+                                        <td>01/02/2024</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a> <a href="#" class="btn-detail" style="color:#e74c3c;">Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td class="product-name">Kế toán</td>
+                                        <td>Quyền xem báo cáo, thanh toán</td>
+                                        <td>2</td>
+                                        <td>01/03/2024</td>
+                                        <td><a href="#" class="btn-detail">Sửa</a> <a href="#" class="btn-detail" style="color:#e74c3c;">Xóa</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Thêm mới nhóm ===== -->
+                <div id="section-themmoinhom" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-plus"></i> Thêm mới nhóm quyền</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Tên nhóm quyền <span class="required">*</span></label>
+                                    <input type="text" class="form-input" placeholder="Nhập tên nhóm quyền">
+                                </div>
+                                <div class="form-group">
+                                    <label>Trạng thái</label>
+                                    <select class="form-select">
+                                        <option>Hoạt động</option>
+                                        <option>Tạm khóa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top:18px;">
+                                <div class="form-group">
+                                    <label>Mô tả</label>
+                                    <textarea class="form-input" rows="3" placeholder="Nhập mô tả cho nhóm quyền..." style="resize:vertical;padding:9px 12px;border:1px solid #ced4da;border-radius:5px;font-family:'Roboto',sans-serif;width:100%;"></textarea>
+                                </div>
+                            </div>
+                            <div style="margin-top:18px;">
+                                <label style="font-size:0.85rem;font-weight:500;color:#495057;">Phân quyền chi tiết</label>
+                                <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox" checked> Quản lý sản phẩm
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox" checked> Quản lý đơn hàng
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox" checked> Quản lý khách hàng
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox"> Quản lý nhân viên
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox"> Báo cáo doanh thu
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="checkbox"> Cấu hình hệ thống
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-cancel">Hủy</button>
+                                <button class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Thêm nhóm quyền</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Danh sách nhân viên (default) ===== -->
+                <div id="section-danhsach" class="content-section active-section">
+                    <!-- Header Actions -->
+                    <div class="row" style="margin-bottom:20px;">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px 20px;">
+                                    <div class="search-box">
+                                        <i class="fa-solid fa-search search-icon"></i>
+                                        <input type="text" class="form-input" placeholder="Tìm kiếm nhân viên..." style="padding-left:34px;width:320px;">
+                                    </div>
+                                    <div class="action-buttons">
+                                        <button class="btn-search"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-list"></i> Danh sách tài khoản</h3>
+                            <span class="card-badge">Tổng: 22 nhân viên</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên người dùng</th>
+                                        <th>Tên tài khoản</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Xem thông tin</th>
+                                        <th style="width:120px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="product-name">Nguyễn Văn Admin</td>
+                                        <td>admin</td>
+                                        <td>01/01/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Trần Thị Sales</td>
+                                        <td>tranthisales</td>
+                                        <td>05/02/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Lê Văn Kho</td>
+                                        <td>levankho</td>
+                                        <td>12/03/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Phạm Thị Kế Toán</td>
+                                        <td>phamketoan</td>
+                                        <td>20/03/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Hoàng Văn Support</td>
+                                        <td>hoangsupport</td>
+                                        <td>05/04/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Đặng Thị Content</td>
+                                        <td>dangcontent</td>
+                                        <td>15/05/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Võ Thị Marketing</td>
+                                        <td>vomarketing</td>
+                                        <td>01/06/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-name">Ngô Văn IT</td>
+                                        <td>ngoit</td>
+                                        <td>10/07/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- Pagination -->
+                            <div class="pagination">
+                                <div class="pagination-info">Hiển thị 1-8 / 22 nhân viên</div>
+                                <div class="pagination-links">
+                                    <a href="#" class="page-link disabled"><i class="fa-solid fa-chevron-left"></i></a>
+                                    <a href="#" class="page-link active">1</a>
+                                    <a href="#" class="page-link">2</a>
+                                    <a href="#" class="page-link">3</a>
+                                    <a href="#" class="page-link"><i class="fa-solid fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Thêm mới nhân viên ===== -->
+                <div id="section-themmoinhanvien" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-user-plus"></i> Thêm mới nhân viên</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Họ và tên <span class="required">*</span></label>
+                                    <input type="text" class="form-input" placeholder="Nhập họ và tên">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tên tài khoản <span class="required">*</span></label>
+                                    <input type="text" class="form-input" placeholder="Nhập tên tài khoản">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email <span class="required">*</span></label>
+                                    <input type="email" class="form-input" placeholder="Nhập email">
+                                </div>
+                                <div class="form-group">
+                                    <label>Số điện thoại</label>
+                                    <input type="text" class="form-input" placeholder="Nhập số điện thoại">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mật khẩu <span class="required">*</span></label>
+                                    <input type="password" class="form-input" placeholder="Nhập mật khẩu">
+                                </div>
+                                <div class="form-group">
+                                    <label>Xác nhận mật khẩu <span class="required">*</span></label>
+                                    <input type="password" class="form-input" placeholder="Xác nhận mật khẩu">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nhóm quyền <span class="required">*</span></label>
+                                    <select class="form-select">
+                                        <option>-- Chọn nhóm quyền --</option>
+                                        <option>Quản trị viên</option>
+                                        <option>Nhân viên bán hàng</option>
+                                        <option>Nhân viên kho</option>
+                                        <option>Kế toán</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Trạng thái</label>
+                                    <select class="form-select">
+                                        <option>Hoạt động</option>
+                                        <option>Tạm khóa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-cancel">Hủy</button>
+                                <button class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Thêm nhân viên</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="main-footer">
+            <div class="float-left">
+                Copyright &copy; 2024 <strong>NGUYÊN HÙNG</strong>. All rights reserved.
+            </div>
+            <div class="float-right">
+                Phiên bản 1.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- Javascript -->
+    <script src="../js/1.js"></script>
+</body>
+
+</html>

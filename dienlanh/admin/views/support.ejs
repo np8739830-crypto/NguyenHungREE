@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'support' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Hỗ trợ khách hàng</p>
+                        <h1><i class="fa-solid fa-headset"></i> Danh sách hỗ trợ</h1>
+                    </div>
+                    <a class="dashboard-primary-action" href="tel:02822422822"><i class="fa-solid fa-phone"></i> Hotline: 028 2242 2822</a>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-list"></i> Kênh hỗ trợ trực tuyến</h3>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Miêu tả</th>
+                                    <th>Nick Name</th>
+                                    <th>Kênh</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ kỹ thuật - Máy lạnh</td>
+                                    <td>tech.nguyenhung</td>
+                                    <td><span class="badge badge-info">Zalo</span> <span class="badge badge-primary">Facebook</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ kỹ thuật - Tủ lạnh</td>
+                                    <td>tech.tulanh</td>
+                                    <td><span class="badge badge-info">Zalo</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ kỹ thuật - Máy giặt</td>
+                                    <td>tech.maygiat</td>
+                                    <td><span class="badge badge-info">Zalo</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ bán hàng - Tư vấn mua</td>
+                                    <td>sales.nguyenhung</td>
+                                    <td><span class="badge badge-primary">Facebook</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ bán hàng - Báo giá</td>
+                                    <td>sales.baogia</td>
+                                    <td><span class="badge badge-info">Zalo</span> <span class="badge badge-primary">Facebook</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ khiếu nại</td>
+                                    <td>khieunai.nguyenhung</td>
+                                    <td><span class="badge badge-primary">Facebook</span></td>
+                                    <td><span class="badge badge-warning">Ngoài giờ</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="product-name">Hỗ trợ bảo hình</td>
+                                    <td>baohanh.nguyenhung</td>
+                                    <td><span class="badge badge-info">Zalo</span></td>
+                                    <td><span class="badge badge-success">Trực tuyến</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+
+</html>

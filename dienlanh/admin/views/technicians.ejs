@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+    <style>
+        .technician-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 18px;
+        }
+        
+        .technician-form .full {
+            grid-column: 1 / -1;
+        }
+        
+        .technician-form label {
+            display: block;
+            color: #263b5e;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .technician-form input,
+        .technician-form select {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccd3dc;
+            border-radius: 5px;
+            padding: 9px 10px;
+            font: inherit;
+        }
+        
+        @media (max-width: 700px) {
+            .technician-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Nút thao tác kỹ thuật viên */
+        .technician-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 92px;
+        }
+
+        .technician-actions form { margin: 0; }
+
+        .technician-actions .tech-action-btn {
+            width: 84px;
+            min-height: 34px;
+            border: 0;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 8px 12px;
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(25, 45, 80, .18);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+
+        .technician-actions .tech-edit { background: linear-gradient(135deg, #315b9a, #4f78b8); }
+        .technician-actions .tech-delete { background: linear-gradient(135deg, #b83c32, #d85a4d); }
+
+        .technician-actions .tech-action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+            box-shadow: 0 6px 14px rgba(25, 45, 80, .24);
+        }
+
+        .technician-actions .tech-action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(25, 45, 80, .18);
+        }
+
+        .technician-actions .tech-action-btn:focus-visible {
+            outline: 3px solid rgba(79, 120, 184, .28);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 700px) {
+            .technician-actions { flex-direction: row; min-width: 180px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'technicians' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Đội ngũ</p>
+                        <h1><i class="fa-solid fa-user-gear"></i> Kỹ thuật viên</h1>
+                    </div>
+                    <span class="dashboard-mini-stat"><i class="fa-solid fa-users-gear"></i><span>Tổng kỹ thuật viên</span><strong><%= technicians.length %></strong></span>
+                </section>
+                <% if (success_msg?.length) { %>
+                    <div class="notice success">
+                        <%= success_msg[0] %>
+                    </div>
+                    <% } %>
+                        <% if (error_msg?.length) { %>
+                            <div class="notice error">
+                                <%= error_msg[0] %>
+                            </div>
+                            <% } %>
+
+                                <% if (can('technicians', 'create')) { %>
+                                <section class="card" style="margin-bottom:22px;">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-user-plus"></i> Thêm kỹ thuật viên</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="post" action="/admin/technicians" class="technician-form">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <div><label>Họ và tên *</label><input name="full_name" required></div>
+                                            <div><label>Số điện thoại *</label><input name="phone" required></div>
+                                            <div><label>Email</label><input name="email" type="email"></div>
+                                            <div><label>Chuyên môn</label><input name="specialty" placeholder="Sửa máy lạnh, điện lạnh..."></div>
+                                            <div><label>Kinh nghiệm</label><input name="experience" placeholder="Ví dụ: 5 năm kinh nghiệm"></div>
+                                            <div><label>Loại nhân viên</label><select name="employee_type"><option value="official">Chính thức</option><option value="probation">Thử việc</option></select></div>
+                                            <div><label>Bậc công việc</label><select name="job_grade"><option value="assistant">Phụ điện lạnh</option><option value="technician">Bậc thợ điện lạnh</option></select></div>
+                                            <div><label>Lương cơ bản</label><input name="base_salary" type="number" min="0" step="100000" value="5000000"></div>
+                                            <div><label>Sử dụng xe trong công việc</label><select name="uses_company_vehicle"><option value="0">Không</option><option value="1">Có</option></select></div>
+                                            <div><label>Ngày bắt đầu làm</label><input name="start_date" type="date"></div>
+                                            <div><label>Bắt đầu thử việc</label><input name="probation_start_date" type="date"></div>
+                                            <div><label>Kết thúc thử việc</label><input name="probation_end_date" type="date"></div>
+                                            <div class="full"><label>Khu vực phục vụ</label><input name="service_area" placeholder="Quận 1, Quận 8, TP.HCM..."></div>
+                                            <div><label>Trạng thái</label>
+                                                <select name="work_status">
+                                <option value="available">Đang rảnh</option>
+                                <option value="busy">Đang bận</option>
+                                <option value="leave">Nghỉ phép</option>
+                                <option value="inactive">Ngừng hoạt động</option>
+                            </select>
+                                            </div>
+                                            <div style="display:flex;align-items:flex-end;">
+                                                <button class="btn btn-primary" type="submit">Thêm kỹ thuật viên</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                                <% } %>
+
+                                <section class="card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-list"></i> Danh sách kỹ thuật viên</h3>
+                                    </div>
+                                    <div class="card-body table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Họ và tên</th>
+                                                    <th>Điện thoại</th>
+                                                    <th>Email</th>
+                                                    <th>Chuyên môn</th>
+                                                    <th>Kinh nghiệm</th>
+                                                    <th>Khu vực</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% const workLabels = { available: ['Đang rảnh', 'badge-success'], busy: ['Đang bận', 'badge-info'], leave: ['Nghỉ phép', 'badge-warning'], inactive: ['Ngừng hoạt động', 'badge-danger'] }; %>
+                                                    <% technicians.forEach(t => { %>
+                                                        <tr>
+                                                            <td><strong>KT-<%= String(t.id).padStart(3, '0') %></strong></td>
+                                                            <td class="product-name">
+                                                                <div class="tech-table-identity">
+                                                                    <% if (t.avatar) { %>
+                                                                        <img class="tech-table-avatar" src="<%= t.avatar %>" alt="Ảnh đại diện của <%= t.full_name %>">
+                                                                    <% } else { %>
+                                                                        <span class="tech-table-avatar tech-table-avatar--empty"><i class="fa-solid fa-user"></i></span>
+                                                                    <% } %>
+                                                                    <span><%= t.full_name %></span>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <%= t.phone %>
+                                                            </td>
+                                                            <td>
+                                                                <%= t.email || '—' %>
+                                                            </td>
+                                                            <td>
+                                                                <%= t.specialty || '—' %>
+                                                            </td>
+                                                            <td><%= t.experience || '—' %></td>
+                                                            <td>
+                                                                <%= t.service_area || '—' %>
+                                                            </td>
+                                                            <td><span class="badge <%= (workLabels[t.work_status] || ['—', 'badge-info'])[1] %>"><%= (workLabels[t.work_status] || ['—', 'badge-info'])[0] %></span></td>
+                                                            <td>
+                                                                <div class="technician-actions">
+                                                                    <% if (can('technicians', 'update')) { %><button type="button" class="tech-action-btn tech-edit edit-tech-btn" data-id="<%= t.id %>" data-name="<%= t.full_name %>" data-phone="<%= t.phone %>" data-email="<%= t.email || '' %>" data-avatar="<%= t.avatar || '' %>" data-specialty="<%= t.specialty || '' %>" data-experience="<%= t.experience || '' %>" data-area="<%= t.service_area || '' %>" data-status="<%= t.work_status %>" data-employee-type="<%= t.employee_type || 'official' %>" data-job-grade="<%= t.job_grade || 'assistant' %>" data-base-salary="<%= t.base_salary || 5000000 %>" data-uses-vehicle="<%= t.uses_company_vehicle ? '1' : '0' %>" data-start-date="<%= t.start_date ? new Date(t.start_date).toISOString().slice(0,10) : '' %>" data-probation-start="<%= t.probation_start_date ? new Date(t.probation_start_date).toISOString().slice(0,10) : '' %>" data-probation-end="<%= t.probation_end_date ? new Date(t.probation_end_date).toISOString().slice(0,10) : '' %>">
+                                                                        <i class="fa-solid fa-pen"></i><span>Sửa</span>
+                                                                    </button><% } %>
+                                                                    <% if (can('technicians', 'delete')) { %><form method="post" action="/admin/technicians/<%= t.id %>/delete" onsubmit="return confirm('Xóa kỹ thuật viên này?');">
+                                                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                                        <button type="submit" class="tech-action-btn tech-delete">
+                                                                            <i class="fa-solid fa-trash-can"></i><span>Xóa</span>
+                                                                        </button>
+                                                                    </form><% } %>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                            <% if (!technicians.length) { %>
+                                                                <tr>
+                                                                    <td colspan="9" style="text-align:center;color:#888;">Chưa có kỹ thuật viên nào. Hãy thêm kỹ thuật viên đầu tiên.</td>
+                                                                </tr>
+                                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+    <% if (can('technicians', 'update')) { %><div id="editModal" class="tech-modal">
+    <div class="tech-modal-content">
+        <div class="tech-modal-header">
+            <h3>Chỉnh sửa kỹ thuật viên</h3>
+            <span id="closeModal">&times;</span>
+        </div>
+        <form id="editForm" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <label>Họ tên</label>
+            <input id="edit_name" name="full_name" required>
+            <label>Điện thoại</label>
+            <input id="edit_phone" name="phone" required>
+            <label>Email</label>
+            <input id="edit_email" name="email">
+            <div class="tech-avatar-upload">
+                <label>Ảnh đại diện</label>
+                <button class="tech-avatar-preview" id="editAvatarPreview" type="button" aria-label="Chọn ảnh đại diện">
+                    <img id="editAvatarImage" alt="Xem trước ảnh đại diện" hidden>
+                    <span class="tech-avatar-placeholder" id="editAvatarPlaceholder">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Nhấn để chọn ảnh</span>
+                    </span>
+                </button>
+                <input id="edit_avatar" class="tech-avatar-input" name="avatar" type="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp">
+                <label class="btn btn-primary tech-avatar-button" for="edit_avatar"><i class="fa-solid fa-image"></i> Chọn ảnh</label>
+                <small>JPG, JPEG, PNG, GIF hoặc WEBP · tối đa 2 MB</small>
+                <p class="tech-avatar-error" id="editAvatarError" role="alert" hidden></p>
+            </div>
+            <label>Chuyên môn</label>
+            <input id="edit_specialty" name="specialty">
+            <label>Kinh nghiệm</label>
+            <input id="edit_experience" name="experience">
+            <label>Loại nhân viên</label>
+            <select id="edit_employee_type" name="employee_type"><option value="official">Chính thức</option><option value="probation">Thử việc</option></select>
+            <label>Bậc công việc</label>
+            <select id="edit_job_grade" name="job_grade"><option value="assistant">Phụ điện lạnh</option><option value="technician">Bậc thợ điện lạnh</option></select>
+            <label>Lương cơ bản</label>
+            <input id="edit_base_salary" name="base_salary" type="number" min="0" step="100000">
+            <label>Sử dụng xe trong công việc</label>
+            <select id="edit_uses_vehicle" name="uses_company_vehicle"><option value="0">Không</option><option value="1">Có</option></select>
+            <label>Ngày bắt đầu làm</label><input id="edit_start_date" name="start_date" type="date">
+            <label>Bắt đầu thử việc</label><input id="edit_probation_start" name="probation_start_date" type="date">
+            <label>Kết thúc thử việc</label><input id="edit_probation_end" name="probation_end_date" type="date">
+            <label>Khu vực</label>
+            <input id="edit_area" name="service_area">
+            <label>Trạng thái</label>
+            <select id="edit_status" name="work_status">
+                <option value="available">Đang rảnh</option>
+                <option value="busy">Đang bận</option>
+                <option value="leave">Nghỉ phép</option>
+                <option value="inactive">Ngừng hoạt động</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="btn btn-primary">
+                    Lưu thay đổi
+                </button>
+                <button type="button" class="btn" id="cancelModal">
+                    Hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const modal = document.getElementById("editModal");
+    const editForm = document.getElementById("editForm");
+
+    const closeBtn = document.getElementById("closeModal");
+    const cancelBtn = document.getElementById("cancelModal");
+    const avatarInput = document.getElementById("edit_avatar");
+    const avatarPreview = document.getElementById("editAvatarPreview");
+    const avatarImage = document.getElementById("editAvatarImage");
+    const avatarPlaceholder = document.getElementById("editAvatarPlaceholder");
+    const avatarError = document.getElementById("editAvatarError");
+    const allowedAvatarTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    const allowedAvatarExtension = /\.(jpe?g|png|gif|webp)$/i;
+    let currentAvatar = "";
+    let previewUrl = "";
+
+    function showAvatar(src) {
+        avatarImage.hidden = !src;
+        avatarPlaceholder.hidden = Boolean(src);
+        if (src) avatarImage.src = src;
+        else avatarImage.removeAttribute("src");
+    }
+
+    function resetAvatarPicker(src) {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = "";
+        currentAvatar = src || "";
+        avatarInput.value = "";
+        avatarError.hidden = true;
+        avatarError.textContent = "";
+        showAvatar(currentAvatar);
+    }
+
+    avatarPreview.addEventListener("click", function () { avatarInput.click(); });
+    avatarImage.addEventListener("error", function () { showAvatar(""); });
+    avatarInput.addEventListener("change", function () {
+        const file = this.files && this.files[0];
+        avatarError.hidden = true;
+        if (!file) {
+            showAvatar(currentAvatar);
+            return;
+        }
+        if (!allowedAvatarTypes.includes(file.type) || !allowedAvatarExtension.test(file.name)) {
+            this.value = "";
+            avatarError.textContent = "Chỉ chấp nhận ảnh JPG, JPEG, PNG, GIF hoặc WEBP.";
+            avatarError.hidden = false;
+            showAvatar(currentAvatar);
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            this.value = "";
+            avatarError.textContent = "Ảnh đại diện khàng được vượt quá 2 MB.";
+            avatarError.hidden = false;
+            showAvatar(currentAvatar);
+            return;
+        }
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(file);
+        showAvatar(previewUrl);
+    });
+
+    document.querySelectorAll(".edit-tech-btn").forEach(function(btn){
+
+        btn.addEventListener("click", function(){
+
+            editForm.action = "/admin/technicians/" + this.dataset.id;
+
+            document.getElementById("edit_name").value = this.dataset.name;
+            document.getElementById("edit_phone").value = this.dataset.phone;
+            document.getElementById("edit_email").value = this.dataset.email;
+            resetAvatarPicker(this.dataset.avatar);
+            document.getElementById("edit_specialty").value = this.dataset.specialty;
+            document.getElementById("edit_experience").value = this.dataset.experience;
+            document.getElementById("edit_area").value = this.dataset.area;
+            document.getElementById("edit_status").value = this.dataset.status;
+            document.getElementById("edit_employee_type").value = this.dataset.employeeType;
+            document.getElementById("edit_job_grade").value = this.dataset.jobGrade;
+            document.getElementById("edit_base_salary").value = this.dataset.baseSalary;
+            document.getElementById("edit_uses_vehicle").value = this.dataset.usesVehicle;
+            document.getElementById("edit_start_date").value = this.dataset.startDate;
+            document.getElementById("edit_probation_start").value = this.dataset.probationStart;
+            document.getElementById("edit_probation_end").value = this.dataset.probationEnd;
+
+            modal.style.display = "block";
+        });
+
+    });
+
+    function closeModal(){
+        modal.style.display = "none";
+        resetAvatarPicker("");
+    }
+
+    closeBtn.onclick = closeModal;
+    cancelBtn.onclick = closeModal;
+
+    window.onclick = function(e){
+        if(e.target === modal){
+            closeModal();
+        }
+    };
+
+});
+</script>
+<% } %>
+</body>
+
+</html>
+

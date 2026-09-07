@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bán hàng - NGUYÊN HÙNG</title>
+    <!-- Google Fonts: Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/1.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- ===== HEADER ===== -->
+        <header class="main-header">
+            <div class="header-left">
+                <a href="#" class="logo">
+                    <span class="logo-lg"><i class="fa-solid fa-cube"></i> NGUYÊN HÙNG</span>
+                </a>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <span class="user-name">Admin</span>
+                    <img
+    src="https://ui-avatars.com/api/?name=<%= account.name %>&background=2c3e50&color=fff&size=40"
+    alt="Avatar"
+    class="user-avatar">
+                    <a href="#" class="btn-logout" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="main-sidebar" id="mainSidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="bangdieukhien.html" class="nav-link">
+                            <i class="fa-solid fa-tachometer-alt"></i>
+                            <span>Bảng điều khiển</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="sanpham.html" class="nav-link">
+                            <i class="fa-solid fa-box"></i>
+                            <span>Sản phẩm</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="sanpham.html" data-section="danhmuc">Danh mục</a></li>
+                            <li><a href="sanpham.html" data-section="sanpham">Sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="danhgia">Đánh giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="thuoctinh">Thuộc tính</a></li>
+                            <li><a href="sanpham.html" data-section="giamgia">Giảm giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="sualoathangloat">Sửa hàng loạt</a></li>
+                            <li><a href="sanpham.html" data-section="conithang">Sản phẩm còn ít hàng</a></li>
+                            <li><a href="sanpham.html" data-section="khuyenmai">Khuyến mãi sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="hethang">Hết hàng sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="tintuc">Tin tức</a></li>
+                            <li><a href="sanpham.html" data-section="copysanpham">Copy sản phẩm</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu active expanded">
+                        <a href="banhang.html" class="nav-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Bán hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu" style="display: block;">
+                            <li class="sub-active"><a href="#" data-section="danhsachdonhang">Danh sách đơn hàng</a></li>
+                            <li><a href="#" data-section="donhangchoxuly">Đơn hàng chờ xử lý</a></li>
+                            <li><a href="#" data-section="donhangdaxacnhan">Đơn hàng đã xác nhận</a></li>
+                            <li><a href="#" data-section="donhangdangiao">Đơn hàng đang giao</a></li>
+                            <li><a href="#" data-section="donhanghoanthanh">Đơn hàng hoàn thành</a></li>
+                            <li><a href="#" data-section="donhangdahuy">Đơn hàng đã hủy</a></li>
+                            <li><a href="#" data-section="thanhtoan">Thanh toán</a></li>
+                            <li><a href="#" data-section="baocaodoanhthu">Báo cáo doanh thu</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="khachhang.html" class="nav-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Khách hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="khachhang.html" data-section="danhsach">Danh sách khách hàng</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="cauhinh.html" class="nav-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Cấu hình</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="cauhinh.html" data-section="hethong">Cấu hình hệ thống</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hinhanh.html" class="nav-link">
+                            <i class="fa-solid fa-image"></i>
+                            <span>Hình ảnh</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hinhanh.html" data-section="danhsach">Danh sách hình ảnh</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hotro.html" class="nav-link">
+                            <i class="fa-solid fa-headset"></i>
+                            <span>Danh sách hỗ trợ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hotro.html" data-section="danhsach">Danh sách hỗ trợ trực tuyến</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="lienhe.html" class="nav-link">
+                            <i class="fa-solid fa-address-book"></i>
+                            <span>Liên hệ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="lienhe.html" data-section="danhsach">Danh sách liên hệ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Theo dõi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="nhanvien.html" class="nav-link">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span>Nhân viên</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="nhanvien.html" data-section="nhomquyen">Nhóm quyền</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhom">Thêm mới nhóm</a></li>
+                            <li><a href="nhanvien.html" data-section="danhsach">Danh sách nhân viên</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhanvien">Thêm mới nhân viên</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cauhinhthongtin.html" class="nav-link">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Cấu hình thông tin</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT WRAPPER ===== -->
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <h1><i class="fa-solid fa-cart-shopping"></i> Danh sách đơn hàng</h1>
+            </section>
+
+            <!-- Main Content -->
+            <section class="content">
+
+                <!-- ===== SECTION: Danh sách đơn hàng (default) ===== -->
+                <div id="section-danhsachdonhang" class="content-section active-section">
+                    <div class="card filter-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-grid">
+                                <div class="filter-item">
+                                    <label>Thời gian</label>
+                                    <input type="date" class="form-input" value="2024-08-01">
+                                    <span class="filter-sep">→</span>
+                                    <input type="date" class="form-input" value="2024-08-31">
+                                </div>
+                                <div class="filter-item">
+                                    <label>Trạng thái</label>
+                                    <select class="form-input">
+                                        <option>Tất cả</option>
+                                        <option>Chờ duyệt</option>
+                                        <option>Đã xác nhận</option>
+                                        <option>Đang giao</option>
+                                        <option>Hoàn thành</option>
+                                        <option>Đã hủy</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <label>Tài khoản</label>
+                                    <input type="text" class="form-input" placeholder="Nhập tên khách hàng...">
+                                </div>
+                                <div class="filter-item">
+                                    <label>Nguồn</label>
+                                    <select class="form-input">
+                                        <option>Tất cả</option>
+                                        <option>Website</option>
+                                        <option>Facebook</option>
+                                        <option>Zalo</option>
+                                        <option>Trực tiếp</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn-search"><i class="fa-solid fa-search"></i> Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-list"></i> Danh sách đơn hàng</h3>
+                            <span class="card-badge">Tổng: 248 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Tình trạng</th>
+                                        <th>Họ tên</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Nguồn</th>
+                                        <th>Ghi chú đơn</th>
+                                        <th>Thiết bị</th>
+                                        <th>Thời gian đặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-001</span></td>
+                                        <td><span class="badge badge-warning">Chờ duyệt</span></td>
+                                        <td>Nguyễn Văn A</td>
+                                        <td>0901.234.567</td>
+                                        <td>Website</td>
+                                        <td>Giao giờ hành chính</td>
+                                        <td><i class="fa-solid fa-desktop"></i></td>
+                                        <td>15/08/2024 14:30</td>
+                                        <td class="text-price">12,500,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-002</span></td>
+                                        <td><span class="badge badge-success">Hoàn thành</span></td>
+                                        <td>Trần Thị B</td>
+                                        <td>0902.345.678</td>
+                                        <td>Facebook</td>
+                                        <td>Gọi trước khi giao</td>
+                                        <td><i class="fa-solid fa-mobile-screen"></i></td>
+                                        <td>15/08/2024 10:15</td>
+                                        <td class="text-price">8,900,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-003</span></td>
+                                        <td><span class="badge badge-danger">Đã hủy</span></td>
+                                        <td>Lê Văn C</td>
+                                        <td>0903.456.789</td>
+                                        <td>Zalo</td>
+                                        <td>Khách hủy do đổi ý</td>
+                                        <td><i class="fa-solid fa-desktop"></i></td>
+                                        <td>14/08/2024 16:45</td>
+                                        <td class="text-price">6,200,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-004</span></td>
+                                        <td><span class="badge badge-info">Đã xác nhận</span></td>
+                                        <td>Phạm Thị D</td>
+                                        <td>0904.567.890</td>
+                                        <td>Website</td>
+                                        <td>-</td>
+                                        <td><i class="fa-solid fa-tablet-screen-button"></i></td>
+                                        <td>14/08/2024 09:20</td>
+                                        <td class="text-price">15,800,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-005</span></td>
+                                        <td><span class="badge badge-primary">Đang giao</span></td>
+                                        <td>Hoàng Văn E</td>
+                                        <td>0905.678.901</td>
+                                        <td>Trực tiếp</td>
+                                        <td>Giao sau 17h</td>
+                                        <td><i class="fa-solid fa-mobile-screen"></i></td>
+                                        <td>13/08/2024 11:00</td>
+                                        <td class="text-price">4,500,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-006</span></td>
+                                        <td><span class="badge badge-success">Hoàn thành</span></td>
+                                        <td>Đặng Thị F</td>
+                                        <td>0906.789.012</td>
+                                        <td>Website</td>
+                                        <td>Giao tại văn phòng</td>
+                                        <td><i class="fa-solid fa-desktop"></i></td>
+                                        <td>13/08/2024 08:30</td>
+                                        <td class="text-price">22,300,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- Pagination -->
+                            <div class="pagination">
+                                <div class="pagination-info">Hiển thị 1-6 / 248 đơn hàng</div>
+                                <div class="pagination-links">
+                                    <a href="#" class="page-link disabled"><i class="fa-solid fa-chevron-left"></i></a>
+                                    <a href="#" class="page-link active">1</a>
+                                    <a href="#" class="page-link">2</a>
+                                    <a href="#" class="page-link">3</a>
+                                    <a href="#" class="page-link">...</a>
+                                    <a href="#" class="page-link">42</a>
+                                    <a href="#" class="page-link"><i class="fa-solid fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Đơn hàng chờ xử lý ===== -->
+                <div id="section-donhangchoxuly" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock"></i> Đơn hàng chờ xử lý</h3>
+                            <span class="card-badge badge-warning">12 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-001</span></td>
+                                        <td>Nguyễn Văn A</td>
+                                        <td>0901.234.567</td>
+                                        <td>15/08/2024</td>
+                                        <td class="text-price">12,500,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xử lý</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-008</span></td>
+                                        <td>Võ Thị G</td>
+                                        <td>0908.901.234</td>
+                                        <td>15/08/2024</td>
+                                        <td class="text-price">5,600,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xử lý</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-012</span></td>
+                                        <td>Đỗ Văn H</td>
+                                        <td>0912.345.678</td>
+                                        <td>14/08/2024</td>
+                                        <td class="text-price">18,900,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xử lý</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Đơn hàng đã xác nhận ===== -->
+                <div id="section-donhangdaxacnhan" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-check-circle"></i> Đơn hàng đã xác nhận</h3>
+                            <span class="card-badge badge-info">8 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th>Ngày xác nhận</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-004</span></td>
+                                        <td>Phạm Thị D</td>
+                                        <td>0904.567.890</td>
+                                        <td>14/08/2024</td>
+                                        <td class="text-price">15,800,000₫</td>
+                                        <td><a href="#" class="btn-detail">Giao hàng</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-009</span></td>
+                                        <td>Ngô Thị K</td>
+                                        <td>0909.012.345</td>
+                                        <td>14/08/2024</td>
+                                        <td class="text-price">7,200,000₫</td>
+                                        <td><a href="#" class="btn-detail">Giao hàng</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Đơn hàng đang giao ===== -->
+                <div id="section-donhangdangiao" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-truck"></i> Đơn hàng đang giao</h3>
+                            <span class="card-badge badge-primary">5 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th>Địa chỉ giao</th>
+                                        <th>Ngày giao</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-005</span></td>
+                                        <td>Hoàng Văn E</td>
+                                        <td>0905.678.901</td>
+                                        <td>123 Nguyễn Huệ, Q.1</td>
+                                        <td>16/08/2024</td>
+                                        <td><a href="#" class="btn-detail">Hoàn tất</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-010</span></td>
+                                        <td>Bùi Thị L</td>
+                                        <td>0910.123.456</td>
+                                        <td>456 Lê Lợi, Q.3</td>
+                                        <td>16/08/2024</td>
+                                        <td><a href="#" class="btn-detail">Hoàn tất</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Đơn hàng hoàn thành ===== -->
+                <div id="section-donhanghoanthanh" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-circle-check"></i> Đơn hàng hoàn thành</h3>
+                            <span class="card-badge badge-success">186 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th>Ngày hoàn thành</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-002</span></td>
+                                        <td>Trần Thị B</td>
+                                        <td>0902.345.678</td>
+                                        <td>15/08/2024</td>
+                                        <td class="text-price">8,900,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-006</span></td>
+                                        <td>Đặng Thị F</td>
+                                        <td>0906.789.012</td>
+                                        <td>13/08/2024</td>
+                                        <td class="text-price">22,300,000₫</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Đơn hàng đã hủy ===== -->
+                <div id="section-donhangdahuy" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-ban"></i> Đơn hàng đã hủy</h3>
+                            <span class="card-badge badge-danger">15 đơn</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>SĐT</th>
+                                        <th>Lý do hủy</th>
+                                        <th>Ngày hủy</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="order-id">DH-003</span></td>
+                                        <td>Lê Văn C</td>
+                                        <td>0903.456.789</td>
+                                        <td>Khách đổi ý</td>
+                                        <td>14/08/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="order-id">DH-011</span></td>
+                                        <td>Mai Văn M</td>
+                                        <td>0911.234.567</td>
+                                        <td>Tìm được giá tốt hơn</td>
+                                        <td>12/08/2024</td>
+                                        <td><a href="#" class="btn-detail">Xem</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Thanh toán ===== -->
+                <div id="section-thanhtoan" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-credit-card"></i> Thanh toán</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card stat-card bg-blue" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:20px;">
+                                            <div class="stat-detail">
+                                                <p class="stat-number" style="font-size:1.6rem;">186</p>
+                                                <p class="stat-label">Đã thanh toán</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card stat-card bg-orange" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:20px;">
+                                            <div class="stat-detail">
+                                                <p class="stat-number" style="font-size:1.6rem;">25</p>
+                                                <p class="stat-label">Chờ thanh toán</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card stat-card bg-red" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:20px;">
+                                            <div class="stat-detail">
+                                                <p class="stat-number" style="font-size:1.6rem;">15</p>
+                                                <p class="stat-label">Chưa thanh toán</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã giao dịch</th>
+                                            <th>Đơn hàng</th>
+                                            <th>Phương thức</th>
+                                            <th>Số tiền</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>GD-001</td>
+                                            <td>DH-002</td>
+                                            <td>Chuyển khoản</td>
+                                            <td class="text-price">8,900,000₫</td>
+                                            <td><span class="badge badge-success">Thành công</span></td>
+                                            <td>15/08/2024</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GD-002</td>
+                                            <td>DH-006</td>
+                                            <td>Tiền mặt</td>
+                                            <td class="text-price">22,300,000₫</td>
+                                            <td><span class="badge badge-success">Thành công</span></td>
+                                            <td>13/08/2024</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Báo cáo doanh thu ===== -->
+                <div id="section-baocaodoanhthu" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-simple"></i> Báo cáo doanh thu</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="card stat-card bg-green" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:18px 20px;">
+                                            <p class="stat-number" style="font-size:1.3rem;">1,248,500,000₫</p>
+                                            <p class="stat-label" style="font-size:0.8rem;">Doanh thu tháng này</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card stat-card bg-blue" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:18px 20px;">
+                                            <p class="stat-number" style="font-size:1.3rem;">836</p>
+                                            <p class="stat-label" style="font-size:0.8rem;">Tổng đơn hàng</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card stat-card bg-orange" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:18px 20px;">
+                                            <p class="stat-number" style="font-size:1.3rem;">1,493,000₫</p>
+                                            <p class="stat-label" style="font-size:0.8rem;">Giá trị TB/đơn</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card stat-card bg-red" style="margin-bottom:0;">
+                                        <div class="card-body" style="min-height:auto;padding:18px 20px;">
+                                            <p class="stat-number" style="font-size:1.3rem;">+12.5%</p>
+                                            <p class="stat-label" style="font-size:0.8rem;">Tăng trưởng</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <canvas id="revenueChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="main-footer">
+            <div class="float-left">
+                Copyright &copy; 2024 <strong>NGUYÊN HÙNG</strong>. All rights reserved.
+            </div>
+            <div class="float-right">
+                Phiên bản 1.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- Javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="../js/1.js"></script>
+</body>
+
+</html>

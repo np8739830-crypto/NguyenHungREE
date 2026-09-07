@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="/admin/css/1.css?v=20260811-2"><link rel="stylesheet" href="/admin/css/admin-rbac.css?v=20260811-2">
+</head>
+<body><div class="wrapper service-dashboard">
+    <%- include('partials/admin-header', { activePage: 'roles' }) %>
+    <main class="content-wrapper rbac-page">
+        <section class="content-header dashboard-heading rbac-heading"><div><p class="dashboard-eyebrow">Phân quyền hệ thống</p><h1><i class="fa-solid fa-shield-halved"></i> Vai trò & Quyền hạn</h1><p class="rbac-subtitle">Chọn chính xác thao tác mỗi vai trò được phép thực hiện.</p></div></section>
+        <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %><% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
+        <div class="role-layout">
+            <aside class="role-list" aria-label="Danh sách vai trò">
+                <% roles.forEach((role, index) => { %><button type="button" class="role-selector <%= index === 0 ? 'is-active' : '' %>" data-role-select="<%= role.id %>"><span class="role-selector__icon"><i class="fa-solid <%= role.slug === 'administrator' ? 'fa-crown' : role.slug === 'manager' ? 'fa-user-tie' : 'fa-user' %>"></i></span><span><strong><%= role.name %></strong><small><%= role.description %></small></span><i class="fa-solid fa-chevron-right"></i></button><% }) %>
+            </aside>
+            <section class="role-panels">
+            <% roles.forEach((role, index) => { const rolePermissions = assigned[role.id] || []; const locked = role.slug === 'administrator'; %>
+                <form method="post" action="/admin/access/roles/<%= role.id %>" class="permission-panel <%= index === 0 ? 'is-active' : '' %>" data-role-panel="<%= role.id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <header class="permission-panel__header"><div><span class="role-pill role-pill--<%= role.slug %>"><%= role.name %></span><h2>Quyền của vai trò</h2><p><%= role.description %></p></div><% if (locked) { %><span class="locked-note"><i class="fa-solid fa-lock"></i> Toàn quyền cố định</span><% } else { %><button class="rbac-button rbac-button--primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Lưu quyền hạn</button><% } %></header>
+                    <div class="permission-table-wrap"><table class="permission-table"><thead><tr><th>Module</th><% actions.forEach(action => { %><th><%= action.label %></th><% }) %></tr></thead><tbody>
+                    <% modules.forEach(module => { %><tr><td><span class="permission-module"><i class="<%= module.icon %>"></i><%= module.label %></span></td><% actions.forEach(action => { const permission = permissions.find(item => item.module_key === module.key && item.action_key === action.key); const checked = locked || (permission && rolePermissions.includes(permission.id)); %><td><label class="permission-check" title="<%= action.label %> - <%= module.label %>"><input type="checkbox" name="permissions" value="<%= permission?.id %>" <%= checked ? 'checked' : '' %> <%= locked ? 'disabled' : '' %>><span><i class="fa-solid fa-check"></i></span></label></td><% }) %></tr><% }) %>
+                    </tbody></table></div>
+                    <% if (!locked) { %><footer class="permission-footer"><p><i class="fa-solid fa-circle-info"></i> Khi cấp Thêm, Sửa hoặc Xóa, quyền Xem của module sẽ được bật tự động.</p><button class="rbac-button rbac-button--primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Lưu quyền hạn</button></footer><% } %>
+                </form>
+            <% }) %>
+            </section>
+        </div>
+    </main><footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div></footer>
+</div><script src="/admin/js/1.js?v=20260811-2"></script><script>(()=>{const selectors=document.querySelectorAll('[data-role-select]');const panels=document.querySelectorAll('[data-role-panel]');const activate=id=>{selectors.forEach(x=>x.classList.toggle('is-active',x.dataset.roleSelect===id));panels.forEach(x=>x.classList.toggle('is-active',x.dataset.rolePanel===id));history.replaceState(null,'',`?role=${id}`)};selectors.forEach(x=>x.addEventListener('click',()=>activate(x.dataset.roleSelect)));const requested=new URLSearchParams(location.search).get('role');if(requested&&document.querySelector(`[data-role-panel="${requested}"]`))activate(requested)})();</script></body></html>

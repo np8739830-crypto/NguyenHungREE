@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'reports' }) %>
+            <main class="content-wrapper">
+                <section class="content-header dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Vận hành dịch vụ</p>
+                        <h1><i class="fa-solid fa-chart-column"></i> Báo cáo hoạt động dịch vụ</h1>
+                    </div>
+                </section>
+
+                <section class="row stats-row dashboard-stats">
+                    <div class="col-lg-3">
+                        <article class="card stat-card bg-blue">
+                            <div class="card-body">
+                                <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                                <div class="stat-detail">
+                                    <p class="stat-number">
+                                        <%= report.totalBookings %>
+                                    </p>
+                                    <p class="stat-label">Tổng lịch đặt</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-3">
+                        <article class="card stat-card bg-navy">
+                            <div class="card-body">
+                                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="stat-detail">
+                                    <p class="stat-number">
+                                        <%= report.completedBookings %>
+                                    </p>
+                                    <p class="stat-label">Hoàn thành</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-3">
+                        <article class="card stat-card bg-cyan">
+                            <div class="card-body">
+                                <div class="stat-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                                <div class="stat-detail">
+                                    <p class="stat-number">
+                                        <%= report.totalServices %>
+                                    </p>
+                                    <p class="stat-label">Dịch vụ</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-3">
+                        <article class="card stat-card bg-success">
+                            <div class="card-body">
+                                <div class="stat-icon"><i class="fa-solid fa-user-gear"></i></div>
+                                <div class="stat-detail">
+                                    <p class="stat-number">
+                                        <%= report.totalTechnicians %>
+                                    </p>
+                                    <p class="stat-label">Kỹ thuật viên</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="row dashboard-tables">
+                    <div class="col-lg-6">
+                        <article class="card dashboard-table-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-fire"></i> Dịch vụ được đặt nhiều</h3>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên dịch vụ</th>
+                                            <th>Lượt đặt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% report.topServices.forEach(s => { %>
+                                            <tr>
+                                                <td class="product-name">
+                                                    <%= s.name %>
+                                                </td>
+                                                <td><strong><%= s.booking_count %></strong></td>
+                                            </tr>
+                                            <% }) %>
+                                                <% if (!report.topServices.length) { %>
+                                                    <tr>
+                                                        <td colspan="2" style="text-align:center;color:#888;">Chưa có dữ liệu.</td>
+                                                    </tr>
+                                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-6">
+                        <article class="card dashboard-table-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-user-gear"></i> Năng suất kỹ thuật viên</h3>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kỹ thuật viên</th>
+                                            <th>Số lịch</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% report.techPerformance.forEach(t => { %>
+                                            <tr>
+                                                <td class="product-name">
+                                                    <%= t.full_name %>
+                                                </td>
+                                                <td><strong><%= t.booking_count %></strong></td>
+                                                <td>
+                                                    <% const tl = { available: ['Đang rảnh', 'badge-success'], busy: ['Đang bận', 'badge-info'], leave: ['Nghỉ phép', 'badge-warning'], inactive: ['Ngừng hoạt động', 'badge-danger'] }; %>
+                                                        <span class="badge <%= (tl[t.work_status] || ['—', 'badge-info'])[1] %>"><%= (tl[t.work_status] || ['—', 'badge-info'])[0] %></span>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% if (!report.techPerformance.length) { %>
+                                                    <tr>
+                                                        <td colspan="3" style="text-align:center;color:#888;">Chưa có dữ liệu.</td>
+                                                    </tr>
+                                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="row">
+                    <div class="col-lg-12">
+                        <article class="card chart-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-chart-line"></i> Lịch đặt theo trạng thái</h3>
+                            </div>
+                            <div class="card-body"><canvas id="statusChart" height="120"></canvas></div>
+                        </article>
+                    </div>
+                </section>
+            </main>
+            <footer class="main-footer">
+                <div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div>
+                <div class="float-right">Dashboard dịch vụ</div>
+            </footer>
+    </div>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('statusChart');
+
+            // Kiểm tra canvas và thư viện Chart.js
+            if (!canvas || typeof Chart === 'undefined') {
+                return;
+            }
+
+            // Lấy dữ liệu trạng thái từ EJS
+            const statusCounts = <%- JSON.stringify((report && report.statusCounts) ? report.statusCounts : {}) %>;
+            // Tạo biểu đồ
+            new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Chờ xác nhận',
+                        'Đã xác nhận',
+                        'Đang thực hiện',
+                        'Hoàn thành',
+                        'Đã hủy'
+                    ],
+
+                    datasets: [{
+                        label: 'Số lịch đặt',
+
+                        data: [
+                            statusCounts.pending || 0,
+                            statusCounts.confirmed || 0,
+                            statusCounts.in_progress || 0,
+                            statusCounts.completed || 0,
+                            statusCounts.cancelled || 0
+                        ],
+
+                        backgroundColor: [
+                            '#e67e22',
+                            '#3498db',
+                            '#2a76bf',
+                            '#27ae60',
+                            '#e74c3c'
+                        ],
+
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

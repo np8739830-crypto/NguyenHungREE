@@ -1,0 +1,70 @@
+<%
+const permissionCheck = typeof can === 'function' ? can : (() => false);
+const navItems = [
+    { key: 'dashboard', permission: 'dashboard', href: '/admin', icon: 'fa-solid fa-gauge-high', label: 'Bảng điều khiển' },
+    { key: 'products', permission: 'services', href: '/admin/products', icon: 'fa-solid fa-screwdriver-wrench', label: 'Quản lý dịch vụ' },
+    { key: 'bookings', permission: 'bookings', href: '/admin/bookings', icon: 'fa-solid fa-calendar-check', label: 'Lịch đặt dịch vụ' },
+    { key: 'customers', permission: 'customers', href: '/admin/customers', icon: 'fa-solid fa-users', label: 'Khách hàng' },
+    { key: 'technicians', permission: 'technicians', href: '/admin/technicians', icon: 'fa-solid fa-user-gear', label: 'Kỹ thuật viên' },
+    { key: 'attendance', permission: 'attendance', href: '/admin/attendance', icon: 'fa-solid fa-clipboard-check', label: 'Chấm công' },
+    { key: 'payroll', permission: 'payroll', href: '/admin/payroll', icon: 'fa-solid fa-money-check-dollar', label: 'Bảng lương' },
+    { key: 'contacts', permission: 'contacts', href: '/admin/contacts', icon: 'fa-solid fa-address-book', label: 'Liên hệ' },
+    { key: 'reviews', permission: 'reviews', href: '/admin/reviews', icon: 'fa-solid fa-star', label: 'Đánh giá' },
+    { key: 'telegram', permission: 'telegram', href: '/admin/telegram', icon: 'fa-brands fa-telegram', label: 'Thông báo Telegram' }
+].filter(item => permissionCheck(item.permission, 'view'));
+const accessItems = [
+    { key: 'accounts', permission: 'accounts', href: '/admin/access/accounts', icon: 'fa-solid fa-user-lock', label: 'Tài khoản' },
+    { key: 'roles', permission: 'roles', href: '/admin/access/roles', icon: 'fa-solid fa-shield-halved', label: 'Vai trò & Quyền hạn' }
+].filter(item => permissionCheck(item.permission, 'view'));
+const accessActive = ['accounts', 'roles'].includes(activePage);
+%>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="/admin" class="logo"><img src="/images/logo.png" alt="Logo Nguyên Hùng" class="brand-logo"><span class="logo-lg">NGUYÊN HÙNG</span></a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        <div class="header-right">
+            <div class="user-menu">
+                <a href="/admin/account" class="user-name"><%= (typeof account !== 'undefined' && account && account.name) ? account.name : ((typeof admin !== 'undefined' && admin && admin.name) ? admin.name : 'Thông tin tài khoản') %></a>
+                
+                <% 
+                    const currentUser = (typeof account !== 'undefined' && account) ? account : ((typeof admin !== 'undefined' && admin) ? admin : null);
+                    const hasAvatar = currentUser && currentUser.avatar && currentUser.avatar.trim() !== '';
+                    const firstLetter = (currentUser && currentUser.name) ? currentUser.name.trim().charAt(0).toUpperCase() : 'P';
+                %>
+
+                <% if (hasAvatar) { %>
+                    <img src="<%= currentUser.avatar %>" alt="Avatar" class="user-avatar">
+                <% } else { %>
+                    <div class="user-avatar user-avatar-text"><%= firstLetter %></div>
+                <% } %>
+
+                <a href="#" class="btn-logout" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
+    </header>
+    <aside class="main-sidebar" id="mainSidebar">
+        <nav class="sidebar-nav" aria-label="Điều hướng quản trị">
+            <ul class="nav-list">
+                <% navItems.forEach(item => { %>
+                    <li class="nav-item <%= activePage === item.key ? 'active' : '' %>">
+                        <a href="<%= item.href %>" class="nav-link"><i class="<%= item.icon %>"></i><span><%= item.label %></span></a>
+                    </li>
+                <% }) %>
+                <% if (accessItems.length) { %>
+                    <li class="nav-item has-submenu rbac-menu <%= accessActive ? 'active expanded' : '' %>">
+                        <a href="#" class="nav-link" aria-expanded="<%= accessActive ? 'true' : 'false' %>">
+                            <i class="fa-solid fa-lock"></i><span>Phân quyền</span><i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <% accessItems.forEach(item => { %>
+                                <li class="<%= activePage === item.key ? 'sub-active' : '' %>">
+                                    <a href="<%= item.href %>"><i class="<%= item.icon %>"></i><span><%= item.label %></span></a>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </aside>

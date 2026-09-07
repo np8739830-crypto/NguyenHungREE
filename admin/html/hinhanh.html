@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hình ảnh - NGUYÊN HÙNG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/1.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- ===== HEADER ===== -->
+        <header class="main-header">
+            <div class="header-left">
+                <a href="#" class="logo">
+                    <span class="logo-lg"><i class="fa-solid fa-cube"></i> NGUYÊN HÙNG</span>
+                </a>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <span class="user-name">Admin</span>
+                    <img
+    src="https://ui-avatars.com/api/?name=<%= account.name %>&background=2c3e50&color=fff&size=40"
+    alt="Avatar"
+    class="user-avatar">
+                    <a href="#" class="btn-logout" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="main-sidebar" id="mainSidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="bangdieukhien.html" class="nav-link">
+                            <i class="fa-solid fa-tachometer-alt"></i>
+                            <span>Bảng điều khiển</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="sanpham.html" class="nav-link">
+                            <i class="fa-solid fa-box"></i>
+                            <span>Sản phẩm</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="sanpham.html" data-section="danhmuc">Danh mục</a></li>
+                            <li><a href="sanpham.html" data-section="sanpham">Sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="danhgia">Đánh giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="thuoctinh">Thuộc tính</a></li>
+                            <li><a href="sanpham.html" data-section="giamgia">Giảm giá sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="sualoathangloat">Sửa hàng loạt</a></li>
+                            <li><a href="sanpham.html" data-section="conithang">Sản phẩm còn ít hàng</a></li>
+                            <li><a href="sanpham.html" data-section="khuyenmai">Khuyến mãi sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="hethang">Hết hàng sản phẩm</a></li>
+                            <li><a href="sanpham.html" data-section="tintuc">Tin tức</a></li>
+                            <li><a href="sanpham.html" data-section="copysanpham">Copy sản phẩm</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="banhang.html" class="nav-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Bán hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="banhang.html" data-section="danhsachdonhang">Danh sách đơn hàng</a></li>
+                            <li><a href="banhang.html" data-section="donhangchoxuly">Đơn hàng chờ xử lý</a></li>
+                            <li><a href="banhang.html" data-section="donhangdaxacnhan">Đơn hàng đã xác nhận</a></li>
+                            <li><a href="banhang.html" data-section="donhangdangiao">Đơn hàng đang giao</a></li>
+                            <li><a href="banhang.html" data-section="donhanghoanthanh">Đơn hàng hoàn thành</a></li>
+                            <li><a href="banhang.html" data-section="donhangdahuy">Đơn hàng đã hủy</a></li>
+                            <li><a href="banhang.html" data-section="thanhtoan">Thanh toán</a></li>
+                            <li><a href="banhang.html" data-section="baocaodoanhthu">Báo cáo doanh thu</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="khachhang.html" class="nav-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Khách hàng</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="khachhang.html" data-section="danhsach">Danh sách khách hàng</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="cauhinh.html" class="nav-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Cấu hình</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="cauhinh.html" data-section="hethong">Cấu hình hệ thống</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu active expanded">
+                        <a href="hinhanh.html" class="nav-link">
+                            <i class="fa-solid fa-image"></i>
+                            <span>Hình ảnh</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu" style="display: block;">
+                            <li class="sub-active"><a href="hinhanh.html" data-section="danhsach">Danh sách hình ảnh</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="hotro.html" class="nav-link">
+                            <i class="fa-solid fa-headset"></i>
+                            <span>Danh sách hỗ trợ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="hotro.html" data-section="danhsach">Danh sách hỗ trợ trực tuyến</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="lienhe.html" class="nav-link">
+                            <i class="fa-solid fa-address-book"></i>
+                            <span>Liên hệ</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="lienhe.html" data-section="danhsach">Danh sách liên hệ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Theo dõi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="nhanvien.html" class="nav-link">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span>Nhân viên</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="nhanvien.html" data-section="nhomquyen">Nhóm quyền</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhom">Thêm mới nhóm</a></li>
+                            <li><a href="nhanvien.html" data-section="danhsach">Danh sách nhân viên</a></li>
+                            <li><a href="nhanvien.html" data-section="themmoinhanvien">Thêm mới nhân viên</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cauhinhthongtin.html" class="nav-link">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Cấu hình thông tin</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT WRAPPER ===== -->
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <h1><i class="fa-solid fa-image"></i> Danh sách hình ảnh</h1>
+            </section>
+
+            <!-- Main Content -->
+            <section class="content">
+
+                <!-- ===== SECTION: Danh sách hình ảnh ===== -->
+                <div id="section-danhsach" class="content-section active-section">
+                    <!-- Header Actions -->
+                    <div class="row" style="margin-bottom:20px;">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px 20px;">
+                                    <div class="search-box">
+                                        <i class="fa-solid fa-search search-icon"></i>
+                                        <input type="text" class="form-input" placeholder="Tìm kiếm hình ảnh..." style="padding-left:34px;width:320px;">
+                                    </div>
+                                    <div class="action-buttons">
+                                        <button class="btn-search"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-list"></i> Danh sách hình ảnh</h3>
+                            <span class="card-badge">Tổng: 248 hình ảnh</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:60px;">Hình</th>
+                                        <th>Mô tả</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Vị trí hiển thị</th>
+                                        <th>Xem thông tin</th>
+                                        <th style="width:100px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=SP1" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh Daikin Inverter 1.5HP - Ảnh chính</td>
+                                        <td>15/08/2024</td>
+                                        <td><span class="badge badge-info">Trang chủ</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=SP2" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh Daikin Inverter 1.5HP - Góc nghiêng</td>
+                                        <td>15/08/2024</td>
+                                        <td><span class="badge badge-info">Trang chủ</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=SP3" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh Panasonic Inverter 1HP - Ảnh chính</td>
+                                        <td>14/08/2024</td>
+                                        <td><span class="badge badge-success">Sản phẩm</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=SP4" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh LG Dual Inverter 2HP - Ảnh chính</td>
+                                        <td>12/08/2024</td>
+                                        <td><span class="badge badge-success">Sản phẩm</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=BN" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Banner khuyến mãi tháng 9 - 1920x500</td>
+                                        <td>10/08/2024</td>
+                                        <td><span class="badge badge-warning">Banner</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=LG" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Logo NGUYÊN HÙNG - Phiên bản chính</td>
+                                        <td>01/08/2024</td>
+                                        <td><span class="badge badge-primary">Logo</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=CS" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh Casper Inverter 1.5HP - Ảnh chính</td>
+                                        <td>28/07/2024</td>
+                                        <td><span class="badge badge-success">Sản phẩm</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="https://placehold.co/50x50/1e3a5f/ffffff?text=TB" class="product-thumb" alt="Hình ảnh"></td>
+                                        <td class="product-name">Máy lạnh Toshiba Inverter 1HP - Ảnh chính</td>
+                                        <td>20/07/2024</td>
+                                        <td><span class="badge badge-success">Sản phẩm</span></td>
+                                        <td><a href="#" class="btn-detail">Xem chi tiết</a></td>
+                                        <td><a href="#" class="btn-detail" style="color:#e74c3c;"><i class="fa-solid fa-trash-can"></i> Xóa</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- Pagination -->
+                            <div class="pagination">
+                                <div class="pagination-info">Hiển thị 1-8 / 248 hình ảnh</div>
+                                <div class="pagination-links">
+                                    <a href="#" class="page-link disabled"><i class="fa-solid fa-chevron-left"></i></a>
+                                    <a href="#" class="page-link active">1</a>
+                                    <a href="#" class="page-link">2</a>
+                                    <a href="#" class="page-link">3</a>
+                                    <a href="#" class="page-link">...</a>
+                                    <a href="#" class="page-link">31</a>
+                                    <a href="#" class="page-link"><i class="fa-solid fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="main-footer">
+            <div class="float-left">
+                Copyright &copy; 2024 <strong>NGUYÊN HÙNG</strong>. All rights reserved.
+            </div>
+            <div class="float-right">
+                Phiên bản 1.0
+            </div>
+        </footer>
+    </div>
+
+    <!-- Javascript -->
+    <script src="../js/1.js"></script>
+</body>
+
+</html>

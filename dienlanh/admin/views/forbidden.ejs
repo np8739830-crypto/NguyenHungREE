@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/1.css?v=20260811-2">
+    <link rel="stylesheet" href="/admin/css/admin-rbac.css?v=20260811-2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="service-dashboard">
+    <div class="wrapper">
+        <%- include('partials/admin-header', { activePage }) %>
+        <main class="content-wrapper rbac-forbidden">
+            <section class="forbidden-card">
+                <span class="forbidden-card__icon"><i class="fa-solid fa-shield-halved"></i></span>
+                <p class="dashboard-eyebrow">Quyền truy cập</p>
+                <h1>Không có quyền truy cập</h1>
+                <p>Tài khoản của bạn chưa được cấp quyền để xem hoặc thực hiện thao tác này.</p>
+                <a class="rbac-button rbac-button--primary" href="/admin"><i class="fa-solid fa-arrow-left"></i> Về bảng điều khiển</a>
+            </section>
+        </main>
+    </div>
+    <script src="/js/1.js?v=20260811-2"></script>
+</body>
+</html>

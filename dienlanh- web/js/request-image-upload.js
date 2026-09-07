@@ -1,0 +1,11 @@
+(() => {
+    const MAX_IMAGES = 3, MAX_SIZE = 5 * 1024 * 1024, ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+    window.initRequestImageUpload = form => {
+        const input = form.querySelector('[data-request-images]'); if (!input) return;
+        const root = input.closest('.request-image-upload'), counter = root.querySelector('[data-image-count]'), message = root.querySelector('[data-image-message]'), preview = root.querySelector('[data-image-preview]'); let files = [];
+        const update = () => { const transfer = new DataTransfer(); files.forEach(file => transfer.items.add(file)); input.files = transfer.files; input.disabled = files.length >= MAX_IMAGES; counter.textContent = `${files.length}/${MAX_IMAGES} ảnh`; message.textContent = files.length >= MAX_IMAGES ? 'Đã đủ 3 ảnh, vui lòng xóa một ảnh nếu muốn chọn ảnh khác.' : 'JPG, JPEG, PNG hoặc WEBP · tối đa 5MB mỗi ảnh.'; };
+        const render = () => { preview.innerHTML = ''; files.forEach((file, index) => { const card = document.createElement('div'); card.className = 'request-image-upload__preview'; const image = document.createElement('img'); image.src = URL.createObjectURL(file); image.alt = `Ảnh đã chọn ${index + 1}`; image.onload = () => URL.revokeObjectURL(image.src); const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'request-image-upload__remove'; remove.setAttribute('aria-label', `Xóa ảnh ${index + 1}`); remove.innerHTML = '&times;'; remove.addEventListener('click', () => { files.splice(index, 1); render(); update(); }); card.append(image, remove); preview.appendChild(card); }); };
+        input.addEventListener('change', () => { for (const file of Array.from(input.files)) { if (files.length >= MAX_IMAGES) { message.textContent = 'Chỉ được chọn tối đa 3 ảnh.'; break; } if (!ALLOWED.includes(file.type) || !/\.(jpe?g|png|webp)$/i.test(file.name)) { message.textContent = 'Chỉ chấp nhận ảnh JPG, JPEG, PNG hoặc WEBP.'; continue; } if (file.size > MAX_SIZE) { message.textContent = `Ảnh “${file.name}” vượt quá 5MB.`; continue; } files.push(file); } render(); update(); }); update();
+    };
+    document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('form').forEach(window.initRequestImageUpload));
+})();

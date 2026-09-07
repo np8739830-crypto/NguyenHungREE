@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260829-2">
+</head>
+
+<body>
+    <% const labels = { pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', in_progress: 'Đang xử lý', completed: 'Hoàn thành', cancelled: 'Đã hủy' }; %>
+    <% const badgeClasses = { pending: 'badge-warning', confirmed: 'badge-info', in_progress: 'badge-progress', completed: 'badge-success', cancelled: 'badge-danger' }; %>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'bookings' }) %>
+        <main class="content-wrapper">
+            <section class="content-header dashboard-heading booking-page-heading">
+                <div><p class="dashboard-eyebrow">Vận hành dịch vụ</p><h1><i class="fa-solid fa-calendar-check"></i> Lịch đặt dịch vụ</h1><p class="booking-page-description"><strong><%= bookingSummary.total || 0 %></strong> lịch đặt được ghi nhận</p></div>
+            </section>
+            <% if (success_msg?.length) { %><div class="notice success"><i class="fa-solid fa-circle-check"></i><%= success_msg[0] %></div><% } %>
+            <% if (error_msg?.length) { %><div class="notice error"><i class="fa-solid fa-circle-exclamation"></i><%= error_msg[0] %></div><% } %>
+
+            <section class="booking-quick-stats" aria-label="Thống kê lịch đặt">
+                <article class="booking-stat booking-stat--total"><span><i class="fa-solid fa-receipt"></i> Tổng đơn</span><strong><%= bookingSummary.total || 0 %></strong></article>
+                <article class="booking-stat booking-stat--pending"><span><i class="fa-regular fa-clock"></i> Chờ xác nhận</span><strong><%= bookingSummary.pending || 0 %></strong></article>
+                <article class="booking-stat booking-stat--active"><span><i class="fa-solid fa-screwdriver-wrench"></i> Đang xử lý</span><strong><%= bookingSummary.in_progress || 0 %></strong></article>
+                <article class="booking-stat booking-stat--completed"><span><i class="fa-regular fa-circle-check"></i> Hoàn thành</span><strong><%= bookingSummary.completed || 0 %></strong></article>
+            </section>
+
+            <form class="booking-tools" method="get" action="/admin/bookings">
+                <label class="booking-search"><i class="fa-solid fa-magnifying-glass"></i><span class="sr-only">Tìm kiếm</span><input type="search" name="search" value="<%= searchTerm %>" placeholder="Tìm theo mã, tên, SĐT..."></label>
+                <label><span class="sr-only">Trạng thái</span><select name="status"><option value="">Tất cả trạng thái</option><% Object.entries(labels).forEach(([key, label]) => { %><option value="<%= key %>" <%= selectedStatus === key ? 'selected' : '' %>><%= label %></option><% }) %></select></label>
+                <label><span class="sr-only">Khoảng thời gian</span><select name="period"><option value="">Tất cả thời gian</option><option value="today" <%= selectedPeriod === 'today' ? 'selected' : '' %>>Hôm nay</option><option value="7days" <%= selectedPeriod === '7days' ? 'selected' : '' %>>7 ngày gần đây</option><option value="30days" <%= selectedPeriod === '30days' ? 'selected' : '' %>>30 ngày gần đây</option></select></label>
+                <button class="btn booking-filter-submit" type="submit"><i class="fa-solid fa-filter"></i><span>Lọc</span></button>
+                <a class="btn booking-refresh" href="/admin/bookings"><i class="fa-solid fa-rotate-right"></i><span>Làm mới</span></a>
+            </form>
+
+            <section class="service-admin__card booking-list-card" aria-labelledby="booking-list-title">
+                <div class="booking-list-toolbar"><div><h2 id="booking-list-title">Danh sách lịch đặt</h2><p><strong><%= bookings.length %></strong> kết quả, mới nhất hiển thị trước</p></div></div>
+                <% if (bookings.length) { %>
+                    <div class="table-responsive booking-table-wrap">
+                        <table class="table booking-list-table">
+                            <thead><tr><th>Mã yêu cầu</th><th>Khách hàng</th><th>Liên hệ</th><th>Dịch vụ / Thiết bị</th><th>Lịch hẹn</th><th>Tạo đơn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                            <tbody>
+                                <% bookings.forEach(booking => { %>
+                                    <tr>
+                                        <td data-label="Mã yêu cầu"><button class="booking-id" type="button" data-open-booking-modal="bookingDetail-<%= booking.id %>"><%= booking.request_code || `LD-${booking.id}` %></button><% if (booking.is_new) { %><span class="booking-new-label"><i class="fa-solid fa-sparkles"></i> Mới</span><% } %></td>
+                                        <td class="booking-customer" data-label="Khách hàng"><strong><%= booking.fullname %></strong><small><i class="fa-solid fa-location-dot"></i><span><%= booking.address || 'Chưa có địa chỉ' %></span></small></td>
+                                        <td class="booking-contact" data-label="Liên hệ"><a href="tel:<%= booking.phone %>"><i class="fa-solid fa-phone"></i><%= booking.phone %></a><% if (booking.email) { %><a href="mailto:<%= booking.email %>"><i class="fa-regular fa-envelope"></i><%= booking.email %></a><% } %></td>
+                                        <td class="booking-service" data-label="Dịch vụ / Thiết bị"><strong><%= booking.device_name || booking.device_type || 'Chưa xác định' %></strong><small><%= booking.service_name || booking.service_type || 'Chưa xác định' %></small></td>
+                                        <td class="booking-appointment" data-label="Lịch hẹn"><strong><%= booking.booking_date ? new Date(booking.booking_date).toLocaleDateString('vi-VN') : '—' %></strong><small><%= booking.booking_time || '—' %></small></td>
+                                        <td class="booking-created-at" data-label="Tạo đơn"><strong><%= booking.created_at ? new Date(booking.created_at).toLocaleDateString('vi-VN', { timeZone: 'UTC' }) : '—' %></strong><small><%= booking.created_at ? new Date(booking.created_at).toLocaleTimeString('vi-VN', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' }) : '' %></small></td>
+                                        <td data-label="Trạng thái"><span class="booking-status badge <%= badgeClasses[booking.status] || 'badge-info' %>"><%= labels[booking.status] || booking.status %></span></td>
+                                        <td data-label="Thao tác"><div class="booking-row-actions"><button class="btn btn-detail" type="button" title="Xem chi tiết" aria-label="Xem chi tiết <%= booking.request_code || `LD-${booking.id}` %>" data-open-booking-modal="bookingDetail-<%= booking.id %>"><i class="fa-solid fa-eye"></i><span>Chi tiết</span></button><% if (can('bookings', 'update')) { %><button class="btn btn-edit" type="button" title="Cập nhật lịch đặt" aria-label="Cập nhật <%= booking.request_code || `LD-${booking.id}` %>" data-open-booking-modal="bookingUpdate-<%= booking.id %>"><i class="fa-solid fa-pen"></i><span>Cập nhật</span></button><% } %></div></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="booking-empty-state"><i class="fa-regular fa-calendar-xmark"></i><p>Không có lịch đặt phù hợp</p><span>Hãy thử chọn một trạng thái khác.</span></div>
+                <% } %>
+            </section>
+        </main>
+        <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div><div class="float-right">Dashboard dịch vụ</div></footer>
+    </div>
+
+    <% bookings.forEach(booking => { %>
+        <div class="booking-modal" id="bookingDetail-<%= booking.id %>" hidden aria-hidden="true">
+            <div class="booking-modal__backdrop" data-close-booking-modal></div>
+            <section class="booking-modal__dialog booking-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="booking-detail-title-<%= booking.id %>">
+                <div class="booking-modal__header"><div><p class="dashboard-eyebrow">Thông tin lịch đặt</p><h2 id="booking-detail-title-<%= booking.id %>">Lịch <%= booking.request_code || `LD-${booking.id}` %></h2></div><button class="modal-close" type="button" data-close-booking-modal aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+                <div class="booking-detail-grid"><div><span>Khách hàng</span><strong><%= booking.fullname %></strong></div><div><span>Điện thoại</span><strong><%= booking.phone %></strong></div><div><span>Dịch vụ / thiết bị</span><strong><%= booking.service_type || 'Chưa xác định' %><% if (booking.device_type) { %> — <%= booking.device_type %><% } %></strong></div><div><span>Ngày và giờ hẹn</span><strong><%= booking.booking_date ? new Date(booking.booking_date).toLocaleDateString('vi-VN') : '—' %> · <%= booking.booking_time || '—' %></strong></div><div><span>Địa chỉ</span><strong><%= booking.address || 'Chưa có địa chỉ' %></strong></div><div><span>Trạng thái</span><strong><span class="badge <%= badgeClasses[booking.status] || 'badge-info' %>"><%= labels[booking.status] || booking.status %></span></strong></div><div><span>Kỹ thuật viên</span><strong><%= booking.technician_name || 'Chưa phân công' %></strong></div><div><span>Chi phí dự kiến</span><strong><%= booking.estimated_cost ? `${Number(booking.estimated_cost).toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật' %></strong></div><div><span>Chi phí thực tế</span><strong><%= booking.actual_cost != null ? `${Number(booking.actual_cost).toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật' %></strong></div><div class="full"><span>Mô tả tình trạng thiết bị</span><strong><%= booking.description || 'Chưa có mô tả' %></strong></div><div class="full"><span>Ghi chú kỹ thuật</span><strong><%= booking.work_note || 'Chưa có ghi chú' %></strong></div></div>
+                <% if (booking.images?.length) { %><div class="request-image-gallery"><% booking.images.forEach((image, index) => { %><a href="/attachments/<%= image.id %>" data-booking-image aria-label="Xem ảnh thiết bị <%= index + 1 %>"><img src="/attachments/<%= image.id %>" alt="Ảnh thiết bị <%= index + 1 %>"></a><% }) %></div><% } %>
+                <div class="service-admin__actions"><button class="btn btn-secondary" type="button" data-close-booking-modal>Đóng</button><% if (can('bookings', 'update')) { %><button class="btn btn-primary" type="button" data-close-booking-modal data-open-booking-modal="bookingUpdate-<%= booking.id %>"><i class="fa-solid fa-pen"></i> Cập nhật lịch</button><% } %></div>
+            </section>
+        </div>
+
+        <% if (can('bookings', 'update')) { %>
+        <div class="booking-modal" id="bookingUpdate-<%= booking.id %>" hidden aria-hidden="true">
+            <div class="booking-modal__backdrop" data-close-booking-modal></div>
+            <section class="booking-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="booking-update-title-<%= booking.id %>">
+                <div class="booking-modal__header"><div><p class="dashboard-eyebrow">Cập nhật và phân công</p><h2 id="booking-update-title-<%= booking.id %>">Lịch LD-<%= booking.id %> · <%= booking.fullname %></h2><p class="booking-modal__subtext"><%= booking.service_display_name %> · <%= booking.phone %></p></div><button class="modal-close" type="button" data-close-booking-modal aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+                <form class="booking-update-form service-form" method="post" action="/admin/bookings/<%= booking.id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="service-admin__grid">
+                        <div class="form-field"><label for="status-<%= booking.id %>">Trạng thái</label><select
+    id="status-<%= booking.id %>"
+    name="status"
+    required
+>
+    <option value="pending" <%= booking.status === 'pending' ? 'selected' : '' %>>
+        Chờ xác nhận
+    </option>
+
+    <option value="confirmed" <%= booking.status === 'confirmed' ? 'selected' : '' %>>
+        Đã xác nhận
+    </option>
+
+    <option value="in_progress" <%= booking.status === 'in_progress' ? 'selected' : '' %>>
+        Đang thực hiện
+    </option>
+
+    <option value="completed" <%= booking.status === 'completed' ? 'selected' : '' %>>
+        Hoàn thành
+    </option>
+
+    <option value="cancelled" <%= booking.status === 'cancelled' ? 'selected' : '' %>>
+        Đã hủy
+    </option>
+</select></div>
+                        <div class="form-field"><label for="technician-<%= booking.id %>">Kỹ thuật viên phụ trách</label><select id="technician-<%= booking.id %>" name="technician_id"><option value="">Chưa phân công</option><% technicians.forEach(technician => { %><option value="<%= technician.id %>" <%= booking.technician_id === technician.id ? 'selected' : '' %>><%= technician.full_name %> — <%= technician.specialty || 'Kỹ thuật viên' %></option><% }) %></select></div>
+                        <div class="form-field"><label for="scheduled-date-<%= booking.id %>">Ngày thực hiện</label><input id="scheduled-date-<%= booking.id %>" type="date" name="scheduled_date" value="<%= booking.scheduled_date_input %>"></div>
+                        <div class="form-field"><label for="scheduled-time-<%= booking.id %>">Giờ thực hiện</label><input id="scheduled-time-<%= booking.id %>" name="scheduled_time" placeholder="Ví dụ: 07:45 - 09:45" value="<%= booking.scheduled_time || '' %>"></div>
+                        <div class="form-field full"><label for="work-note-<%= booking.id %>">Ghi chú kỹ thuật</label><textarea id="work-note-<%= booking.id %>" name="work_note" placeholder="Ghi chú công việc"><%= booking.work_note || '' %></textarea></div>
+                        <div class="form-field"><label for="estimated-cost-<%= booking.id %>">Chi phí dự kiến</label><input id="estimated-cost-<%= booking.id %>" name="estimated_cost" type="number" min="0" placeholder="Nhập chi phí bằng VNĐ" value="<%= booking.estimated_cost ?? '' %>"><small class="booking-cost-hint" data-booking-cost-hint></small></div>
+                        <div class="form-field"><label for="actual-cost-<%= booking.id %>">Chi phí thực tế</label><input id="actual-cost-<%= booking.id %>" name="actual_cost" type="number" min="0" placeholder="Doanh thu thực tế của dịch vụ" value="<%= booking.actual_cost ?? '' %>"></div>
+                    </div>
+                    <div class="service-admin__actions"><button class="btn btn-secondary" type="button" data-close-booking-modal>Hủy</button><button class="btn btn-primary" type="submit" data-booking-save><i class="fa-solid fa-floppy-disk"></i><span>Lưu / phân công</span></button></div>
+                </form>
+            </section>
+        </div>
+        <% } %>
+    <% }) %>
+    <script src="/admin/js/1.js?v=20260829-2"></script>
+</body>
+</html>
+

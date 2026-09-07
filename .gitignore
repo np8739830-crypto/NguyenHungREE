@@ -1,0 +1,42 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*credentials*.json
+*service-account*.json
+secrets/
+
+# Dependencies
+node_modules/
+
+# Runtime output
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+tmp/
+temp/
+.cache/
+coverage/
+
+# User-generated/private files (use persistent storage in production)
+dienlanh/public/uploads/*
+!dienlanh/public/uploads/.gitkeep
+dienlanh/private/
+dienlanh/data/*.sqlite
+dienlanh/data/*.sqlite-*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp

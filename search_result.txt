@@ -1,0 +1,76 @@
+﻿100:                     <div class="section__line">
+101:                         <span class="section__line-red"></span>
+102:                         <span class="section__line-blue"></span>
+103:                     </div>
+104:                     <p class="section__desc">Điền thông tin bên dưới, đội ngũ kỹ thuật viên của chúng tôi sẽ đến tận nơi kiểm tra và sửa chữa trong thời gian sớm nhất.</p>
+105:                 </div>
+106: 
+107:                 <div class="booking-form-wrapper" id="bookingFormWrapper">
+108:                     <form id="bookingForm" action="/booking" method="post" novalidate>
+109:                         <div class="form-row">
+110:                             <div class="form-group">
+111:                                 <label for="fullname">Họ và tên <span class="required">*</span></label>
+112:                                 <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Nhập họ tên của bạn" required>
+113:                                 <span class="form-error">Vui lòng nhập họ tên</span>
+114:                             </div>
+110:                             <div class="form-group">
+116:                                 <label for="booking-phone">Số điện thoại <span class="required">*</span></label>
+117:                                 <input type="tel" id="booking-phone" name="phone" class="form-control" placeholder="Nhập số điện thoại" required>
+118:                                 <span class="form-error">Vui lòng nhập số điện thoại hợp lệ</span>
+114:                             </div>
+120:                         </div>
+106: 
+122:                         <div class="form-group">
+123:                             <label for="address">Địa chỉ <span class="required">*</span></label>
+124:                             <input type="text" id="address" name="address" class="form-control" placeholder="Nhập địa chỉ (số nhà, đường, phường, quận)" required>
+125:                             <span class="form-error">Vui lòng nhập địa chỉ</span>
+120:                         </div>
+106: 
+109:                         <div class="form-row">
+110:                             <div class="form-group">
+130:                                 <label for="device-type">Loại thiết bị <span class="required">*</span></label>
+131:                                 <select id="device-type" name="device_type" class="form-control" required>
+132:                                     <option value="">Chọn loại thiết bị</option>
+133:                                     <option value="may-lanh">Máy lạnh</option>
+134:                                     <option value="tu-lanh">Tủ lạnh</option>
+135:                                     <option value="may-giat">Máy giặt</option>
+136:                                     <option value="may-nuoc-nong">Máy nước nóng</option>
+137:                                     <option value="khac">Thiết bị khác</option>
+138:                                 </select>
+139:                                 <span class="form-error">Vui lòng chọn loại thiết bị</span>
+114:                             </div>
+110:                             <div class="form-group">
+142:                                 <label for="booking-service">Dịch vụ cần sửa <span class="required">*</span></label>
+143:                                 <select id="booking-service" name="service_type" class="form-control" required>
+144:                                     <option value="">Chọn dịch vụ</option>
+145:                                     <option value="su-may-lanh">Sửa máy lạnh</option>
+146:                                     <option value="ve-sinh-may-lanh">Vệ sinh máy lạnh</option>
+147:                                     <option value="lap-dat-may-lanh">Lắp đặt máy lạnh</option>
+148:                                     <option value="su-tu-lanh">Sửa tủ lạnh</option>
+149:                                     <option value="su-may-giat">Sửa máy giặt</option>
+150:                                     <option value="su-may-nuoc-nong">Sửa máy nước nóng</option>
+138:                                 </select>
+152:                                 <span class="form-error">Vui lòng chọn dịch vụ</span>
+114:                             </div>
+120:                         </div>
+106: 
+122:                         <div class="form-group">
+157:                             <label for="description">Mô tả tình trạng thiết bị <span class="required">*</span></label>
+158:                             <textarea id="description" name="description" class="form-control" placeholder="Vui lòng mô tả chi tiết tình trạng thiết bị, lỗi gặp phải..." required></textarea>
+159:                             <span class="form-error">Vui lòng mô tả tình trạng thiết bị</span>
+120:                         </div>
+106: 
+162:                         <div class="form-submit">
+163:                             <button type="submit" class="btn btn--red btn--large" style="width:100%;">
+164:                                 <i class="fas fa-paper-plane"></i> GỬI YÊU CẦU
+165:                             </button>
+120:                         </div>
+106: 
+168:                         <p style="text-align:center;font-size:0.82rem;color:var(--color-text-light);margin-top:16px;">
+169:                             <i class="fas fa-shield-alt" style="color:var(--color-blue);"></i> Thông tin của bạn được bảo mật tuyệt đối. Chúng tôi sẽ liên hệ xác nhận trong vòng 30 phút.
+170:                         </p>
+171:                     </form>
+106: 
+173:                     <div class="form-success" id="bookingSuccess">
+174:                         <div class="form-success__icon">
+175:                             <i class="fas fa-check-circle"></i>

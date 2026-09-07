@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+    <link rel="stylesheet" href="/admin/css/admin-rbac.css?v=20260811-2">
+</head>
+<body>
+<div class="wrapper service-dashboard">
+    <%- include('partials/admin-header', { activePage: 'accounts' }) %>
+    <main class="content-wrapper rbac-page">
+        <section class="content-header dashboard-heading rbac-heading">
+            <div>
+                <p class="dashboard-eyebrow">Phân quyền hệ thống</p>
+                <h1><i class="fa-solid fa-user-lock"></i> Quản lý tài khoản</h1>
+                <p class="rbac-subtitle">Quản lý tài khoản đăng nhập và vai trò trong Admin Dashboard.</p>
+            </div>
+            <% if (can('accounts', 'create')) { %>
+                <button class="rbac-button rbac-button--primary" type="button" data-modal-open="createAccountModal">
+                    <i class="fa-solid fa-plus"></i> Thêm tài khoản
+                </button>
+            <% } %>
+        </section>
+
+        <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %>
+        <% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
+
+        <section class="rbac-card">
+            <div class="rbac-card__header">
+                <div><h2>Danh sách tài khoản</h2><p><strong><%= accounts.length %></strong> tài khoản quản trị</p></div>
+                <label class="rbac-search"><i class="fa-solid fa-magnifying-glass"></i><input id="accountSearch" type="search" placeholder="Tìm tài khoản, họ tên, email..."></label>
+            </div>
+            <div class="rbac-table-wrap">
+                <table class="rbac-table" id="accountTable">
+                    <thead><tr><th>Tài khoản</th><th>Họ tên</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                    <tbody>
+                    <% accounts.forEach(account => { const protectedTarget = account.role_slug === 'administrator' && adminAuthorization.roleSlug !== 'administrator'; %>
+                        <tr data-search="<%= `${account.username} ${account.name} ${account.email}`.toLowerCase() %>">
+                            <td><div class="rbac-identity"><span class="rbac-avatar"><%= account.name.charAt(0).toUpperCase() %></span><div><strong><%= account.username %></strong><small><%= account.email %></small></div></div></td>
+                            <td><strong><%= account.name %></strong><small class="rbac-date">Tạo ngày <%= new Date(account.created_at).toLocaleDateString('vi-VN') %></small></td>
+                            <td><span class="role-pill role-pill--<%= account.role_slug %>"><i class="fa-solid <%= account.role_slug === 'administrator' ? 'fa-shield-halved' : account.role_slug === 'manager' ? 'fa-user-tie' : 'fa-user' %>"></i><%= account.role_name %></span></td>
+                            <td><span class="status-pill status-pill--<%= account.status %>"><i class="fa-solid fa-circle"></i><%= account.status === 'active' ? 'Hoạt động' : 'Đã khóa' %></span></td>
+                            <td>
+                                <div class="rbac-actions">
+                                    <% if (can('accounts', 'update') && !protectedTarget) { %>
+                                        <button class="icon-button" type="button" title="Sửa tài khoản" data-edit-account
+                                            data-id="<%= account.id %>" data-username="<%= account.username %>" data-name="<%= account.name %>"
+                                            data-email="<%= account.email %>" data-role="<%= account.role_id %>" data-status="<%= account.status %>"><i class="fa-solid fa-pen"></i></button>
+                                        <button class="icon-button icon-button--key" type="button" title="Đổi mật khẩu" data-password-account data-id="<%= account.id %>" data-username="<%= account.username %>"><i class="fa-solid fa-key"></i></button>
+                                        <% if (account.id !== adminAuthorization.id) { %>
+                                            <form method="post" action="/admin/access/accounts/<%= account.id %>/status">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                <input type="hidden" name="status" value="<%= account.status === 'active' ? 'inactive' : 'active' %>">
+                                                <button class="icon-button <%= account.status === 'active' ? 'icon-button--lock' : 'icon-button--unlock' %>" type="submit" title="<%= account.status === 'active' ? 'Khóa tài khoản' : 'Mở khóa tài khoản' %>"><i class="fa-solid <%= account.status === 'active' ? 'fa-lock' : 'fa-lock-open' %>"></i></button>
+                                            </form>
+                                        <% } %>
+                                    <% } %>
+                                    <% if (can('accounts', 'delete') && !protectedTarget && account.id !== adminAuthorization.id) { %>
+                                        <form method="post" action="/admin/access/accounts/<%= account.id %>/delete" onsubmit="return confirm('Xóa tài khoản <%= account.username %>? Hành động này không thể hoàn tác.');">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <button class="icon-button icon-button--delete" type="submit" title="Xóa tài khoản"><i class="fa-solid fa-trash-can"></i></button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="rbac-empty" id="accountEmpty" hidden><i class="fa-solid fa-user-slash"></i><p>Không tìm thấy tài khoản phù hợp.</p></div>
+        </section>
+    </main>
+    <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div></footer>
+</div>
+
+<% if (can('accounts', 'create')) { %>
+<div class="rbac-modal" id="createAccountModal" aria-hidden="true">
+    <div class="rbac-modal__backdrop" data-modal-close></div>
+    <section class="rbac-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="create-account-title">
+        <header><div><p class="dashboard-eyebrow">Tài khoản mới</p><h2 id="create-account-title">Thêm tài khoản</h2></div><button type="button" class="modal-x" data-modal-close aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></header>
+        <form method="post" action="/admin/access/accounts" class="rbac-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div><label>Tên đăng nhập *</label><input name="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._-]+" required autocomplete="off"></div>
+            <div><label>Họ tên *</label><input name="name" maxlength="100" required></div>
+            <div><label>Email *</label><input name="email" type="email" maxlength="100" required></div>
+            <div><label>Vai trò *</label><select name="role_id" required><% roles.filter(role => role.slug !== 'administrator' || adminAuthorization.roleSlug === 'administrator').forEach(role => { %><option value="<%= role.id %>"><%= role.name %></option><% }) %></select></div>
+            <div><label>Mật khẩu *</label><input name="password" type="password" minlength="8" required autocomplete="new-password"></div>
+            <div><label>Nhập lại mật khẩu *</label><input name="password_confirmation" type="password" minlength="8" required autocomplete="new-password"></div>
+            <div><label>Trạng thái</label><select name="status"><option value="active">Hoạt động</option><option value="inactive">Khóa</option></select></div>
+            <footer><button class="rbac-button rbac-button--secondary" type="button" data-modal-close>Hủy</button><button class="rbac-button rbac-button--primary" type="submit"><i class="fa-solid fa-user-plus"></i> Tạo tài khoản</button></footer>
+        </form>
+    </section>
+</div>
+<% } %>
+
+<% if (can('accounts', 'update')) { %>
+<div class="rbac-modal" id="editAccountModal" aria-hidden="true"><div class="rbac-modal__backdrop" data-modal-close></div><section class="rbac-modal__dialog" role="dialog" aria-modal="true"><header><div><p class="dashboard-eyebrow">Cập nhật thông tin</p><h2>Sửa tài khoản</h2></div><button type="button" class="modal-x" data-modal-close><i class="fa-solid fa-xmark"></i></button></header><form method="post" class="rbac-form" id="editAccountForm"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><div><label>Tên đăng nhập *</label><input name="username" required pattern="[A-Za-z0-9._-]+"></div><div><label>Họ tên *</label><input name="name" required></div><div><label>Email *</label><input name="email" type="email" required></div><div><label>Vai trò *</label><select name="role_id"><% roles.filter(role => role.slug !== 'administrator' || adminAuthorization.roleSlug === 'administrator').forEach(role => { %><option value="<%= role.id %>"><%= role.name %></option><% }) %></select></div><div><label>Trạng thái</label><select name="status"><option value="active">Hoạt động</option><option value="inactive">Khóa</option></select></div><footer><button class="rbac-button rbac-button--secondary" type="button" data-modal-close>Hủy</button><button class="rbac-button rbac-button--primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button></footer></form></section></div>
+<div class="rbac-modal" id="passwordAccountModal" aria-hidden="true"><div class="rbac-modal__backdrop" data-modal-close></div><section class="rbac-modal__dialog rbac-modal__dialog--small" role="dialog" aria-modal="true"><header><div><p class="dashboard-eyebrow">Bảo mật</p><h2>Đổi mật khẩu</h2><p id="passwordAccountName"></p></div><button type="button" class="modal-x" data-modal-close><i class="fa-solid fa-xmark"></i></button></header><form method="post" class="rbac-form rbac-form--single" id="passwordAccountForm"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><div><label>Mật khẩu mới *</label><input name="password" type="password" minlength="8" required autocomplete="new-password"></div><div><label>Nhập lại mật khẩu *</label><input name="password_confirmation" type="password" minlength="8" required autocomplete="new-password"></div><footer><button class="rbac-button rbac-button--secondary" type="button" data-modal-close>Hủy</button><button class="rbac-button rbac-button--primary" type="submit"><i class="fa-solid fa-key"></i> Đổi mật khẩu</button></footer></form></section></div>
+<% } %>
+
+<script src="/admin/js/1.js?v=20260811-2"></script>
+<script>
+(() => {
+    const openModal = id => { const modal = document.getElementById(id); if (!modal) return; modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false'); document.body.classList.add('modal-open'); };
+    const closeModal = modal => { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); document.body.classList.remove('modal-open'); };
+    document.querySelectorAll('[data-modal-open]').forEach(button => button.addEventListener('click', () => openModal(button.dataset.modalOpen)));
+    document.querySelectorAll('[data-modal-close]').forEach(button => button.addEventListener('click', () => closeModal(button.closest('.rbac-modal'))));
+    document.querySelectorAll('[data-edit-account]').forEach(button => button.addEventListener('click', () => {
+        const form = document.getElementById('editAccountForm');
+        form.action = `/admin/access/accounts/${button.dataset.id}`;
+        ['username', 'name', 'email', 'status'].forEach(name => { form.elements[name].value = button.dataset[name]; });
+        form.elements.role_id.value = button.dataset.role;
+        openModal('editAccountModal');
+    }));
+    document.querySelectorAll('[data-password-account]').forEach(button => button.addEventListener('click', () => {
+        document.getElementById('passwordAccountForm').action = `/admin/access/accounts/${button.dataset.id}/password`;
+        document.getElementById('passwordAccountName').textContent = `Tài khoản: ${button.dataset.username}`;
+        openModal('passwordAccountModal');
+    }));
+    const search = document.getElementById('accountSearch');
+    search?.addEventListener('input', () => {
+        let visible = 0;
+        document.querySelectorAll('#accountTable tbody tr').forEach(row => { const show = row.dataset.search.includes(search.value.trim().toLowerCase()); row.hidden = !show; if (show) visible++; });
+        document.getElementById('accountEmpty').hidden = visible !== 0;
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') document.querySelectorAll('.rbac-modal.is-open').forEach(closeModal); });
+})();
+</script>
+</body>
+</html>

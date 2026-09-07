@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260811-2">
+</head>
+
+<body>
+    <div class="wrapper service-dashboard">
+        <%- include('partials/admin-header', { activePage: 'products' }) %>
+        <main class="content-wrapper">
+            <section class="content-header dashboard-heading">
+                <div>
+                    <p class="dashboard-eyebrow">Vận hành dịch vụ</p>
+                    <h1><i class="fa-solid fa-screwdriver-wrench"></i> Quản là dịch vụ</h1>
+                </div>
+                <a class="dashboard-primary-action" href="/services" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem website</a>
+            </section>
+
+            <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %>
+            <% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
+
+            <% if (can('services', 'create')) { %>
+            <section class="service-admin__card service-create-card" aria-labelledby="create-service-title">
+                <div class="service-card-heading">
+                    <div><span class="service-card-heading__icon"><i class="fa-solid fa-circle-plus"></i></span><div><h2 id="create-service-title">Thêm dịch vụ</h2><p>Thiết lập thông tin để dịch vụ hiển thị đúng trên website.</p></div></div>
+                </div>
+                <form method="post" action="/admin/products" id="createServiceForm" class="service-form" enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="service-admin__grid">
+                        <div class="form-field"><label for="new-name">Tên dịch vụ <span aria-hidden="true">*</span></label><input id="new-name" name="name" required></div>
+                        <div class="form-field"><label for="new-slug">Slug <span aria-hidden="true">*</span></label><input id="new-slug" name="slug" placeholder="sua-may-lanh" pattern="[a-z0-9]+(-[a-z0-9]+)*" required><small>Chỉ dùng chữ thường, số và dấu gạch ngang.</small></div>
+                        <div class="form-field"><label for="new-icon">Biểu tượng Font Awesome</label><input id="new-icon" name="icon" placeholder="fa-snowflake"><small>Ví dụ: <code>fa-snowflake</code> hoặc <code>fa-wind</code>.</small></div>
+                        <div class="form-field"><label for="new-price">Khoảng giá</label><input id="new-price" name="price_range" placeholder="200.000 - 2.000.000"></div>
+                        <div class="form-field"><label for="new-image">Chọn ảnh từ máy tính</label><input id="new-image" name="service_image" type="file" accept="image/jpeg,image/png,image/webp" data-image-input="create"><small>Ảnh JPG, PNG hoặc WebP, tối đa 5 MB.</small></div>
+                        <div class="form-field form-field--preview"><label>Ảnh xem trước</label><div class="service-image-preview" data-image-preview="create"><i class="fa-regular fa-image"></i><span>Chưa có ảnh</span><img alt="Xem trước ảnh dịch vụ" hidden></div></div>
+                        <div class="form-field"><label for="new-order">Thứ tự hiển thị</label><input id="new-order" name="sort_order" type="number" min="0" value="0"></div>
+                        <div class="form-field"><label for="new-status">Trạng thái</label><select id="new-status" name="status"><option value="active">Hiển thị</option><option value="inactive">Ẩn</option></select></div>
+                        <div class="form-field full"><label for="new-description">Mô tả ngắn <span aria-hidden="true">*</span></label><textarea id="new-description" name="description" required></textarea></div>
+                        <div class="form-field full"><label for="new-full-description">Mô tả chi tiết</label><textarea id="new-full-description" name="full_description"></textarea></div>
+                    </div>
+                    <div class="service-admin__actions"><button class="btn btn-secondary" type="reset"><i class="fa-solid fa-rotate-left"></i> Làm mới</button><button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Thêm dịch vụ</button></div>
+                </form>
+            </section>
+            <% } %>
+
+            <section class="service-admin__card service-list-card" aria-labelledby="service-list-title">
+                <div class="service-list-toolbar">
+                    <div><h2 id="service-list-title">Danh sách dịch vụ</h2><p><strong><%= services.length %></strong> dịch vụ đang được quản lý</p></div>
+                    <label class="service-search" for="serviceSearch"><i class="fa-solid fa-magnifying-glass"></i><span class="sr-only">Tìm theo tên dịch vụ</span><input id="serviceSearch" type="search" placeholder="Tìm theo tên dịch vụ"></label>
+                </div>
+                <div class="table-responsive service-table-wrap">
+                    <table class="table service-list-table">
+                        <thead><tr><th>Hình ảnh</th><th>Tên dịch vụ</th><th>Slug</th><th>Khoảng giá</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                        <tbody id="serviceListBody">
+                            <% const serviceImageBySlug = {
+                                'sua-may-lanh': 'dich-vu/suamaylanh.png',
+                                've-sinh-may-lanh': 'dich-vu/vsmaylanh.png',
+                                'lap-dat-may-lanh': 'dich-vu/ldmaylanh.png',
+                                'sua-tu-lanh': 'dich-vu/suatulanh.png',
+                                'sua-may-giat': 'dich-vu/suamaygiat.png',
+                                'sua-may-nuoc-nong': 'dich-vu/suamaynong.png'
+                            }; %>
+                            <% services.forEach(service => { %>
+                                <tr data-service-name="<%= service.name.toLowerCase() %>" data-service='<%- JSON.stringify({ id: service.id, name: service.name, slug: service.slug, icon: service.icon || "", price_range: service.price_range || "", image: service.image || "", sort_order: service.sort_order || 0, status: service.status, description: service.description, full_description: service.full_description || "" }).replace(/'/g, "&#39;") %>'>
+                                    <% const legacyServiceImages = ['suamaylanh.png', 'vsmaylanh.png', 'ldmaylanh.png', 'suatulanh.png', 'suamaygiat.png', 'suamaynong.png'];
+                                       const storedServiceImage = service.image || '';
+                                       const serviceImage = legacyServiceImages.includes(storedServiceImage)
+                                           ? `dich-vu/${storedServiceImage}`
+                                           : storedServiceImage || serviceImageBySlug[service.slug] || 'logo.png';
+                                       const serviceImageUrl = serviceImage.startsWith('/') || serviceImage.startsWith('http')
+                                           ? serviceImage
+                                           : `/images/${serviceImage}`; %>
+                                    <td><img src="<%= serviceImageUrl %>" alt="<%= service.name %>" class="product-thumb" onerror="this.onerror=null;this.src='/images/logo.png';"></td>
+                                    <td class="product-name"><%= service.name %></td>
+                                    <td><code><%= service.slug %></code></td>
+                                    <td class="text-price"><%= service.price_range || 'Liên hệ' %></td>
+                                    <td><%= service.sort_order || 0 %></td>
+                                    <td><span class="badge <%= service.status === 'active' ? 'badge-success' : 'badge-muted' %>"><%= service.status === 'active' ? 'Hiển thị' : 'Ẩn' %></span></td>
+                                    <td><div class="service-row-actions"><% if (can('services', 'update')) { %><button class="btn btn-edit" type="button" data-edit-service><i class="fa-solid fa-pen"></i><span>Chỉnh sửa</span></button><% } %><% if (can('services', 'delete')) { %><form method="post" action="/admin/products/<%= service.id %>/delete" class="service-delete-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button></form><% } %><% if (!can('services', 'update') && !can('services', 'delete')) { %><span>—</span><% } %></div></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="service-empty-state" id="serviceEmptyState" hidden>Không tìm thấy dịch vụ phù hợp.</p>
+            </section>
+        </main>
+
+        <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị dịch vụ điện lạnh.</div><div class="float-right">Dashboard dịch vụ</div></footer>
+    </div>
+
+    <% if (can('services', 'update')) { %>
+    <div class="service-modal" id="serviceEditModal" hidden aria-hidden="true">
+        <div class="service-modal__backdrop" data-close-service-modal></div>
+        <section class="service-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="edit-service-title">
+            <div class="service-modal__header"><div><p class="dashboard-eyebrow">Cập nhật dịch vụ</p><h2 id="edit-service-title">Chỉnh sửa dịch vụ</h2></div><button class="modal-close" type="button" data-close-service-modal aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+            <form method="post" action="/admin/products" id="editServiceForm" class="service-form" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="service-admin__grid">
+                    <div class="form-field"><label for="edit-name">Tên dịch vụ <span aria-hidden="true">*</span></label><input id="edit-name" name="name" required></div>
+                    <div class="form-field"><label for="edit-slug">Slug <span aria-hidden="true">*</span></label><input id="edit-slug" name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" required><small>Chỉ dùng chữ thường, số và dấu gạch ngang.</small></div>
+                    <div class="form-field"><label for="edit-icon">Biểu tượng Font Awesome</label><input id="edit-icon" name="icon" placeholder="fa-snowflake"><small>Ví dụ: <code>fa-snowflake</code>.</small></div>
+                    <div class="form-field"><label for="edit-price">Khoảng giá</label><input id="edit-price" name="price_range"></div>
+                    <div class="form-field"><label for="edit-image">Chọn ảnh mới từ máy tính</label><input id="edit-image" name="service_image" type="file" accept="image/jpeg,image/png,image/webp" data-image-input="edit"><input type="hidden" name="current_image"><small>Không chọn ảnh mới để giữ nguyên ảnh hiện tại. Tối đa 5 MB.</small></div>
+                    <div class="form-field form-field--preview"><label>Ảnh xem trước</label><div class="service-image-preview" data-image-preview="edit"><i class="fa-regular fa-image"></i><span>Chưa có ảnh</span><img alt="Xem trước ảnh dịch vụ" hidden></div></div>
+                    <div class="form-field"><label for="edit-order">Thứ tự hiển thị</label><input id="edit-order" name="sort_order" type="number" min="0"></div>
+                    <div class="form-field"><label for="edit-status">Trạng thái</label><select id="edit-status" name="status"><option value="active">Hiển thị</option><option value="inactive">Ẩn</option></select></div>
+                    <div class="form-field full"><label for="edit-description">Mô tả ngắn <span aria-hidden="true">*</span></label><textarea id="edit-description" name="description" required></textarea></div>
+                    <div class="form-field full"><label for="edit-full-description">Mô tả chi tiết</label><textarea id="edit-full-description" name="full_description"></textarea></div>
+                </div>
+                <div class="service-admin__actions"><button class="btn btn-secondary" type="button" data-close-service-modal>Hủy</button><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button></div>
+            </form>
+        </section>
+    </div>
+    <% } %>
+    <script src="/admin/js/1.js?v=20260811-2"></script>
+</body>
+</html>
+
