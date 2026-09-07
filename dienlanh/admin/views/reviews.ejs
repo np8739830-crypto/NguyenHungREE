@@ -53,6 +53,11 @@
                             </div>
                             <div class="review-admin-stars" aria-label="<%= review.rating %> trên 5 sao"><% for (let star = 1; star <= 5; star += 1) { %><i class="<%= star <= review.rating ? 'fa-solid' : 'fa-regular' %> fa-star"></i><% } %></div>
                             <p class="review-admin-content"><%= review.content %></p>
+                            <% if (review.technician_name) { %>
+                                <div class="review-admin-meta"><span><i class="fa-solid fa-user-gear"></i> Kỹ thuật viên: <strong><%= review.technician_name %></strong></span><span><i class="fa-solid fa-receipt"></i> Đơn: <%= review.request_code || ('#' + review.booking_id) %></span></div>
+                                <div class="review-admin-meta"><span>Thái độ: <%= review.attitude_rating %>/5</span><span>Đúng giờ: <%= review.punctuality_rating %>/5</span><span>Tay nghề: <%= review.technical_rating %>/5</span><span>Giải thích: <%= review.explanation_rating %>/5</span><span>Vệ sinh: <%= review.cleanliness_rating %>/5</span><span>Giới thiệu: <%= review.is_recommended ? 'Có' : 'Không' %></span></div>
+                                <p class="notice"><i class="fa-solid fa-circle-info"></i> Đánh giá chỉ dùng để quản lý chất lượng, không ảnh hưởng lương, thưởng hoặc quyền lợi kỹ thuật viên.</p>
+                            <% } %>
                             <div class="review-admin-meta"><span><i class="fa-solid fa-screwdriver-wrench"></i> <%= review.service_name || 'Không chọn dịch vụ' %></span><span><i class="fa-regular fa-clock"></i> <%= new Date(review.created_at).toLocaleString('vi-VN', { timeZone: 'UTC' }) %></span></div>
                         </div>
                         <div class="review-admin-actions">

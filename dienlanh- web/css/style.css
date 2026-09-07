@@ -5592,6 +5592,23 @@
     .history-empty-row { display: block; }
     .history-empty-row td { display: block; }
 }
+
+/* Technician reviews are quality feedback only and never participate in payroll. */
+.technician-review-button { display: block; margin-top: .45rem; border-color: #f5b301; color: #8a6200; }
+.technician-review-done { display: block; margin-top: .45rem; color: #16803a; font-weight: 700; }
+.technician-review-dialog { width: min(680px, calc(100% - 2rem)); max-height: 90vh; padding: 0; border: 0; border-radius: 18px; box-shadow: 0 24px 80px rgba(0,0,0,.28); }
+.technician-review-dialog::backdrop { background: rgba(9,18,38,.68); }
+.technician-review-form { position: relative; display: grid; gap: 1rem; padding: 1.5rem; }
+.technician-review-close { position: absolute; top: .7rem; right: .9rem; border: 0; background: none; font-size: 2rem; cursor: pointer; }
+.technician-review-policy { padding: .8rem 1rem; border-radius: 10px; background: #eef7ff; color: #174b78; }
+.technician-review-rating { margin: .65rem 0; padding: .75rem; border: 1px solid #dce2ea; border-radius: 10px; }
+.technician-review-rating legend { padding: 0 .35rem; font-weight: 700; }
+.technician-review-rating div { display: flex; flex-wrap: wrap; gap: .45rem; }
+.technician-review-rating input { position: absolute; opacity: 0; }
+.technician-review-rating span { display: inline-block; padding: .45rem .65rem; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
+.technician-review-rating input:checked + span { border-color: #f5b301; background: #fff6d6; color: #8a6200; font-weight: 700; }
+.technician-review-form textarea { width: 100%; margin-top: .4rem; padding: .75rem; border: 1px solid #ccd3dc; border-radius: 9px; resize: vertical; }
+.technician-review-recommend { display: flex; gap: .55rem; align-items: center; }
 @media (max-width: 768px) {
     .header__user { gap: 8px; margin-left: 0; }
     .header__user-name { display: block; max-width: 74px; font-size: .78rem; }

@@ -25,6 +25,7 @@ tmp/
 temp/
 .cache/
 coverage/
+tools/
 
 # User-generated/private files (use persistent storage in production)
 dienlanh/public/uploads/*

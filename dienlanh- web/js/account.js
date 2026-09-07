@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const friendlySubject = value => contactSubjectLabels[value] || String(value || 'Khác').replace(/-/g, ' ').replace(/\b\p{L}/gu, letter => letter.toLocaleUpperCase('vi-VN'));
     const compactText = (value, length = 58) => String(value || '').length > length ? `${String(value).slice(0, length).trim()}…` : String(value || '—');
 
-    function renderHistory(bookings, contacts) {
+    function renderHistory(bookings, contacts, csrfToken) {
         const page = document.getElementById('bookingHistoryPage');
         if (!page) return;
         bookings.forEach(booking => {
@@ -152,6 +152,50 @@ document.addEventListener('DOMContentLoaded', () => {
             <section class="account-card history-card"><div class="account-card__head"><div class="history-heading-icon history-heading-icon--booking"><i class="fas fa-calendar-check"></i></div><div><h2>Lịch đặt của bạn</h2><p>${bookings.length} lịch đặt</p></div></div><div class="account-table-wrap"><table class="account-table history-table"><thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Thời gian đặt</th><th>Dịch vụ / Thiết bị</th><th>Lịch hẹn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>${bookingRows}</tbody></table></div><div id="bookingDetail" class="booking-detail" hidden></div></section>
             <section class="account-card history-card"><div class="account-card__head"><div class="history-heading-icon history-heading-icon--contact"><i class="fas fa-envelope"></i></div><div><h2>Lịch sử liên hệ</h2><p>${contacts.length} liên hệ</p></div></div><div class="account-table-wrap"><table class="account-table history-table"><thead><tr><th>Mã liên hệ</th><th>Ngày gửi</th><th>Thời gian gửi</th><th>Chủ đề</th><th>Nội dung</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>${contactRows}</tbody></table></div><div id="contactDetail" class="booking-detail" hidden></div></section>
         </div>`;
+
+        const bookingButtons = new Map([...page.querySelectorAll('[data-booking-id]')].map(button => [Number(button.dataset.bookingId), button]));
+        bookings.forEach(booking => {
+            const detailButton = bookingButtons.get(Number(booking.id));
+            if (!detailButton || !booking.technician_id || booking.status !== 'completed') return;
+            if (booking.technician_review_id) {
+                detailButton.insertAdjacentHTML('afterend', `<small class="technician-review-done"><i class="fas fa-circle-check"></i> Đã đánh giá ${escapeHtml(booking.technician_review_rating)}/5</small>`);
+                return;
+            }
+            detailButton.insertAdjacentHTML('afterend', `<button type="button" class="account-detail-button technician-review-button" data-review-booking-id="${booking.id}" data-technician-name="${escapeHtml(booking.technician_name || 'Kỹ thuật viên')}"><i class="fas fa-star"></i> Đánh giá</button>`);
+        });
+
+        page.insertAdjacentHTML('beforeend', `<dialog id="technicianReviewDialog" class="technician-review-dialog"><form class="technician-review-form" id="technicianReviewForm"><button type="button" class="technician-review-close" aria-label="Đóng">&times;</button><h2>Đánh giá kỹ thuật viên</h2><p id="technicianReviewName"></p><p class="technician-review-policy"><i class="fas fa-circle-info"></i> Đánh giá chỉ dùng để nâng cao chất lượng dịch vụ, hoàn toàn không ảnh hưởng đến lương hoặc thưởng của kỹ thuật viên.</p><div id="technicianReviewCriteria"></div><label>Nhận xét <textarea name="content" maxlength="2000" minlength="10" rows="4" required placeholder="Chia sẻ trải nghiệm thực tế (ít nhất 10 ký tự)"></textarea></label><label class="technician-review-recommend"><input type="checkbox" name="is_recommended" value="true"> Tôi sẵn lòng giới thiệu kỹ thuật viên này</label><p id="technicianReviewError" class="account-notice account-notice--error" hidden></p><button type="submit" class="btn btn--primary">Gửi đánh giá</button></form></dialog>`);
+        const reviewDialog = page.querySelector('#technicianReviewDialog');
+        const reviewForm = page.querySelector('#technicianReviewForm');
+        const criteria = [['rating', 'Đánh giá tổng thể'], ['attitude_rating', 'Thái độ phục vụ'], ['punctuality_rating', 'Đúng giờ'], ['technical_rating', 'Tay nghề kỹ thuật'], ['explanation_rating', 'Giải thích rõ ràng'], ['cleanliness_rating', 'Giữ vệ sinh']];
+        page.querySelector('#technicianReviewCriteria').innerHTML = criteria.map(([name, label]) => `<fieldset class="technician-review-rating"><legend>${label}</legend><div>${[5, 4, 3, 2, 1].map(value => `<label><input type="radio" name="${name}" value="${value}" required><span>${value} <i class="fas fa-star"></i></span></label>`).join('')}</div></fieldset>`).join('');
+        page.querySelector('.technician-review-close').addEventListener('click', () => reviewDialog.close());
+        page.querySelectorAll('[data-review-booking-id]').forEach(button => button.addEventListener('click', () => {
+            reviewForm.reset();
+            reviewForm.dataset.bookingId = button.dataset.reviewBookingId;
+            page.querySelector('#technicianReviewName').textContent = `Kỹ thuật viên: ${button.dataset.technicianName}`;
+            page.querySelector('#technicianReviewError').hidden = true;
+            reviewDialog.showModal();
+        }));
+        reviewForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const errorBox = page.querySelector('#technicianReviewError');
+            if (!reviewForm.reportValidity()) return;
+            const data = Object.fromEntries(new FormData(reviewForm));
+            data.is_recommended = reviewForm.is_recommended.checked;
+            const submit = reviewForm.querySelector('[type="submit"]');
+            submit.disabled = true;
+            try {
+                const result = await fetchAccount(`/account/api/bookings/${reviewForm.dataset.bookingId}/technician-review`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken }, body: JSON.stringify(data) });
+                reviewDialog.close();
+                window.alert(result.message);
+                const [bookingData, contactData] = await Promise.all([fetchAccount('/account/api/bookings'), fetchAccount('/account/api/contacts')]);
+                renderHistory(bookingData.bookings, contactData.contacts, bookingData.csrfToken);
+            } catch (error) {
+                errorBox.textContent = error.message;
+                errorBox.hidden = false;
+            } finally { submit.disabled = false; }
+        });
 
         page.querySelectorAll('[data-booking-id]').forEach(button => button.addEventListener('click', async () => {
             const detail = page.querySelector('#bookingDetail');
@@ -193,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingPage = document.getElementById('bookingHistoryPage');
     if (bookingPage) {
         Promise.all([fetchAccount('/account/api/bookings'), fetchAccount('/account/api/contacts')])
-            .then(([{ bookings }, { contacts }]) => renderHistory(bookings, contacts))
+            .then(([{ bookings, csrfToken }, { contacts }]) => renderHistory(bookings, contacts, csrfToken))
             .catch(error => {
                 bookingPage.innerHTML = `<p class="account-page__error">${escapeHtml(error.message)}</p>`;
             });

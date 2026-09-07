@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const { query } = require('../config/database');
 const { getRequestImages } = require('../services/requestImageService');
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, csrfProtect } = require('../middleware/auth');
 
 const router = express.Router();
 const site = path.resolve(__dirname, '../../dienlanh- web');
@@ -74,21 +74,84 @@ router.put('/api/profile', requireAuth, uploadAvatar.single('avatar'), async (re
     }
 });
 
-router.get('/api/bookings', requireAuth, async (req, res, next) => {
+router.get('/api/bookings', requireAuth, csrfProtect, async (req, res, next) => {
     try {
         const result = await query(
             `SELECT b.id, b.request_code, b.booking_date, b.booking_time, b.device_type, b.service_type, 
                     s.name AS service_name, d.name AS device_name, b.status,
-                    b.estimated_cost, b.actual_cost, b.created_at
+                    b.estimated_cost, b.actual_cost, b.created_at, b.technician_id,
+                    t.full_name AS technician_name, r.id AS technician_review_id,
+                    r.rating AS technician_review_rating, r.status AS technician_review_status
              FROM bookings b
              LEFT JOIN services s ON b.service_id = s.id OR b.service_type = s.name OR b.service_type = s.slug
                 OR REPLACE(b.service_type, 'su-', 'sua-') = s.slug
              LEFT JOIN devices d ON b.device_id = d.id OR b.device_type = d.name OR b.device_type = d.slug
+             LEFT JOIN technicians t ON t.id = b.technician_id
+             LEFT JOIN reviews r ON r.booking_id = b.id
              WHERE b.user_id = @userId ORDER BY b.created_at DESC, b.id DESC`,
             { userId: req.session.customer.id }
         );
-        return res.json({ bookings: result.recordset });
+        return res.json({ bookings: result.recordset, csrfToken: res.locals.csrfToken });
     } catch (error) {
+        return next(error);
+    }
+});
+
+router.post('/api/bookings/:id/technician-review', requireAuth, csrfProtect, async (req, res, next) => {
+    try {
+        const ratings = ['rating', 'attitude_rating', 'punctuality_rating', 'technical_rating', 'explanation_rating', 'cleanliness_rating']
+            .reduce((values, key) => ({ ...values, [key]: Number.parseInt(req.body[key], 10) }), {});
+        const content = String(req.body.content || '').trim().slice(0, 2000);
+        const invalidRating = Object.values(ratings).some(value => !Number.isInteger(value) || value < 1 || value > 5);
+        if (invalidRating || content.length < 10) {
+            return res.status(400).json({ error: 'Vui lòng chấm đủ các tiêu chí và nhập nhận xét ít nhất 10 ký tự.' });
+        }
+
+        const bookingResult = await query(`SELECT b.id, b.user_id, b.technician_id, b.status,
+                b.service_id, COALESCE(s.name, b.service_type) AS service_name,
+                u.name, COALESCE(u.email, u.phone) AS contact
+            FROM bookings b
+            JOIN users u ON u.id = b.user_id
+            LEFT JOIN services s ON s.id = b.service_id
+            WHERE b.id = @bookingId AND b.user_id = @userId`, {
+            bookingId: req.params.id,
+            userId: req.session.customer.id
+        });
+        const booking = bookingResult.recordset[0];
+        if (!booking) return res.status(404).json({ error: 'Không tìm thấy lịch đặt thuộc tài khoản của bạn.' });
+        if (booking.status !== 'completed') return res.status(400).json({ error: 'Chỉ có thể đánh giá đơn đã hoàn thành.' });
+        if (!booking.technician_id) return res.status(400).json({ error: 'Đơn này chưa có kỹ thuật viên phụ trách.' });
+
+        const duplicate = await query('SELECT id FROM reviews WHERE booking_id = @bookingId', { bookingId: booking.id });
+        if (duplicate.recordset[0]) return res.status(409).json({ error: 'Bạn đã đánh giá kỹ thuật viên cho đơn này.' });
+
+        await query(`INSERT INTO reviews
+            (user_id, booking_id, technician_id, name, contact, service_id, service_name, rating,
+             attitude_rating, punctuality_rating, technical_rating, explanation_rating,
+             cleanliness_rating, is_recommended, content, status)
+            VALUES (@userId, @bookingId, @technicianId, @name, @contact, @serviceId, @serviceName, @rating,
+             @attitude, @punctuality, @technical, @explanation, @cleanliness, @recommended, @content, 'pending')`, {
+            userId: req.session.customer.id,
+            bookingId: booking.id,
+            technicianId: booking.technician_id,
+            name: booking.name,
+            contact: booking.contact,
+            serviceId: booking.service_id,
+            serviceName: booking.service_name,
+            rating: ratings.rating,
+            attitude: ratings.attitude_rating,
+            punctuality: ratings.punctuality_rating,
+            technical: ratings.technical_rating,
+            explanation: ratings.explanation_rating,
+            cleanliness: ratings.cleanliness_rating,
+            recommended: req.body.is_recommended === true || req.body.is_recommended === 'true' ? 1 : 0,
+            content
+        });
+        return res.status(201).json({ message: 'Cảm ơn bạn. Đánh giá kỹ thuật viên đang chờ quản trị viên duyệt.' });
+    } catch (error) {
+        if (error.number === 2601 || error.number === 2627) {
+            return res.status(409).json({ error: 'Bạn đã đánh giá kỹ thuật viên cho đơn này.' });
+        }
         return next(error);
     }
 });
@@ -98,11 +161,15 @@ router.get('/api/bookings/:id', requireAuth, async (req, res, next) => {
         const result = await query(
             `SELECT b.id, b.request_code, b.fullname, b.phone, b.email, b.address, b.device_type, b.service_type, 
                     s.name AS service_name, d.name AS device_name, b.booking_date,
-                    b.booking_time, b.description, b.status, b.estimated_cost, b.actual_cost, b.created_at
+                    b.booking_time, b.description, b.status, b.estimated_cost, b.actual_cost, b.created_at,
+                    b.technician_id, t.full_name AS technician_name, t.specialty AS technician_specialty,
+                    r.id AS technician_review_id, r.rating AS technician_review_rating, r.status AS technician_review_status
              FROM bookings b
              LEFT JOIN services s ON b.service_id = s.id OR b.service_type = s.name OR b.service_type = s.slug
                 OR REPLACE(b.service_type, 'su-', 'sua-') = s.slug
              LEFT JOIN devices d ON b.device_id = d.id OR b.device_type = d.name OR b.device_type = d.slug
+             LEFT JOIN technicians t ON t.id = b.technician_id
+             LEFT JOIN reviews r ON r.booking_id = b.id
              WHERE b.id = @id AND b.user_id = @userId`,
             { id: req.params.id, userId: req.session.customer.id }
         );
