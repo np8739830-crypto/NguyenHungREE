@@ -5609,6 +5609,12 @@
 .technician-review-rating input:checked + span { border-color: #f5b301; background: #fff6d6; color: #8a6200; font-weight: 700; }
 .technician-review-form textarea { width: 100%; margin-top: .4rem; padding: .75rem; border: 1px solid #ccd3dc; border-radius: 9px; resize: vertical; }
 .technician-review-recommend { display: flex; gap: .55rem; align-items: center; }
+.technician-review-inline { display: grid; gap: .8rem; margin-bottom: 1.2rem; padding: 1rem; border: 1px solid #d8e3f2; border-radius: 14px; background: #f8fbff; }
+.reviews-page .reviews-hero { min-height: 190px; padding: 42px 0 34px; }
+.reviews-page .reviews-main { padding-top: 28px; }
+.reviews-page .reviews-hero__icon { width: 46px; height: 46px; margin-bottom: 8px; }
+.reviews-page .reviews-hero h1 { margin: 7px 0; font-size: clamp(1.8rem, 3.4vw, 2.8rem); }
+.reviews-page .reviews-hero p { line-height: 1.45; }
 @media (max-width: 768px) {
     .header__user { gap: 8px; margin-left: 0; }
     .header__user-name { display: block; max-width: 74px; font-size: .78rem; }

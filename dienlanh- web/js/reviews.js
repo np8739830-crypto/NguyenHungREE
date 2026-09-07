@@ -5,6 +5,7 @@
     if (!form || !list) return;
 
     let csrfToken = '';
+    let eligibleTechnicianBookings = [];
     const ratingLabels = { 1: 'Rất không hài lòng', 2: 'Chưa hài lòng', 3: 'Bình thường', 4: 'Hài lòng', 5: 'Rất hài lòng' };
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
     const formatDate = value => new Date(value).toLocaleDateString('vi-VN', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -29,6 +30,30 @@
         csrfToken = data.csrfToken;
         const service = document.getElementById('reviewService');
         (data.services || []).forEach(item => service.insertAdjacentHTML('beforeend', `<option value="${Number(item.id)}">${escapeHtml(item.name)}</option>`));
+    }
+
+    async function loadTechnicianMode() {
+        const response = await fetch('/account/api/bookings', { credentials: 'same-origin', cache: 'no-store' });
+        if (response.status === 401) return;
+        const data = await parseResponse(response);
+        csrfToken = data.csrfToken || csrfToken;
+        eligibleTechnicianBookings = (data.bookings || []).filter(booking => booking.status === 'completed' && booking.technician_id && !booking.technician_review_id);
+        if (!eligibleTechnicianBookings.length) return;
+
+        form.dataset.mode = 'technician';
+        const identityRow = form.querySelector('.reviews-form__row');
+        if (identityRow) identityRow.hidden = true;
+        form.elements.name.required = false;
+        form.elements.contact.required = false;
+        form.elements.name.value = 'Technician review';
+        form.elements.contact.value = 'review@local.invalid';
+        document.getElementById('reviewService').closest('.form-group').hidden = true;
+        const heading = form.closest('.reviews-form-card').querySelector('.reviews-card-heading');
+        heading.querySelector('h2').textContent = 'Đánh giá kỹ thuật viên';
+        heading.querySelector('p').textContent = 'Chọn đơn đã hoàn thành và chia sẻ trải nghiệm với kỹ thuật viên phụ trách.';
+        heading.insertAdjacentHTML('afterend', `<div class="technician-review-inline"><label for="technicianBooking">Đơn hàng và kỹ thuật viên <span class="required">*</span></label><select class="form-control" id="technicianBooking" name="booking_id" required><option value="">Chọn đơn cần đánh giá</option>${eligibleTechnicianBookings.map(booking => `<option value="${Number(booking.id)}">${escapeHtml(booking.request_code || `#${booking.id}`)} — ${escapeHtml(booking.technician_name)}</option>`).join('')}</select><p class="technician-review-policy"><i class="fa-solid fa-circle-info"></i> Đánh giá chỉ phục vụ nâng cao chất lượng và không ảnh hưởng đến lương, thưởng của kỹ thuật viên.</p><div id="inlineTechnicianCriteria"></div></div>`);
+        const criteria = [['attitude_rating', 'Thái độ'], ['punctuality_rating', 'Đúng giờ'], ['technical_rating', 'Tay nghề'], ['explanation_rating', 'Giải thích'], ['cleanliness_rating', 'Vệ sinh']];
+        document.getElementById('inlineTechnicianCriteria').innerHTML = criteria.map(([name, label]) => `<fieldset class="technician-review-rating"><legend>${label}</legend><div>${[5, 4, 3, 2, 1].map(value => `<label><input type="radio" name="${name}" value="${value}" required><span>${value} <i class="fa-solid fa-star"></i></span></label>`).join('')}</div></fieldset>`).join('');
     }
 
     async function loadReviews() {
@@ -79,7 +104,13 @@
         button.disabled = true;
         button.classList.add('is-loading');
         try {
-            const result = await fetch('/reviews', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken }, body: JSON.stringify(data) }).then(parseResponse);
+            const endpoint = form.dataset.mode === 'technician' ? `/account/api/bookings/${Number(data.booking_id)}/technician-review` : '/reviews';
+            const result = await fetch(endpoint, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken }, body: JSON.stringify(data) }).then(parseResponse);
+            if (form.dataset.mode === 'technician') {
+                window.alert(result.message);
+                window.location.reload();
+                return;
+            }
             form.reset();
             document.getElementById('reviewCharacterCount').textContent = '0';
             showRatingStatus('');
@@ -100,5 +131,5 @@
         revealItems.forEach(item => item.classList.add('is-visible'));
     }
 
-    Promise.all([loadMeta(), loadReviews()]).catch(error => showNotice(error.message, 'error'));
+    Promise.all([loadMeta(), loadTechnicianMode(), loadReviews()]).catch(error => showNotice(error.message, 'error'));
 })();
