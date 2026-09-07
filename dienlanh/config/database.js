@@ -14,10 +14,6 @@ const driver = process.env.DB_ODBC_DRIVER || 'ODBC Driver 17 for SQL Server';
 const trustServerCertificate = process.env.DB_TRUST_SERVER_CERTIFICATE !== 'false';
 const encrypt = process.env.DB_ENCRYPT === 'true';
 
-if (!useTrustedConnection && (!user || !password)) {
-    throw new Error('DB_USER and DB_PASSWORD are required when DB_AUTH_MODE=sql');
-}
-
 const commonConfig = {
     server,
     port,
@@ -65,6 +61,10 @@ function attachPoolErrorHandler(activePool) {
 
 async function getConnection() {
     try {
+        if (!useTrustedConnection && (!user || !password)) {
+            throw new Error('DB_USER and DB_PASSWORD are required when DB_AUTH_MODE=sql');
+        }
+
         if (pool && pool.connected) {
             return pool;
         }
