@@ -5713,7 +5713,7 @@
 @media (max-width: 1024px) { .booking-technicians-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } } @media (max-width: 600px) { .booking-technicians-section { padding: 52px 0; }.booking-technicians-grid { grid-template-columns: 1fr; }.booking-technician-card__avatar { height: 220px; } }
 /* ===== PREMIUM REAL REVIEWS PAGE (scoped) ===== */
 .reviews-page { position: relative; overflow: hidden; background: linear-gradient(180deg, #f6f9ff 0%, #eef5ff 55%, #f8fbff 100%); }
-.reviews-page .reviews-hero { position: relative; isolation: isolate; min-height: 390px; display: grid; place-items: center; padding: 96px 0 70px; overflow: hidden; color: #fff; text-align: center; background: linear-gradient(125deg, #071a45 0%, #0d347d 58%, #2467cf 100%); }
+.reviews-page .reviews-hero { display: none; }
 .reviews-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: .16; background-image: linear-gradient(rgba(255,255,255,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px); background-size: 58px 58px; mask-image: linear-gradient(to bottom, #000, transparent); }
 .reviews-hero__glow { position: absolute; z-index: -1; border-radius: 50%; filter: blur(4px); pointer-events: none; }
 .reviews-hero__glow--one { width: 330px; height: 330px; top: -170px; right: 7%; background: radial-gradient(circle, rgba(74,183,255,.5), transparent 68%); }
@@ -5723,7 +5723,7 @@
 .reviews-hero__eyebrow { display: block; color: #88d4ff; font-size: .78rem; font-weight: 800; letter-spacing: .22em; }
 .reviews-page .reviews-hero h1 { margin: 12px 0 14px; color: #fff; font-size: clamp(2.15rem, 4.5vw, 3.8rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.1; }
 .reviews-page .reviews-hero p { max-width: 720px; margin: 0 auto; color: rgba(235,244,255,.82); font-size: clamp(.98rem, 1.6vw, 1.13rem); line-height: 1.72; }
-.reviews-page .reviews-main { padding: 76px 0 90px; }
+.reviews-page .reviews-main { padding: 28px 0 90px; }
 .reviews-layout { display: grid; gap: 62px; max-width: 1080px; }
 .reviews-form-card { position: relative; padding: clamp(28px, 5vw, 52px); overflow: hidden; border: 1px solid rgba(182,204,235,.7); border-radius: 24px; background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(247,251,255,.94)); box-shadow: 0 28px 75px rgba(18,52,112,.14), inset 0 1px #fff; }
 .reviews-form-card::before { content: ''; position: absolute; width: 260px; height: 260px; top: -185px; right: -95px; border-radius: 50%; background: radial-gradient(circle, rgba(65,143,239,.18), transparent 70%); pointer-events: none; }
