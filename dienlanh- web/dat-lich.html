@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
+<body class="booking-page">
 
     <!-- ==================== HEADER ==================== -->
     <div id="siteHeader"></div>
@@ -46,6 +46,13 @@
                 </div>
 
                 <div class="booking-form-wrapper" id="bookingFormWrapper">
+                    <div class="booking-form-header">
+                        <span class="booking-form-header__icon" aria-hidden="true"><i class="fas fa-calendar-check"></i></span>
+                        <div>
+                            <h2>Đặt lịch sửa chữa</h2>
+                            <p>Nhanh chóng - Tiện lợi - Chuyên nghiệp</p>
+                        </div>
+                    </div>
                     <form id="bookingForm" action="/booking" method="post" enctype="multipart/form-data" novalidate>
                         <div class="form-row">
                             <div class="form-group">

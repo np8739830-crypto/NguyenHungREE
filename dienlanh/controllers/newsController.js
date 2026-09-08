@@ -1,8 +1,10 @@
 const { query } = require('../config/database');
+const removedNewsSlug = 'huong-dan-ve-sinh-may-lanh-tai-nha';
 
 async function findPublishedArticle(slug) {
     return (await query(
-        "SELECT * FROM news WHERE slug = @slug AND status = 'published'", { slug }
+        "SELECT * FROM news WHERE slug = @slug AND slug <> @removedNewsSlug AND status = 'published'",
+        { slug, removedNewsSlug }
     )).recordset[0] || null;
 }
 
@@ -16,9 +18,10 @@ async function detailBySlug(req, res, next) {
             query(
                 `SELECT TOP (3) id, title, slug, category, image, excerpt, published_at
                  FROM news
-                 WHERE status = 'published' AND id <> @id
+                 WHERE status = 'published' AND id <> @id AND slug <> @removedNewsSlug
                  ORDER BY CASE WHEN category = @category THEN 0 ELSE 1 END,
-                          published_at DESC, id DESC`, { id: article.id, category: article.category || null }
+                          published_at DESC, id DESC`,
+                { id: article.id, category: article.category || null, removedNewsSlug }
             ),
             query("SELECT [value] FROM settings WHERE [key] = 'site_name'")
         ]);

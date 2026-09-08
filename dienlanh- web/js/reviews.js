@@ -2,7 +2,8 @@
     'use strict';
     const form = document.getElementById('reviewForm');
     const list = document.getElementById('reviewsList');
-    if (!form || !list) return;
+    const technicianList = document.getElementById('technicianReviewsList');
+    if (!form || !list || !technicianList) return;
 
     let csrfToken = '';
     let eligibleTechnicianBookings = [];
@@ -59,13 +60,19 @@
     async function loadReviews() {
         try {
             const data = await fetch('/reviews', { credentials: 'same-origin' }).then(parseResponse);
-            if (!data.reviews.length) {
-                list.innerHTML = '<div class="reviews-empty"><i class="fa-regular fa-comment-dots"></i><h3>Chưa có đánh giá</h3><p>Hãy là người đầu tiên chia sẻ trải nghiệm của bạn với Điện Máy Nguyên Hùng.</p></div>';
-                return;
-            }
-            list.innerHTML = data.reviews.map(review => `<article class="review-real-card"><div class="review-real-card__head"><div class="review-real-card__avatar" aria-hidden="true">${escapeHtml(review.name.charAt(0).toUpperCase())}</div><div><h3>${escapeHtml(review.name)}</h3><div class="review-real-card__stars" aria-label="${Number(review.rating)} trên 5 sao">${stars(Number(review.rating))}</div></div><time datetime="${escapeHtml(review.created_at)}">${formatDate(review.created_at)}</time></div><p class="review-real-card__content">${escapeHtml(review.content)}</p>${review.technician_name ? `<div class="review-real-card__service"><i class="fa-solid fa-user-gear"></i>Kỹ thuật viên: ${escapeHtml(review.technician_name)}</div>` : ''}${review.service_name ? `<div class="review-real-card__service"><i class="fa-solid fa-screwdriver-wrench"></i>${escapeHtml(review.service_name)}</div>` : ''}</article>`).join('');
+            const renderReview = review => `<article class="review-real-card"><div class="review-real-card__head"><div class="review-real-card__avatar" aria-hidden="true">${escapeHtml(review.name.charAt(0).toUpperCase())}</div><div><h3>${escapeHtml(review.name)}</h3><div class="review-real-card__stars" aria-label="${Number(review.rating)} trên 5 sao">${stars(Number(review.rating))}</div></div><time datetime="${escapeHtml(review.created_at)}">${formatDate(review.created_at)}</time></div><p class="review-real-card__content">${escapeHtml(review.content)}</p>${review.technician_name ? `<div class="review-real-card__service"><i class="fa-solid fa-user-gear"></i>Kỹ thuật viên: ${escapeHtml(review.technician_name)}</div>` : ''}${review.service_name ? `<div class="review-real-card__service"><i class="fa-solid fa-screwdriver-wrench"></i>${escapeHtml(review.service_name)}</div>` : ''}</article>`;
+            const customerReviews = data.reviews.filter(review => !review.technician_name);
+            const technicianReviews = data.reviews.filter(review => review.technician_name);
+            list.innerHTML = customerReviews.length
+                ? customerReviews.map(renderReview).join('')
+                : '<div class="reviews-empty"><i class="fa-regular fa-comment-dots"></i><h3>Chưa có đánh giá từ khách hàng</h3><p>Hãy là người đầu tiên chia sẻ trải nghiệm của bạn với Điện Máy Nguyên Hùng.</p></div>';
+            technicianList.innerHTML = technicianReviews.length
+                ? technicianReviews.map(renderReview).join('')
+                : '<div class="reviews-empty"><i class="fa-solid fa-user-gear"></i><h3>Chưa có đánh giá về kỹ thuật viên</h3><p>Các đánh giá kỹ thuật viên đã được duyệt sẽ xuất hiện tại đây.</p></div>';
         } catch (error) {
-            list.innerHTML = `<div class="reviews-empty reviews-empty--error"><i class="fa-solid fa-circle-exclamation"></i><h3>Không tải được đánh giá</h3><p>${escapeHtml(error.message)}</p></div>`;
+            const errorMarkup = `<div class="reviews-empty reviews-empty--error"><i class="fa-solid fa-circle-exclamation"></i><h3>Không tải được đánh giá</h3><p>${escapeHtml(error.message)}</p></div>`;
+            list.innerHTML = errorMarkup;
+            technicianList.innerHTML = errorMarkup;
         }
     }
 

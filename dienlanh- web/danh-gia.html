@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đánh Giá Dịch Vụ | Điện Máy Nguyên Hùng</title>
     <meta name="description" content="Gửi và xem các đánh giá dịch vụ thật đã được duyệt tại Điện Máy Nguyên Hùng.">
+    <script>
+        // The reviews page always opens at its banner, including old bookmarked URLs.
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        if (window.location.hash === '#review-form') {
+            history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=20260907-original-hero">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div id="siteHeader"></div>
@@ -25,7 +32,7 @@
 
         <section class="reviews-main section">
             <div class="container reviews-layout">
-                <article class="reviews-form-card reviews-reveal">
+                <article class="reviews-form-card">
                     <div class="reviews-card-heading"><span><i class="fa-solid fa-star"></i></span><div><h2>Chia sẻ trải nghiệm của bạn</h2><p>Đánh giá của bạn sẽ được hiển thị sau khi quản trị viên duyệt.</p></div></div>
                     <p class="reviews-notice" id="reviewNotice" hidden></p>
                     <form id="reviewForm" class="reviews-form" novalidate>
@@ -56,6 +63,11 @@
                     <div class="reviews-real-list" id="reviewsList" aria-live="polite"><div class="reviews-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải đánh giá...</span></div></div>
                 </section>
 
+                <section class="reviews-list-section reviews-reveal" aria-labelledby="technician-reviews-title">
+                    <div class="reviews-list-heading"><div><span class="section__tag">KỸ THUẬT VIÊN</span><h2 id="technician-reviews-title">Đánh giá về kỹ thuật viên</h2></div></div>
+                    <div class="reviews-real-list" id="technicianReviewsList" aria-live="polite"><div class="reviews-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải đánh giá...</span></div></div>
+                </section>
+
                 <section class="reviews-thank-you reviews-reveal"><div class="reviews-thank-you__stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><h2>Ý kiến của bạn rất quan trọng với chúng tôi <span aria-hidden="true">❤️</span></h2><p>Cảm ơn bạn đã dành thời gian chia sẻ trải nghiệm với Điện Máy Nguyên Hùng.</p></section>
             </div>
         </section>
@@ -75,6 +87,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Lên đầu trang"><i class="fas fa-arrow-up"></i></button>
     <script src="/js/script.js"></script>
     <script src="/js/backend.js"></script>
-    <script src="/js/reviews.js?v=20260817-premium-reviews"></script>
+    <script src="/js/reviews.js?v=20260908-split-review-lists"></script>
 </body>
 </html>

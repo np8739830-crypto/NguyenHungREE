@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const newsImageFiles = new Set([
         'baoduongmaylanh.png', 'cachchoncongsuat.png', 'dauhieunhanbiet.png',
-        'hangmaylanh.png', 'huongdanvs.png', 'kiemtragas.png',
+        'hangmaylanh.png', 'kiemtragas.png',
         'maylanhinverter.png', 'maylanhkhonglanh.png', 'sudunghieuqua.png',
         'top5loimaylanh.png', 'suamaylanh.png', 'vsmaylanh.png',
         'ldmaylanh.png', 'suatulanh.png', 'suamaygiat.png', 'suamaynong.png'
@@ -288,7 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newsGrid) {
         newsGrid.innerHTML = '<p class="news-detail__loading"><i class="fas fa-spinner fa-spin"></i> Đang tải bài viết...</p>';
         request('/news/api').then(news => {
-            newsGrid.innerHTML = news.length ? news.map((article, index) => {
+            const visibleNews = news.filter(article => article.slug !== 'huong-dan-ve-sinh-may-lanh-tai-nha');
+            newsGrid.innerHTML = visibleNews.length ? visibleNews.map((article, index) => {
                 const rawImage = String(article.image || 'logo.png').trim().replace(/^\/+/, '');
                 const normalized = rawImage.replace(/\.(?=[^.]*$)/, match => match.toLowerCase());
                 const imageWithExtension = /\.(png|jpe?g|webp)$/i.test(normalized) ? normalized : `${normalized}.png`;
@@ -298,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     article.title.includes('Cách chọn công suất') || /chon-cong-suat/i.test(article.slug) ? '/images/tin-tuc/cachchoncongsuat.png' :
                     (article.title.includes('Bảo dưỡng') || article.title.includes('Bảo trì máy lạnh') || /bao-(duong|tri)-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/baoduongmaylanh.png' :
                     (article.title.includes('Máy lạnh không lạnh') || /may-lanh-khong-lanh-nguyen-nhan/i.test(article.slug) || /khong-lanh/i.test(article.slug)) ? '/images/tin-tuc/maylanhkhonglanh.png' :
-                    /huong-dan-ve-sinh-may-lanh-tai-nha/i.test(article.slug) || article.title.includes('Hướng dẫn vệ sinh') || /ve-sinh-may-lanh/i.test(article.slug) ? '/images/tin-tuc/huongdanvs.png' :
                     /dau-hieu-nhan-biet-may-lanh-sap-hong/i.test(article.slug) || article.title.includes('Dấu hiệu nhận biết') || article.title.includes('máy lạnh sắp hỏng') || /dau-hieu-nhan-biet/i.test(article.slug) ? '/images/tin-tuc/dauhieunhanbiet.png' :
                     (article.title.includes('Cách kiểm tra gas') || /kiem-tra-gas/i.test(article.slug)) ? '/images/tin-tuc/kiemtragas.png' :
                     (article.title.includes('Nên mua máy lạnh hãng nào') || /mua-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/hangmaylanh.png' :
@@ -336,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (/cách chọn công suất/i.test(title) || /chon-cong-suat/i.test(slug)) return '/images/tin-tuc/cachchoncongsuat.png';
                     if (/(bảo|bảo trì|bảo dưỡng)/i.test(title) || /bao-duong-may-lanh/i.test(slug)) return '/images/tin-tuc/baoduongmaylanh.png';
                     if (/không lạnh/i.test(title) || /khong-lanh/i.test(slug)) return '/images/tin-tuc/maylanhkhonglanh.png';
-                    if (/hướng dẫn vệ sinh/i.test(title) || /ve-sinh-may-lanh/i.test(slug)) return '/images/tin-tuc/huongdanvs.png';
                     if (/dấu hiệu nhận biết/i.test(title) || /dau-hieu-nhan-biet/i.test(slug)) return '/images/tin-tuc/dauhieunhanbiet.png';
                     if (/nên mua máy lạnh hãng nào/i.test(title) || /mua-may-lanh/i.test(slug)) return '/images/tin-tuc/hangmaylanh.png';
                     if (/cách sử dụng máy lạnh tiết kiệm điện/i.test(title) || /tiet-kiem-dien/i.test(slug)) return '/images/tin-tuc/sudunghieuqua.png';
