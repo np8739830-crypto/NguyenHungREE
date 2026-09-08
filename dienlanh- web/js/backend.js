@@ -155,7 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const faq = document.querySelector('.faq');
         if (faq && content.faqs && content.faqs.length) {
-            faq.innerHTML = content.faqs.map(item => `<div class="faq__item reveal"><button class="faq__question" aria-expanded="false"><span>${escapeHtml(item.question)}</span><i class="fas fa-chevron-down faq__icon"></i></button><div class="faq__answer"><p>${escapeHtml(item.answer)}</p></div></div>`).join('');
+            const visibleFaqs = content.faqs.filter(item =>
+                item.question.trim().toLocaleLowerCase('vi-VN') !== 'có hỗ trợ sửa chữa ngoài giờ hành chính không?'
+            );
+            faq.innerHTML = visibleFaqs.map(item => `<div class="faq__item reveal"><button class="faq__question" aria-expanded="false"><span>${escapeHtml(item.question)}</span><i class="fas fa-chevron-down faq__icon"></i></button><div class="faq__answer"><p>${escapeHtml(item.answer)}</p></div></div>`).join('');
         }
 
         const timeline = document.querySelector('.timeline');

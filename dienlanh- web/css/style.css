@@ -3159,7 +3159,7 @@
     /* Connected background for the services catalog page. */
     .page-section--services-bg {
         background-color: #edf7ff;
-        background-image: url('/images/nen-dich-vu/dich-vu-background.png');
+        background-image: url('/images/n%E1%BB%81n/dich-vu-background.png');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -3168,7 +3168,7 @@
     /* Tall connected background for the full pricing catalog. */
     .page-section--pricing-bg {
         background-color: #edf7ff;
-        background-image: url('/images/nen-bang-gia/bang-gia-background.png');
+        background-image: url('/images/n%E1%BB%81n/bang-gia-background.png');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -3177,7 +3177,7 @@
     /* One continuous background across all light sections of the About page. */
     .about-page {
         background-color: #edf7ff;
-        background-image: url('/images/nen-gioi-thieu/gioi-thieu-background.png');
+        background-image: url('/images/n%E1%BB%81n/gioi-thieu-background.png');
         background-position: center top;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3191,7 +3191,7 @@
     /* Connected background for the responsive news listing. */
     .page-section--news-bg {
         background-color: #edf7ff;
-        background-image: url('/images/nen-tin-tuc/tin-tuc-background.png');
+        background-image: url('/images/n%E1%BB%81n/tin-tuc-background.png');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3200,7 +3200,7 @@
     /* Connected background sized to the contact information and form area. */
     .page-section--contact-bg {
         background-color: #edf7ff;
-        background-image: url('/images/nen-lien-he/lien-he-background.png');
+        background-image: url('/images/n%E1%BB%81n/lien-he-background.png');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3209,7 +3209,7 @@
     /* Tall background that follows the dynamically sized reviews content. */
     .reviews-page .reviews-main {
         background-color: #edf7ff;
-        background-image: url('/images/nen-danh-gia/danh-gia-background.png');
+        background-image: url('/images/n%E1%BB%81n/danh-gia-background.png');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3218,7 +3218,7 @@
     /* One continuous background behind the booking form and technician grid. */
     .booking-page {
         background-color: #edf7ff;
-        background-image: url('/images/nen-dat-lich/dat-lich-background.png');
+        background-image: url('/images/n%E1%BB%81n/dat-lich-background.png');
         background-position: center top;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -6491,9 +6491,9 @@
 
 /* ===== CONNECTED HOME PAGE BACKGROUNDS ===== */
 :root {
-    --home-background-1: url('/images/n%E1%BB%81n%20trang%20ch%E1%BB%A7/trang-chu-1.png');
-    --home-background-2: url('/images/n%E1%BB%81n%20trang%20ch%E1%BB%A7/trang-chu-2.png');
-    --home-background-3: url('/images/n%E1%BB%81n%20trang%20ch%E1%BB%A7/trang-chu-3.png');
+    --home-background-1: url('/images/n%E1%BB%81n/trang-chu-1.png');
+    --home-background-2: url('/images/n%E1%BB%81n/trang-chu-2.png');
+    --home-background-3: url('/images/n%E1%BB%81n/trang-chu-3.png');
 }
 
 body > .quick-info,

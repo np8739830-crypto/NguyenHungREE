@@ -14,7 +14,11 @@ router.get('/bootstrap', async (req, res, next) => {
                    FROM pricing p JOIN services s ON s.id = p.service_id
                    WHERE p.status = 'active' AND s.status = 'active'
                    ORDER BY s.sort_order, p.sort_order, p.id`),
-            query("SELECT id, question, answer, sort_order FROM faqs WHERE status = 'active' ORDER BY sort_order, id"),
+            query(`SELECT id, question, answer, sort_order
+                   FROM faqs
+                   WHERE status = 'active'
+                     AND question <> N'Có hỗ trợ sửa chữa ngoài giờ hành chính không?'
+                   ORDER BY sort_order, id`),
             query("SELECT id, year, title, description, icon, sort_order FROM timeline_events WHERE status = 'active' ORDER BY sort_order, id"),
             query("SELECT id, name, icon, image, sort_order FROM brands WHERE status = 'active' ORDER BY sort_order, id"),
             query("SELECT id, title, subtitle, image, link, sort_order FROM banners WHERE status = 'active' ORDER BY sort_order, id")
