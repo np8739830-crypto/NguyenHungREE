@@ -9,7 +9,6 @@ const navItems = [
     { key: 'attendance', permission: 'attendance', href: '/admin/attendance', icon: 'fa-solid fa-clipboard-check', label: 'Chấm công' },
     { key: 'payroll', permission: 'payroll', href: '/admin/payroll', icon: 'fa-solid fa-money-check-dollar', label: 'Bảng lương' },
     { key: 'contacts', permission: 'contacts', href: '/admin/contacts', icon: 'fa-solid fa-address-book', label: 'Liên hệ' },
-    { key: 'reviews', permission: 'reviews', href: '/admin/reviews', icon: 'fa-solid fa-star', label: 'Đánh giá' },
     { key: 'telegram', permission: 'telegram', href: '/admin/telegram', icon: 'fa-brands fa-telegram', label: 'Thông báo Telegram' }
 ].filter(item => permissionCheck(item.permission, 'view'));
 const accessItems = [
@@ -17,6 +16,8 @@ const accessItems = [
     { key: 'roles', permission: 'roles', href: '/admin/access/roles', icon: 'fa-solid fa-shield-halved', label: 'Vai trò & Quyền hạn' }
 ].filter(item => permissionCheck(item.permission, 'view'));
 const accessActive = ['accounts', 'roles'].includes(activePage);
+const reviewsActive = activePage === 'reviews';
+const reviewType = typeof selectedType !== 'undefined' && selectedType === 'technician' ? 'technician' : 'customer';
 %>
     <header class="main-header">
         <div class="header-left">
@@ -51,6 +52,21 @@ const accessActive = ['accounts', 'roles'].includes(activePage);
                         <a href="<%= item.href %>" class="nav-link"><i class="<%= item.icon %>"></i><span><%= item.label %></span></a>
                     </li>
                 <% }) %>
+                <% if (permissionCheck('reviews', 'view')) { %>
+                    <li class="nav-item has-submenu rbac-menu reviews-menu <%= reviewsActive ? 'active expanded' : '' %>">
+                        <a href="#" class="nav-link" aria-expanded="<%= reviewsActive ? 'true' : 'false' %>">
+                            <i class="fa-solid fa-star"></i><span>Đánh giá</span><i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li class="<%= reviewsActive && reviewType === 'customer' ? 'sub-active' : '' %>">
+                                <a href="/admin/reviews?type=customer"><i class="fa-solid fa-comments"></i><span>Từ khách hàng</span></a>
+                            </li>
+                            <li class="<%= reviewsActive && reviewType === 'technician' ? 'sub-active' : '' %>">
+                                <a href="/admin/reviews?type=technician"><i class="fa-solid fa-user-gear"></i><span>Về kỹ thuật viên</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                <% } %>
                 <% if (accessItems.length) { %>
                     <li class="nav-item has-submenu rbac-menu <%= accessActive ? 'active expanded' : '' %>">
                         <a href="#" class="nav-link" aria-expanded="<%= accessActive ? 'true' : 'false' %>">

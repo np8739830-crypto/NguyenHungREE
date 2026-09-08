@@ -5,24 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/admin/css/1.css?v=20260817-reviews">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260908-technician-rating-averages">
 </head>
 <body>
+<% const currentReviewType = typeof selectedType !== 'undefined' && selectedType === 'technician' ? 'technician' : 'customer'; %>
+<% const averageRows = typeof technicianAverages !== 'undefined' && Array.isArray(technicianAverages) ? technicianAverages : []; %>
 <div class="wrapper service-dashboard">
-    <%- include('partials/admin-header', { activePage: 'reviews' }) %>
+    <%- include('partials/admin-header', { activePage: 'reviews', selectedType: currentReviewType }) %>
     <main class="content-wrapper">
         <section class="content-header dashboard-heading">
-            <div><p class="dashboard-eyebrow">Phản hồi khách hàng</p><h1><i class="fa-solid fa-star"></i> Quản lý đánh giá</h1></div>
+            <div><p class="dashboard-eyebrow"><%= currentReviewType === 'technician' ? 'Chất lượng kỹ thuật viên' : 'Phản hồi khách hàng' %></p><h1><i class="fa-solid fa-star"></i> <%= currentReviewType === 'technician' ? 'Đánh giá về kỹ thuật viên' : 'Đánh giá từ khách hàng' %></h1></div>
             <span class="dashboard-mini-stat"><i class="fa-solid fa-comments"></i><span>Kết quả</span><strong><%= reviews.length %></strong></span>
         </section>
 
         <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %>
         <% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
 
+        <% if (currentReviewType === 'technician') { %>
+            <section class="card technician-rating-summary" aria-labelledby="technician-rating-summary-title">
+                <div class="card-header technician-rating-summary__header">
+                    <div><span class="dashboard-eyebrow">Tổng hợp đánh giá đã duyệt</span><h2 id="technician-rating-summary-title"><i class="fa-solid fa-chart-simple"></i> Điểm trung bình theo kỹ thuật viên</h2></div>
+                    <span class="dashboard-mini-stat"><i class="fa-solid fa-user-gear"></i><span>Nhân viên</span><strong><%= averageRows.length %></strong></span>
+                </div>
+                <div class="card-body technician-rating-grid">
+                    <% averageRows.forEach(technician => { const count = Number(technician.review_count || 0); const average = Number(technician.average_rating || 0); %>
+                        <article class="technician-rating-card <%= count ? '' : 'technician-rating-card--empty' %>">
+                            <header class="technician-rating-card__head">
+                                <% if (technician.avatar) { %><img src="<%= technician.avatar %>" alt="Ảnh <%= technician.full_name %>"><% } else { %><span class="technician-rating-card__avatar"><%= String(technician.full_name || '?').trim().charAt(0).toUpperCase() %></span><% } %>
+                                <div><h3><%= technician.full_name %></h3><p><%= technician.specialty || 'Kỹ thuật viên' %></p></div>
+                                <strong class="technician-rating-card__score"><i class="fa-solid fa-star"></i> <%= count ? average.toFixed(1) : '—' %></strong>
+                            </header>
+                            <p class="technician-rating-card__count"><%= count %> đánh giá đã duyệt</p>
+                            <div class="technician-rating-card__criteria">
+                                <span>Thái độ <strong><%= count ? Number(technician.average_attitude || 0).toFixed(1) : '—' %></strong></span>
+                                <span>Đúng giờ <strong><%= count ? Number(technician.average_punctuality || 0).toFixed(1) : '—' %></strong></span>
+                                <span>Tay nghề <strong><%= count ? Number(technician.average_technical || 0).toFixed(1) : '—' %></strong></span>
+                                <span>Giải thích <strong><%= count ? Number(technician.average_explanation || 0).toFixed(1) : '—' %></strong></span>
+                                <span>Vệ sinh <strong><%= count ? Number(technician.average_cleanliness || 0).toFixed(1) : '—' %></strong></span>
+                            </div>
+                        </article>
+                    <% }) %>
+                    <% if (!averageRows.length) { %><div class="review-admin-empty"><i class="fa-solid fa-user-gear"></i><h3>Chưa có kỹ thuật viên</h3><p>Chưa có dữ liệu để tính điểm trung bình.</p></div><% } %>
+                </div>
+            </section>
+        <% } %>
+
         <section class="card review-admin-card">
             <div class="card-header review-admin-toolbar">
                 <h3><i class="fa-solid fa-filter"></i> Bộ lọc đánh giá</h3>
                 <form method="get" action="/admin/reviews" class="review-filter-form">
+                    <input type="hidden" name="type" value="<%= currentReviewType %>">
                     <label>Trạng thái
                         <select name="status">
                             <option value="">Tất cả</option>
@@ -38,7 +70,7 @@
                         </select>
                     </label>
                     <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Lọc</button>
-                    <a class="btn btn-secondary" href="/admin/reviews">Đặt lại</a>
+                    <a class="btn btn-secondary" href="/admin/reviews?type=<%= currentReviewType %>">Đặt lại</a>
                 </form>
             </div>
             <div class="card-body review-admin-list">
@@ -61,9 +93,9 @@
                             <div class="review-admin-meta"><span><i class="fa-solid fa-screwdriver-wrench"></i> <%= review.service_name || 'Không chọn dịch vụ' %></span><span><i class="fa-regular fa-clock"></i> <%= new Date(review.created_at).toLocaleString('vi-VN', { timeZone: 'UTC' }) %></span></div>
                         </div>
                         <div class="review-admin-actions">
-                            <% if (can('reviews', 'update') && review.status !== 'approved') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="status" value="approved"><button class="btn btn-confirm" type="submit"><i class="fa-solid fa-check"></i> Duyệt</button></form><% } %>
-                            <% if (can('reviews', 'update') && review.status !== 'hidden') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="status" value="hidden"><button class="btn btn-secondary" type="submit"><i class="fa-solid fa-eye-slash"></i> Ẩn</button></form><% } %>
-                            <% if (can('reviews', 'delete')) { %><form method="post" action="/admin/reviews/<%= review.id %>/delete" onsubmit="return confirm('Xóa vĩnh viễn đánh giá này?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash"></i> Xóa</button></form><% } %>
+                            <% if (can('reviews', 'update') && review.status !== 'approved') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="type" value="<%= currentReviewType %>"><input type="hidden" name="status" value="approved"><button class="btn btn-confirm" type="submit"><i class="fa-solid fa-check"></i> Duyệt</button></form><% } %>
+                            <% if (can('reviews', 'update') && review.status !== 'hidden') { %><form method="post" action="/admin/reviews/<%= review.id %>/status"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="type" value="<%= currentReviewType %>"><input type="hidden" name="status" value="hidden"><button class="btn btn-secondary" type="submit"><i class="fa-solid fa-eye-slash"></i> Ẩn</button></form><% } %>
+                            <% if (can('reviews', 'delete')) { %><form method="post" action="/admin/reviews/<%= review.id %>/delete" onsubmit="return confirm('Xóa vĩnh viễn đánh giá này?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="type" value="<%= currentReviewType %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash"></i> Xóa</button></form><% } %>
                         </div>
                     </article>
                 <% }) %>

@@ -11,6 +11,13 @@
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
     const formatDate = value => new Date(value).toLocaleDateString('vi-VN', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' });
     const stars = rating => Array.from({ length: 5 }, (_, index) => `<i class="${index < rating ? 'fa-solid' : 'fa-regular'} fa-star"></i>`).join('');
+    const reviewAvatar = review => {
+        const avatar = String(review.avatar || '').trim();
+        if (/^\/uploads\/[a-zA-Z0-9._-]+$/.test(avatar)) {
+            return `<img src="${escapeHtml(avatar)}" alt="Ảnh đại diện của ${escapeHtml(review.name)}" loading="lazy">`;
+        }
+        return `<span aria-hidden="true">${escapeHtml(String(review.name || '?').charAt(0).toUpperCase())}</span>`;
+    };
 
     function showNotice(message, type) {
         const notice = document.getElementById('reviewNotice');
@@ -60,7 +67,7 @@
     async function loadReviews() {
         try {
             const data = await fetch('/reviews', { credentials: 'same-origin' }).then(parseResponse);
-            const renderReview = review => `<article class="review-real-card"><div class="review-real-card__head"><div class="review-real-card__avatar" aria-hidden="true">${escapeHtml(review.name.charAt(0).toUpperCase())}</div><div><h3>${escapeHtml(review.name)}</h3><div class="review-real-card__stars" aria-label="${Number(review.rating)} trên 5 sao">${stars(Number(review.rating))}</div></div><time datetime="${escapeHtml(review.created_at)}">${formatDate(review.created_at)}</time></div><p class="review-real-card__content">${escapeHtml(review.content)}</p>${review.technician_name ? `<div class="review-real-card__service"><i class="fa-solid fa-user-gear"></i>Kỹ thuật viên: ${escapeHtml(review.technician_name)}</div>` : ''}${review.service_name ? `<div class="review-real-card__service"><i class="fa-solid fa-screwdriver-wrench"></i>${escapeHtml(review.service_name)}</div>` : ''}</article>`;
+            const renderReview = review => `<article class="review-real-card"><div class="review-real-card__head"><div class="review-real-card__avatar">${reviewAvatar(review)}</div><div><h3>${escapeHtml(review.name)}</h3><div class="review-real-card__stars" aria-label="${Number(review.rating)} trên 5 sao">${stars(Number(review.rating))}</div></div><time datetime="${escapeHtml(review.created_at)}">${formatDate(review.created_at)}</time></div><p class="review-real-card__content">${escapeHtml(review.content)}</p>${review.technician_name ? `<div class="review-real-card__service"><i class="fa-solid fa-user-gear"></i>Kỹ thuật viên: ${escapeHtml(review.technician_name)}</div>` : ''}${review.service_name ? `<div class="review-real-card__service"><i class="fa-solid fa-screwdriver-wrench"></i>${escapeHtml(review.service_name)}</div>` : ''}</article>`;
             const customerReviews = data.reviews.filter(review => !review.technician_name);
             const technicianReviews = data.reviews.filter(review => review.technician_name);
             list.innerHTML = customerReviews.length

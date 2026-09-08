@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (servicesGrid) {
         request('/services/api').then(services => {
             servicesGrid.innerHTML = services.length ? services.map(service => `
-                <article class="service-card">
+                <article class="service-card" data-service="${escapeHtml(service.slug)}">
                     <div class="service-card__icon"><i class="fas ${escapeHtml(service.icon || 'fa-tools')}"></i></div>
                     <h3 class="service-card__title">${escapeHtml(service.name)}</h3>
                     <p class="service-card__desc">${escapeHtml(service.description)}</p>

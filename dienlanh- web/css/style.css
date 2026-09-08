@@ -905,7 +905,7 @@
     
     .quick-info {
         padding: 0;
-        margin-top: 80px;
+        margin-top: 0;
         position: relative;
         z-index: 2;
     }
@@ -913,31 +913,31 @@
     .quick-info__grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        gap: 0;
+        padding: 20px;
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
     }
     
     .quick-info__card {
-        background: var(--white);
-        border-radius: var(--radius-lg);
+        background: transparent;
+        border-radius: 0;
         padding: 30px 24px;
         text-align: center;
-        box-shadow: var(--shadow-lg);
+        box-shadow: none;
         transition: all var(--transition);
-        border-bottom: 4px solid var(--brand-blue);
+        border-right: 1px solid rgba(30, 58, 138, 0.12);
     }
     
-    .quick-info__card:nth-child(even) {
-        border-bottom-color: var(--cyan-cool);
+    .quick-info__card:last-child {
+        border-right: 0;
     }
     
     .quick-info__card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(16, 27, 77, 0.2);
-        border-bottom-color: var(--blue-bright);
-    }
-    
-    .quick-info__card:nth-child(even):hover {
-        border-bottom-color: var(--cyan-hover);
+        transform: translateY(-4px);
+        background: rgba(232, 243, 255, 0.5);
     }
     
     .quick-info__icon {
@@ -3155,6 +3155,249 @@
     .page-section--bg {
         background: var(--blue-mist);
     }
+
+    /* Connected background for the services catalog page. */
+    .page-section--services-bg {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-dich-vu/dich-vu-background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    /* Tall connected background for the full pricing catalog. */
+    .page-section--pricing-bg {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-bang-gia/bang-gia-background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    /* One continuous background across all light sections of the About page. */
+    .about-page {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-gioi-thieu/gioi-thieu-background.png');
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .about-page .page-section:not(.stats-section) {
+        background-color: transparent;
+        background-image: none;
+    }
+
+    /* Connected background for the responsive news listing. */
+    .page-section--news-bg {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-tin-tuc/tin-tuc-background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    /* Connected background sized to the contact information and form area. */
+    .page-section--contact-bg {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-lien-he/lien-he-background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    /* Tall background that follows the dynamically sized reviews content. */
+    .reviews-page .reviews-main {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-danh-gia/danh-gia-background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    /* One continuous background behind the booking form and technician grid. */
+    .booking-page {
+        background-color: #edf7ff;
+        background-image: url('/images/nen-dat-lich/dat-lich-background.png');
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .booking-page > .page-section,
+    .booking-page > .booking-technicians-section {
+        background-color: transparent;
+        background-image: none;
+    }
+
+/* ===== MONOCHROME PREMIUM SERVICE CARDS ===== */
+.services > .container,
+.page-section--services-bg > .container {
+    max-width: 1280px;
+}
+
+.services__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    align-items: stretch;
+}
+
+.services__grid .service-card {
+    --service-art: url('/images/service-card/sua-may-lanh.png');
+    isolation: isolate;
+    min-width: 0;
+    min-height: 360px;
+    padding: 28px 30px 26px;
+    overflow: hidden;
+    border: 1px solid rgba(37, 99, 235, 0.14);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 28px rgba(30, 64, 175, 0.08);
+    text-align: left;
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.services__grid .service-card:nth-child(2),
+.services__grid .service-card[data-service='ve-sinh-may-lanh'] { --service-art: url('/images/service-card/ve-sinh-may-lanh.png'); }
+.services__grid .service-card:nth-child(3),
+.services__grid .service-card[data-service='lap-dat-may-lanh'] { --service-art: url('/images/service-card/lap-dat-may-lanh.png'); }
+.services__grid .service-card:nth-child(4),
+.services__grid .service-card[data-service='sua-tu-lanh'] { --service-art: url('/images/service-card/sua-tu-lanh.png'); }
+.services__grid .service-card:nth-child(5),
+.services__grid .service-card[data-service='sua-may-giat'] { --service-art: url('/images/service-card/sua-may-giat.png'); }
+.services__grid .service-card:nth-child(6),
+.services__grid .service-card[data-service='sua-may-nuoc-nong'] { --service-art: url('/images/service-card/sua-may-nuoc-nong.png'); }
+
+.services__grid .service-card::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 24px;
+    right: 16px;
+    left: auto;
+    width: 43%;
+    height: 190px;
+    border-radius: 46% 54% 58% 42%;
+    background: linear-gradient(145deg, rgba(37, 99, 235, 0.10), rgba(37, 99, 235, 0.025));
+    opacity: 1;
+    transform: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.services__grid .service-card::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: 38px;
+    right: 12px;
+    width: 45%;
+    height: 180px;
+    background-image: var(--service-art);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(0 12px 14px rgba(37, 99, 235, 0.13));
+    pointer-events: none;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.services__grid .service-card:hover,
+.services__grid .service-card:nth-child(3n+2):hover,
+.services__grid .service-card:nth-child(3n+3):hover {
+    transform: translateY(-5px);
+    border-color: rgba(37, 99, 235, 0.42);
+    box-shadow: 0 18px 36px rgba(30, 64, 175, 0.13);
+}
+
+.services__grid .service-card:hover::before { transform: scale(1.04); }
+.services__grid .service-card:hover::after {
+    transform: translateY(-3px) scale(1.035);
+    filter: drop-shadow(0 15px 17px rgba(37, 99, 235, 0.18));
+}
+
+.services__grid .service-card__icon,
+.services__grid .service-card:nth-child(3n+2) .service-card__icon,
+.services__grid .service-card:nth-child(3n+3) .service-card__icon {
+    position: relative;
+    z-index: 1;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    margin: 0 0 22px;
+    border: 1px solid rgba(49, 84, 184, 0.12);
+    border-radius: 15px;
+    background: #e9efff;
+    color: #3154b8;
+    box-shadow: 0 7px 16px rgba(49, 84, 184, 0.09);
+    font-size: 1.35rem;
+}
+
+.services__grid .service-card:hover .service-card__icon,
+.services__grid .service-card:nth-child(3n+2):hover .service-card__icon,
+.services__grid .service-card:nth-child(3n+3):hover .service-card__icon {
+    background: #e1e9ff;
+    color: #27469d;
+    border-color: rgba(49, 84, 184, 0.2);
+    box-shadow: 0 9px 19px rgba(49, 84, 184, 0.12);
+    transform: translateY(-2px);
+}
+
+.services__grid .service-card__title,
+.services__grid .service-card__desc,
+.services__grid .service-card__link {
+    position: relative;
+    z-index: 1;
+}
+
+.services__grid .service-card__title {
+    width: 62%;
+    margin-bottom: 12px;
+    color: #102f66;
+    font-size: 1.28rem;
+    font-weight: 800;
+    line-height: 1.32;
+}
+
+.services__grid .service-card__desc {
+    width: 62%;
+    margin-bottom: 22px;
+    color: #647a98;
+    font-size: 0.94rem;
+    line-height: 1.65;
+}
+
+.services__grid .service-card__link,
+.services__grid .service-card:nth-child(3n+2) .service-card__link,
+.services__grid .service-card:nth-child(3n+3) .service-card__link {
+    align-self: flex-start;
+    min-width: 152px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: #3154b8;
+    color: #fff;
+    box-shadow: 0 7px 16px rgba(49, 84, 184, 0.18);
+}
+
+.services__grid .service-card__link:hover {
+    background: #27469d;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(39, 70, 157, 0.23);
+    filter: none;
+}
+
+@media (max-width: 1024px) {
+    .services__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+}
+
+@media (max-width: 640px) {
+    .services__grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .services__grid .service-card { min-height: 350px; padding: 24px 22px; }
+    .services__grid .service-card::before { right: 8px; width: 42%; height: 170px; }
+    .services__grid .service-card::after { right: 5px; width: 43%; height: 160px; }
+    .services__grid .service-card__title,
+    .services__grid .service-card__desc { width: 64%; }
+}
+
     /* ---------- BUTTON OUTLINE RED ---------- */
     
     .btn--outline-red {
@@ -4482,9 +4725,16 @@
         }
         .quick-info__grid {
             grid-template-columns: repeat(2, 1fr);
+            padding: 12px;
+        }
+        .quick-info__card:nth-child(2) {
+            border-right: 0;
+        }
+        .quick-info__card:nth-child(-n + 2) {
+            border-bottom: 1px solid rgba(30, 58, 138, 0.12);
         }
         .quick-info {
-            margin-top: 60px;
+            margin-top: 0;
         }
         .process__steps {
             grid-template-columns: repeat(2, 1fr);
@@ -4660,11 +4910,11 @@
             display: none;
         }
         .quick-info {
-            margin-top: 40px;
+            margin-top: 0;
         }
         .quick-info__grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 0;
         }
         .quick-info__card {
             padding: 20px 16px;
@@ -4887,7 +5137,7 @@
         }
         .quick-info__grid {
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 0;
         }
         .quick-info__card {
             padding: 16px 12px;
@@ -5769,6 +6019,8 @@
 .review-real-card:hover { transform: translateY(-4px); box-shadow: 0 20px 42px rgba(23,49,102,.13); }
 .review-real-card__head { display: flex; align-items: center; gap: 13px; }
 .review-real-card__avatar { display: grid; flex: 0 0 48px; height: 48px; place-items: center; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #254f9e, #63a4ed); font-weight: 800; }
+.review-real-card__avatar { overflow: hidden; }
+.review-real-card__avatar img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
 .review-real-card__head h3 { margin: 0 0 5px; color: #1a3267; font-size: 1.05rem; }
 .review-real-card__head time { margin-left: auto; color: #8591a6; font-size: .8rem; }
 .review-real-card__stars, .reviews-thank-you__stars { color: #f4b223; font-size: .88rem; }
@@ -6260,6 +6512,7 @@ body > .process {
     background-image: var(--home-background-3);
 }
 
+
 body > .quick-info,
 body > .services,
 body > .process,
@@ -6277,4 +6530,31 @@ body > #faq {
         background-position: center center;
         background-size: 100% 100%;
     }
+}
+
+/* Match every booking CTA to the red "Gửi yêu cầu" button. */
+a.btn[href='/booking'],
+.header--shared a.header__booking[href='/booking'],
+.cta-section__actions a.btn[href='/booking'] {
+    border-color: #b91c1c;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+}
+
+a.btn[href='/booking']:hover,
+.header--shared a.header__booking[href='/booking']:hover,
+.cta-section__actions a.btn[href='/booking']:hover {
+    border-color: #dc2626;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+}
+
+a.btn[href='/booking']:focus-visible,
+.header--shared a.header__booking[href='/booking']:focus-visible,
+.cta-section__actions a.btn[href='/booking']:focus-visible {
+    outline: 3px solid rgba(220, 38, 38, 0.3);
+    outline-offset: 3px;
 }

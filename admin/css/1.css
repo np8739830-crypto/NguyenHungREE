@@ -2003,6 +2003,24 @@ body.service-modal-open { overflow: hidden; }
 .review-admin-empty > i { color:#4d7ed2; font-size:3rem; }
 .review-admin-empty h3 { margin:16px 0 7px; color:#263f70; }
 .review-admin-empty p { margin:0; }
+.technician-rating-summary { margin-bottom:24px; overflow:hidden; }
+.technician-rating-summary__header { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.technician-rating-summary__header h2 { margin:5px 0 0; color:#203867; font-size:1.2rem; }
+.technician-rating-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.technician-rating-card { min-width:0; padding:20px; border:1px solid #dce6f3; border-radius:16px; background:linear-gradient(145deg,#fff,#f7faff); box-shadow:0 8px 22px rgba(31,58,108,.06); }
+.technician-rating-card__head { display:grid; grid-template-columns:48px minmax(0,1fr) auto; align-items:center; gap:12px; }
+.technician-rating-card__head img,.technician-rating-card__avatar { display:grid; width:48px; height:48px; place-items:center; border-radius:50%; object-fit:cover; color:#fff; background:linear-gradient(135deg,#254f9e,#63a4ed); font-weight:800; }
+.technician-rating-card__head h3 { margin:0 0 4px; overflow:hidden; color:#203867; font-size:1rem; text-overflow:ellipsis; white-space:nowrap; }
+.technician-rating-card__head p { margin:0; overflow:hidden; color:#7a879b; font-size:.8rem; text-overflow:ellipsis; white-space:nowrap; }
+.technician-rating-card__score { display:inline-flex; align-items:center; gap:5px; color:#b87900; font-size:1.15rem; }
+.technician-rating-card__score i { color:#f2ad22; }
+.technician-rating-card__count { margin:15px 0 12px; color:#66758d; font-size:.82rem; }
+.technician-rating-card__criteria { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 12px; padding-top:12px; border-top:1px solid #e5ebf4; }
+.technician-rating-card__criteria span { display:flex; justify-content:space-between; gap:8px; color:#71809a; font-size:.78rem; }
+.technician-rating-card__criteria strong { color:#294a82; }
+.technician-rating-card--empty { opacity:.72; }
+@media(max-width:1100px){.technician-rating-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.technician-rating-grid{grid-template-columns:1fr}.technician-rating-summary__header{align-items:flex-start;flex-direction:column}.technician-rating-card__criteria{grid-template-columns:1fr}}
 @media(max-width:760px){.review-admin-item{grid-template-columns:1fr}.review-admin-actions{flex-direction:row;flex-wrap:wrap}.review-admin-actions form{width:auto;flex:1}.review-admin-item__heading{align-items:flex-start}.review-filter-form{width:100%}.review-filter-form label{flex:1}.review-filter-form select{width:100%}}
 
 /* Canonical alignment for every nested sidebar entry. */

@@ -15,8 +15,9 @@ router.get('/meta', csrfProtect, async (req, res, next) => {
 router.get('/', async (req, res, next) => {
     try {
         const result = await query(`SELECT r.id, r.name, r.rating, r.content, r.service_name, r.created_at,
-                r.booking_id, t.full_name AS technician_name
-            FROM reviews r LEFT JOIN technicians t ON t.id = r.technician_id
+                r.booking_id, u.avatar, t.full_name AS technician_name
+            FROM reviews r LEFT JOIN users u ON u.id = r.user_id
+            LEFT JOIN technicians t ON t.id = r.technician_id
             WHERE r.status = 'approved' ORDER BY r.created_at DESC, r.id DESC`);
         return res.json({ reviews: result.recordset });
     } catch (error) { return next(error); }
