@@ -1816,7 +1816,8 @@
     }
     
     .pricing-table thead {
-        background: linear-gradient(135deg, var(--navy-dark), var(--brand-blue));
+        /* Match the “BẢNG GIÁ DỊCH VỤ” page banner. */
+        background: linear-gradient(to right, #0b245b 0%, #173b80 25%, #3677cf 50%, #173b80 75%, #0b245b 100%);
         color: var(--white);
     }
     
@@ -5943,9 +5944,22 @@
     .news-section { padding-top: 40px; padding-bottom: 56px; }
 }
 
-/* Refrigerator pricing section uses the same blue shell as mobile. */
+/* Use the same blue category shell on desktop as on mobile. */
+.pricing-category,
 .pricing-category.pricing-category--fridge-blue {
-    background: linear-gradient(to right, #38bdf8 0%, #2563eb 55%, #173bb4 100%) !important;
+    /* Purpose-built abstract light-trail artwork; contains no appliances. */
+    background: #1748a6 url('/images/backgrounds/pricing-light-trails.png') center / cover no-repeat;
+    border-color: rgba(147, 197, 253, .9);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, .25);
+}
+
+.pricing-category .pricing-category__title,
+.pricing-category .pricing-category__title i {
+    color: #fff;
+}
+
+.pricing-category .pricing-category__title {
+    border-bottom-color: rgba(255, 255, 255, .72);
 }
     
     @media (max-width: 390px) {
@@ -7428,7 +7442,6 @@ a.btn[href='/booking']:focus-visible,
 @media (max-width: 768px) {
     .pricing-category {
         border-color: rgba(147, 197, 253, .9);
-        background: linear-gradient(to right, #38bdf8 0%, #2563eb 55%, #173bb4 100%);
         box-shadow: 0 14px 30px rgba(37, 99, 235, .25);
     }
 
