@@ -34,7 +34,15 @@ async function createBooking(req, res, next) {
         const [serviceResult, deviceResult] = await Promise.all([
             query(`SELECT TOP 1 id FROM dbo.services
                 WHERE slug = @serviceType OR name = @serviceType
-                    OR slug = REPLACE(@serviceType, 'su-', 'sua-')`, { serviceType: req.body.service_type }),
+                    OR slug = REPLACE(@serviceType, 'su-', 'sua-')
+                    OR slug = CONCAT(
+                        CASE
+                            WHEN @serviceType IN (N'Sửa chữa', 'sua-chua', 'su-chua') THEN 'sua'
+                            WHEN @serviceType IN (N'Vệ sinh', 've-sinh') THEN 've-sinh'
+                            WHEN @serviceType IN (N'Lắp đặt', 'lap-dat') THEN 'lap-dat'
+                        END,
+                        '-', @deviceType
+                    )`, { serviceType: req.body.service_type, deviceType: req.body.device_type }),
             query('SELECT TOP 1 id FROM dbo.devices WHERE slug = @deviceType OR name = @deviceType', { deviceType: req.body.device_type })
         ]);
         req.body.service_id = serviceResult.recordset[0]?.id || null;

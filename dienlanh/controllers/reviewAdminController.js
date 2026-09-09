@@ -7,7 +7,13 @@ async function page(req, res, next) {
         const type = req.query.type === 'technician' ? 'technician' : 'customer';
         const conditions = [];
         const params = {};
-        conditions.push(type === 'technician' ? 'r.technician_id IS NOT NULL' : 'r.technician_id IS NULL');
+        if (type === 'technician') {
+            conditions.push('r.technician_id IS NOT NULL');
+            conditions.push('r.booking_id IS NOT NULL');
+        } else {
+            conditions.push('r.technician_id IS NULL');
+            conditions.push('r.booking_id IS NULL');
+        }
         if (status) { conditions.push('r.status = @status'); params.status = status; }
         if (rating) { conditions.push('r.rating = @rating'); params.rating = rating; }
         const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -48,7 +54,11 @@ async function update(req, res, next) {
             req.flash('error', 'Trạng thái đánh giá không hợp lệ.');
             return res.redirect(`/admin/reviews?type=${type}`);
         }
-        const result = await query('UPDATE reviews SET status = @status, updated_at = GETDATE() WHERE id = @id', { id: req.params.id, status });
+        const typeCondition = type === 'technician'
+            ? 'technician_id IS NOT NULL AND booking_id IS NOT NULL'
+            : 'technician_id IS NULL AND booking_id IS NULL';
+        const result = await query(`UPDATE reviews SET status = @status, updated_at = GETDATE()
+            WHERE id = @id AND ${typeCondition}`, { id: req.params.id, status });
         req.flash(result.rowsAffected?.[0] ? 'success' : 'error', result.rowsAffected?.[0] ? 'Đã cập nhật đánh giá.' : 'Không tìm thấy đánh giá.');
         return res.redirect(`/admin/reviews?type=${type}`);
     } catch (error) { return next(error); }
@@ -56,9 +66,12 @@ async function update(req, res, next) {
 
 async function remove(req, res, next) {
     try {
-        const result = await query('DELETE FROM reviews WHERE id = @id', { id: req.params.id });
-        req.flash(result.rowsAffected?.[0] ? 'success' : 'error', result.rowsAffected?.[0] ? 'Đã xóa đánh giá.' : 'Không tìm thấy đánh giá.');
         const type = req.body.type === 'technician' ? 'technician' : 'customer';
+        const typeCondition = type === 'technician'
+            ? 'technician_id IS NOT NULL AND booking_id IS NOT NULL'
+            : 'technician_id IS NULL AND booking_id IS NULL';
+        const result = await query(`DELETE FROM reviews WHERE id = @id AND ${typeCondition}`, { id: req.params.id });
+        req.flash(result.rowsAffected?.[0] ? 'success' : 'error', result.rowsAffected?.[0] ? 'Đã xóa đánh giá.' : 'Không tìm thấy đánh giá.');
         return res.redirect(`/admin/reviews?type=${type}`);
     } catch (error) { return next(error); }
 }

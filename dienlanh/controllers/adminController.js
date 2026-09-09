@@ -4,13 +4,33 @@ const { getRequestImages } = require('../services/requestImageService');
 const { hasBookingConflict, normalizeAppointmentDate, CONFLICT_MESSAGE } = require('../services/schedulingService');
 const { syncRevenueForBookingChange } = require('../services/payrollService');
 
+const bookingServiceSlug = `CONCAT(
+    CASE
+        WHEN b.service_type IN (N'Sửa chữa', 'sua-chua', 'su-chua') THEN 'sua'
+        WHEN b.service_type IN (N'Vệ sinh', 've-sinh') THEN 've-sinh'
+        WHEN b.service_type IN (N'Lắp đặt', 'lap-dat') THEN 'lap-dat'
+    END,
+    '-',
+    COALESCE(
+        (SELECT TOP 1 booking_device.slug
+         FROM dbo.devices booking_device
+         WHERE booking_device.id = b.device_id
+            OR booking_device.slug = b.device_type
+            OR booking_device.name = b.device_type),
+        b.device_type
+    )
+)`;
 const serviceJoinCondition = `b.service_id = s.id OR b.service_type = s.name OR b.service_type = s.slug
-    OR REPLACE(b.service_type, 'su-', 'sua-') = s.slug`;
+    OR REPLACE(b.service_type, 'su-', 'sua-') = s.slug
+    OR ${bookingServiceSlug} = s.slug`;
 const deviceJoinCondition = `b.device_id = d.id OR b.device_type = d.name OR b.device_type = d.slug`;
 
 function prepareBookingDisplay(booking) {
-    const serviceName = booking.service_name || null;
-    const deviceName = booking.device_name || null;
+    // Older bookings may contain a service/device value that no longer matches
+    // a row in the reference tables. Keep that submitted value visible instead
+    // of replacing it with NULL and showing "Chưa xác định" in the admin UI.
+    const serviceName = booking.service_name || booking.service_type || null;
+    const deviceName = booking.device_name || booking.device_type || null;
     return {
         ...booking,
         service_name: serviceName,

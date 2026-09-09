@@ -1,0 +1,402 @@
+document.addEventListener('DOMContentLoaded', () => {
+            const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '<', '>': '>', "'": '&#39;', '"': '"' })[character]);
+            // When this frontend is opened through a static preview server, its
+            // relative API calls would otherwise target that preview server instead
+            // of the Express backend.
+            const localPreview = window.location.protocol !== 'file:' &&
+                window.location.port !== '5000';
+            const apiHost = window.location.hostname || 'localhost';
+            const apiBase = localPreview || window.location.protocol === 'file:' ?
+                `http://${apiHost}:5000` :
+                '';
+
+            function setAuthenticatedUser(user) {
+                const headerAuth = document.querySelector('.header__auth');
+                const headerNavAuth = document.querySelector('.header__nav-auth');
+                const headerUser = document.getElementById('headerUser');
+                const header = document.getElementById('header');
+                if (header) header.dataset.authState = user ? 'authenticated' : 'guest';
+                if (headerAuth) headerAuth.hidden = Boolean(user);
+                if (headerNavAuth) headerNavAuth.hidden = Boolean(user);
+                if (!headerUser) return;
+                headerUser.classList.toggle('is-logged-in', Boolean(user));
+                headerUser.classList.remove('active');
+                if (user) {
+                    const name = headerUser.querySelector('.header__user-name');
+                    const avatar = headerUser.querySelector('.header__user-avatar');
+                    if (name) name.textContent = user.name;
+                    if (avatar) {
+                        avatar.replaceChildren();
+                        if (user.avatar && typeof user.avatar === 'string' && user.avatar.trim()) {
+                            const image = document.createElement('img');
+                            image.src = user.avatar;
+                            image.alt = `Ảnh đại diện của ${user.name || 'tài khoản'}`;
+                            image.addEventListener('error', () => {
+                                avatar.replaceChildren();
+                                const icon = document.createElement('i');
+                                icon.className = 'fas fa-user';
+                                icon.setAttribute('aria-hidden', 'true');
+                                avatar.append(icon);
+                            }, { once: true });
+                            avatar.append(image);
+                        } else {
+                            const icon = document.createElement('i');
+                            icon.className = 'fas fa-user';
+                            icon.setAttribute('aria-hidden', 'true');
+                            avatar.append(icon);
+                        }
+                    }
+                    headerUser.setAttribute('role', 'button');
+                    headerUser.setAttribute('tabindex', '0');
+                    headerUser.setAttribute('aria-haspopup', 'menu');
+                    headerUser.setAttribute('aria-expanded', 'false');
+                } else {
+                    const name = headerUser.querySelector('.header__user-name');
+                    const avatar = headerUser.querySelector('.header__user-avatar');
+                    if (name) name.textContent = '';
+                    if (avatar) avatar.textContent = '';
+                    headerUser.setAttribute('aria-expanded', 'false');
+                }
+            }
+
+            async function request(url, options = {}) {
+                try {
+                    const response = await fetch(`${apiBase}${url}`, {
+                        ...options,
+                        // Never allow a caller to omit browser session cookies.
+                        credentials: 'include',
+                        headers: { Accept: 'application/json', ...(options.headers || {}) }
+                    });
+                    const body = await response.json().catch(() => ({}));
+                    if (!response.ok) {
+                        throw new Error(body.error || `Máy chủ trả về lỗi ${response.status}`);
+                    }
+                    return body;
+                } catch (error) {
+                    if (error instanceof TypeError) {
+                        throw new Error('Không thể kết nối tới máy chủ. Hãy kiểm tra server đang chạy ở cổng 5000.');
+                    }
+                    throw error;
+                }
+            }
+
+            function finishAuthNavigation(user) {
+                if (!user) return false;
+
+                const currentUrl = new URL(window.location.href);
+                const authTarget = currentUrl.searchParams.get('auth');
+                if (authTarget !== 'login' && authTarget !== 'register') return false;
+
+                const returnTo = currentUrl.searchParams.get('returnTo');
+                if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
+                    const destination = new URL(returnTo, window.location.origin);
+                    destination.searchParams.delete('auth');
+                    destination.searchParams.delete('returnTo');
+                    window.location.assign(`${destination.pathname}${destination.search}${destination.hash}`);
+                    return true;
+                }
+
+                currentUrl.searchParams.delete('auth');
+                currentUrl.searchParams.delete('returnTo');
+                window.history.replaceState({}, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+                document.querySelectorAll('.auth-overlay').forEach(overlay => overlay.classList.remove('active'));
+                document.body.style.overflow = '';
+                return false;
+            }
+
+            function initScrollRevealAfterRender() {
+                // Re-initialize scroll reveal for dynamically added elements
+                const revealElements = document.querySelectorAll(
+                    '.reveal, .reveal--left, .reveal--right, .reveal--zoom, ' +
+                    '.service-card, .quick-info__card, .process__step, .testimonial-card, ' +
+                    '.news-card, .about-value__card, .about-team__card, .contact-info__card, ' +
+                    '.testimonials-slider__slide, .faq__item, .brands-grid__item, ' +
+                    '.work-process__step, .timeline__item'
+                );
+
+                const revealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                revealElements.forEach((el) => {
+                    if (!el.classList.contains('reveal') &&
+                        !el.classList.contains('reveal--left') &&
+                        !el.classList.contains('reveal--right') &&
+                        !el.classList.contains('reveal--zoom')) {
+                        el.classList.add('reveal');
+                    }
+                    revealObserver.observe(el);
+                });
+            }
+
+            function renderContent(content) {
+                if (content.settings && content.settings.site_name) document.title = document.title.replace(/Điện Lạnh Nguyễn Hùng/gi, content.settings.site_name);
+
+                const pricingAnchor = document.querySelector('.pricing-category');
+                if (pricingAnchor && content.pricing && content.pricing.length) {
+                    const groups = new Map();
+                    content.pricing.forEach(item => {
+                        const key = item.service_id;
+                        if (!groups.has(key)) groups.set(key, {...item, items: [] });
+                        groups.get(key).items.push(item);
+                    });
+                    pricingAnchor.parentElement.innerHTML = [...groups.values()].map(group => `
+                <div class="pricing-category">
+                    <h3 class="pricing-category__title"><i class="fas ${escapeHtml(group.service_icon || 'fa-tools')}"></i> ${escapeHtml(group.service_name)}</h3>
+                    <table class="pricing-table"><thead><tr><th>Dịch vụ</th><th>Mô tả</th><th>Giá tham khảo</th><th style="width:120px;">Đặt lịch</th></tr></thead>
+                    <tbody>${group.items.map(item => `<tr><td><strong>${escapeHtml(item.item_name)}</strong></td><td>${escapeHtml(item.description || '')}</td><td class="price-cell">${escapeHtml(item.price)}</td><td class="action-cell"><a href="/booking" class="btn btn--red btn-small">Đặt ngay</a></td></tr>`).join('')}</tbody></table>
+                </div>`).join('');
+        }
+
+        const faq = document.querySelector('.faq');
+        if (faq && content.faqs && content.faqs.length) {
+            const visibleFaqs = content.faqs.filter(item =>
+                item.question.trim().toLocaleLowerCase('vi-VN') !== 'có hỗ trợ sửa chữa ngoài giờ hành chính không?'
+            );
+            faq.innerHTML = visibleFaqs.map(item => `<div class="faq__item reveal"><button class="faq__question" aria-expanded="false"><span>${escapeHtml(item.question)}</span><i class="fas fa-chevron-down faq__icon"></i></button><div class="faq__answer"><p>${escapeHtml(item.answer)}</p></div></div>`).join('');
+        }
+
+        const timeline = document.querySelector('.timeline');
+        if (timeline && !timeline.querySelector('.timeline__item') && content.timeline && content.timeline.length) {
+            timeline.innerHTML = content.timeline.map(item => `<div class="timeline__item reveal reveal--zoom"><div class="timeline__dot"><i class="fas ${escapeHtml(item.icon || 'fa-check')}"></i></div><div class="timeline__content"><span class="timeline__year">${escapeHtml(item.year)}</span><h3 class="timeline__title">${escapeHtml(item.title)}</h3><p class="timeline__desc">${escapeHtml(item.description || '')}</p></div></div>`).join('');
+        }
+
+        const brands = document.querySelector('.brands-grid');
+        if (brands && !brands.querySelector('img[src^="images/brands/"]') && content.brands && content.brands.length) {
+            brands.innerHTML = content.brands.map(item => `<div class="brands-grid__item reveal reveal--zoom"><div class="brands-grid__logo">${item.image ? `<img class="article-image" src="/images/${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">` : `<i class="${escapeHtml(item.icon || 'fas fa-star')}"></i>`}</div><span class="brands-grid__name">${escapeHtml(item.name)}</span></div>`).join('');
+        }
+
+        // Re-initialize scroll reveal for all dynamically replaced content
+        initScrollRevealAfterRender();
+    }
+
+    request('/auth/me').then(({ user }) => {
+        setAuthenticatedUser(user);
+        finishAuthNavigation(user);
+    }).catch(() => setAuthenticatedUser(null));
+    request('/content/bootstrap').then(renderContent).catch(() => {});
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const error = document.getElementById('loginError');
+            try {
+                const identity = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const { user } = await request('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identity, password })
+                });
+                setAuthenticatedUser(user);
+                if (finishAuthNavigation(user)) return;
+                document.getElementById('loginOverlay')?.classList.remove('active');
+                document.body.style.overflow = '';
+                loginForm.reset();
+            } catch (exception) {
+                if (error) {
+                    error.textContent = exception.message;
+                    error.classList.add('show');
+                }
+            }
+        }, true);
+    }
+
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const error = document.getElementById('registerError');
+            try {
+                const password = document.getElementById('regPassword').value;
+                const confirm = document.getElementById('regConfirm').value;
+                if (password !== confirm) throw new Error('Password confirmation does not match');
+                await request('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('regName').value.trim(),
+                        phone: document.getElementById('regPhone').value.trim(),
+                        email: document.getElementById('regEmail').value.trim(),
+                        password
+                    })
+                });
+                document.getElementById('registerOverlay')?.classList.remove('active');
+                document.getElementById('loginOverlay')?.classList.add('active');
+                document.getElementById('loginUsername').value = document.getElementById('regEmail').value.trim() || document.getElementById('regPhone').value.trim();
+                registerForm.reset();
+            } catch (exception) {
+                if (error) {
+                    error.textContent = exception.message;
+                    error.classList.add('show');
+                }
+            }
+        }, true);
+    }
+
+    document.getElementById('btnLogout')?.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        await request('/auth/logout', { method: 'POST' });
+        setAuthenticatedUser(null);
+    }, true);
+
+    // The account menu is shared by all public pages. Navigation is protected
+    // again on the server, so a copied URL never exposes another user's data.
+    document.addEventListener('click', event => {
+        const item = event.target.closest('.header__user-dropdown-item');
+        if (!item || item.id === 'btnLogout') return;
+        const label = item.textContent.replace(/\s+/g, ' ').trim();
+        if (label.includes('Thông tin cá nhân')) window.location.assign('/account/profile');
+        if (label.includes('Lịch sử đặt lịch') || label.includes('Lịch sử đặt hàng')) window.location.assign('/account/bookings');
+    });
+
+    const servicesGrid = document.getElementById('servicesGrid');
+    if (servicesGrid) {
+        request('/services/api').then(services => {
+            servicesGrid.innerHTML = services.length ? services.map(service => `
+                <article class="service-card" data-service="${escapeHtml(service.slug)}">
+                    <div class="service-card__icon"><i class="fas ${escapeHtml(service.icon || 'fa-tools')}"></i></div>
+                    <h3 class="service-card__title">${escapeHtml(service.name)}</h3>
+                    <p class="service-card__desc">${escapeHtml(service.description)}</p>
+                    <a href="/service-detail?service=${encodeURIComponent(service.slug)}" class="service-card__link">Xem chi tiết <i class="fas fa-arrow-right"></i></a>
+                </article>`).join('') : '<p>Chưa có dịch vụ.</p>';
+        }).catch(() => { servicesGrid.innerHTML = '<p>Không thể tải dịch vụ.</p>'; });
+    }
+
+    const newsImageFiles = new Set([
+        'baoduongmaylanh.png', 'cachchoncongsuat.png', 'dauhieunhanbiet.png',
+        'hangmaylanh.png', 'kiemtragas.png',
+        'maylanhinverter.png', 'maylanhkhonglanh.png', 'sudunghieuqua.png',
+        'top5loimaylanh.png', 'suamaylanh.png', 'vsmaylanh.png',
+        'ldmaylanh.png', 'suatulanh.png', 'suamaygiat.png', 'suamaynong.png'
+    ]);
+    const newsImagePath = imageName => {
+        const normalized = String(imageName || '').replace(/^\/?images\//i, '').replace(/^\/+/, '');
+        const fileName = normalized.split('/').pop().toLowerCase();
+        if (normalized.startsWith('tin-tuc/')) return `/images/${normalized}`;
+        if (newsImageFiles.has(fileName)) return `/images/tin-tuc/${fileName}`;
+        return `/images/${normalized}`;
+    };
+
+    const newsGrid = document.getElementById('newsGrid');
+    if (newsGrid) {
+        newsGrid.innerHTML = '<p class="news-detail__loading"><i class="fas fa-spinner fa-spin"></i> Đang tải bài viết...</p>';
+        request('/news/api').then(news => {
+            const visibleNews = news.filter(article => article.slug !== 'huong-dan-ve-sinh-may-lanh-tai-nha');
+            newsGrid.innerHTML = visibleNews.length ? visibleNews.map((article, index) => {
+                const rawImage = String(article.image || 'logo.png').trim().replace(/^\/+/, '');
+                const normalized = rawImage.replace(/\.(?=[^.]*$)/, match => match.toLowerCase());
+                const imageWithExtension = /\.(png|jpe?g|webp)$/i.test(normalized) ? normalized : `${normalized}.png`;
+                const imageSrc = newsImagePath(imageWithExtension);
+                const finalImageSrc = article.title.includes('Máy lạnh Inverter') || /inverter/i.test(article.slug) ? '/images/tin-tuc/maylanhinverter.png' :
+                    article.title.includes('Top 5 lỗi máy lạnh') || /top-5-loi-may-lanh/i.test(article.slug) ? '/images/tin-tuc/top5loimaylanh.png' :
+                    article.title.includes('Cách chọn công suất') || /chon-cong-suat/i.test(article.slug) ? '/images/tin-tuc/cachchoncongsuat.png' :
+                    (article.title.includes('Bảo dưỡng') || article.title.includes('Bảo trì máy lạnh') || /bao-(duong|tri)-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/baoduongmaylanh.png' :
+                    (article.title.includes('Máy lạnh không lạnh') || /may-lanh-khong-lanh-nguyen-nhan/i.test(article.slug) || /khong-lanh/i.test(article.slug)) ? '/images/tin-tuc/maylanhkhonglanh.png' :
+                    /dau-hieu-nhan-biet-may-lanh-sap-hong/i.test(article.slug) || article.title.includes('Dấu hiệu nhận biết') || article.title.includes('máy lạnh sắp hỏng') || /dau-hieu-nhan-biet/i.test(article.slug) ? '/images/tin-tuc/dauhieunhanbiet.png' :
+                    (article.title.includes('Cách kiểm tra gas') || /kiem-tra-gas/i.test(article.slug)) ? '/images/tin-tuc/kiemtragas.png' :
+                    (article.title.includes('Nên mua máy lạnh hãng nào') || /mua-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/hangmaylanh.png' :
+                    (article.title.includes('Cách sử dụng máy lạnh tiết kiệm điện') || /tiet-kiem-dien/i.test(article.slug)) ? '/images/tin-tuc/sudunghieuqua.png' :
+                    imageSrc;
+                return `
+                <article class="news-card">
+                    <div class="news-card__image"><img class="article-image" src="${escapeHtml(finalImageSrc)}" alt="${escapeHtml(article.title)}" loading="lazy" onerror="this.onerror=null;this.src='/images/logo.png';"><div class="news-card__image-overlay"></div></div>
+                    <div class="news-card__body"><span class="news-card__category">${escapeHtml(article.category || '')}</span><h3 class="news-card__title">${escapeHtml(article.title)}</h3><p class="news-card__excerpt">${escapeHtml(article.excerpt || '')}</p><a href="/news/${encodeURIComponent(article.slug || article.id)}" class="btn-expand news-card__read-more">Đọc thêm <i class="fas fa-arrow-right"></i></a></div>
+                </article>`;
+            }).join('') : '<p>Chưa có bài viết.</p>';
+        }).catch(() => { newsGrid.innerHTML = '<p>Không thể tải bài viết.</p>'; });
+    }
+
+    const newsArticle = document.getElementById('newsArticle');
+    if (newsArticle) {
+        const slug = decodeURIComponent(window.location.pathname.split('/').filter(Boolean).pop() || '');
+        const formatContent = content => String(content || '').split(/\n{2,}/)
+            .filter(Boolean)
+            .map(paragraph => `<p>${escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`)
+            .join('');
+        const resolveImage = (image, title = '', slug = '') => {
+            const rawImage = String(image || '').trim().replace(/^\/+/, '');
+            if (rawImage) {
+                const normalized = rawImage.replace(/\.(?=[^.]*$)/, match => match.toLowerCase());
+                const imageWithExtension = /\.(png|jpe?g|webp|svg)$/i.test(normalized) ? normalized : `${normalized}.png`;
+                const imagePath = newsImagePath(imageWithExtension);
+
+                // Some articles use legacy image fields like images/news-... which are not present
+                // in the current static /images folder. Map those legacy values to real hero assets.
+                if (/^\/images\/news-.*\.(png|jpe?g|webp|svg)$/i.test(imagePath) || /^images\/news-.*\.(png|jpe?g|webp|svg)$/i.test(normalized)) {
+                    if (/cách kiểm tra gas/i.test(title) || /kiem-tra-gas/i.test(slug)) return '/images/tin-tuc/kiemtragas.png';
+                    if (/inverter/i.test(title) || /inverter/i.test(slug)) return '/images/tin-tuc/maylanhinverter.png';
+                    if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(title) || /top-5-loi-may-lanh/i.test(slug)) return '/images/tin-tuc/top5loimaylanh.png';
+                    if (/cách chọn công suất/i.test(title) || /chon-cong-suat/i.test(slug)) return '/images/tin-tuc/cachchoncongsuat.png';
+                    if (/(bảo|bảo trì|bảo dưỡng)/i.test(title) || /bao-duong-may-lanh/i.test(slug)) return '/images/tin-tuc/baoduongmaylanh.png';
+                    if (/không lạnh/i.test(title) || /khong-lanh/i.test(slug)) return '/images/tin-tuc/maylanhkhonglanh.png';
+                    if (/dấu hiệu nhận biết/i.test(title) || /dau-hieu-nhan-biet/i.test(slug)) return '/images/tin-tuc/dauhieunhanbiet.png';
+                    if (/nên mua máy lạnh hãng nào/i.test(title) || /mua-may-lanh/i.test(slug)) return '/images/tin-tuc/hangmaylanh.png';
+                    if (/cách sử dụng máy lạnh tiết kiệm điện/i.test(title) || /tiet-kiem-dien/i.test(slug)) return '/images/tin-tuc/sudunghieuqua.png';
+                    return '/images/logo.png';
+                }
+
+                return imagePath;
+            }
+
+            // Fallback to specific hero images for known topics when no article image is provided
+            if (/inverter/i.test(String(title || ''))) return '/images/tin-tuc/maylanhinverter.png';
+            if (/cách chọn công suất/i.test(String(title || ''))) return '/images/tin-tuc/cachchoncongsuat.png';
+            if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(String(title || '')) || /Top 5 lỗi máy lạnh/i.test(String(title || ''))) return '/images/tin-tuc/top5loimaylanh.png';
+            if (/cách kiểm tra gas/i.test(String(title || ''))) return '/images/tin-tuc/kiemtragas.png';
+            if (/nên mua máy lạnh hãng nào/i.test(String(title || ''))) return '/images/tin-tuc/hangmaylanh.png';
+            // Final fallback
+            return '/images/logo.png';
+        };
+
+        request(`/news/api/slug/${encodeURIComponent(slug)}`).then(({ article, related }) => {
+            const date = article.published_at ? new Date(article.published_at).toLocaleDateString('vi-VN', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
+            document.title = `${article.title} | Điện Lạnh Nguyên Hùng`;
+            const breadcrumbTitle = document.getElementById('newsBreadcrumbTitle');
+            if (breadcrumbTitle) breadcrumbTitle.textContent = article.title;
+            newsArticle.className = 'news-detail__article';
+            newsArticle.innerHTML = `
+                <header class="news-detail__header"><span class="news-detail__category">${escapeHtml(article.category || 'Tin tức')}</span><h1>${escapeHtml(article.title)}</h1><div class="news-detail__meta"><span><i class="far fa-calendar"></i> ${escapeHtml(date)}</span>${article.author ? `<span><i class="far fa-user"></i> ${escapeHtml(article.author)}</span>` : ''}</div></header>
+            <figure class="news-detail__hero"><img class="article-image" src="${escapeHtml(resolveImage(article.image, article.title, article.slug))}" alt="${escapeHtml(article.title)}"></figure>
+                ${article.excerpt ? `<p class="news-detail__lead">${escapeHtml(article.excerpt)}</p>` : ''}
+                <div class="news-detail__content">${formatContent(article.content)}</div>
+                <div class="news-detail__footer"><a class="news-detail__back" href="/news"><i class="fas fa-arrow-left"></i> Quay lại Tin tức</a><div class="news-detail__share"><span>Chia sẻ bài viết</span><button type="button" data-share="facebook" aria-label="Chia sẻ Facebook"><i class="fab fa-facebook-f"></i></button><button type="button" data-share="copy" aria-label="Sao chép liên kết"></button><i class="fas fa-link"></i></button></div></div>
+            <section class="news-detail__related"><div class="section__header"><span class="section__tag">Có thể bạn quan tâm</span><h2 class="section__title">BÀI VIẾT LIÊN QUAN</h2></div><div class="news-detail__related-grid">${related.length ? related.map(item => `<a class="news-detail__related-card" href="/news/${encodeURIComponent(item.slug || item.id)}"><img class="article-image" src="${escapeHtml(resolveImage(item.image, item.title))}" alt="${escapeHtml(item.title)}"><div><span>${escapeHtml(item.category || 'Tin tức')}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.excerpt || '')}</p><strong>Đọc bài viết <i class="fas fa-arrow-right"></i></strong></div></a>`).join('') : '<p>Chưa có bài viết liên quan.</p>'}</div></section>`;
+        }).catch(error => {
+            newsArticle.className = 'news-detail__empty';
+            newsArticle.innerHTML = `<i class="fas fa-file-circle-xmark"></i><h1>Không tìm thấy bài viết</h1><p>${escapeHtml(error.message)}</p><a class="news-detail__back" href="/news">Quay lại Tin tức</a>`;
+        });
+    }
+
+    document.addEventListener('click', event => {
+        const shareButton = event.target.closest('[data-share]');
+        if (!shareButton) return;
+        const url = window.location.href;
+        if (shareButton.dataset.share === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
+        if (shareButton.dataset.share === 'copy' && navigator.clipboard) navigator.clipboard.writeText(url).then(() => { shareButton.title = 'Đã sao chép liên kết'; });
+    });
+
+    const serviceTitle = document.getElementById('serviceDetailName');
+    if (serviceTitle) {
+        const slug = new URLSearchParams(window.location.search).get('service');
+        if (slug) request(`/services/api/slug/${encodeURIComponent(slug)}`).then(service => {
+            document.getElementById('serviceNameBreadcrumb').textContent = service.name;
+            document.getElementById('serviceNameTitle').textContent = service.name.toUpperCase();
+            serviceTitle.textContent = service.name;
+            document.getElementById('servicePrice').textContent = service.price_range ? `Giá tham khảo: ${service.price_range}` : '';
+            document.getElementById('serviceDetailDesc').textContent = service.full_description || service.description || '';
+            if (service.issues.length) document.getElementById('commonIssues').innerHTML = service.issues.map(issue => `<li>${escapeHtml(issue)}</li>`).join('');
+            if (service.process.length) document.getElementById('repairProcess').innerHTML = service.process.map(step => `<li>${escapeHtml(step)}</li>`).join('');
+            document.title = `${service.name} | Điện Lạnh Nguyễn Hùng`;
+        }).catch(() => {});
+    }
+});

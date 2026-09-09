@@ -173,8 +173,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var allSubmenuLinks = document.querySelectorAll('.submenu li a');
     allSubmenuLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
-            // Let links to another Admin page perform a normal MVC navigation.
-            if (this.pathname && this.pathname !== window.location.pathname) return;
+            // Let links to another MVC route or query variant navigate normally.
+            // Review subpages share /admin/reviews but use ?type=customer/technician,
+            // so comparing only pathname would incorrectly keep the old dataset.
+            if (this.pathname && (
+                this.pathname !== window.location.pathname ||
+                this.search !== window.location.search
+            )) return;
             e.preventDefault();
 
             var sectionName = this.getAttribute('data-section');
