@@ -25,6 +25,13 @@ test('technician feedback has quality criteria but no payroll integration', () =
     assert.doesNotMatch(migration, /payrollService|payrolls|salary_history/);
 });
 
+test('public reviews API includes approved customer and technician reviews', () => {
+    const route = fs.readFileSync(path.join(__dirname, '../routes/reviews.js'), 'utf8');
+    assert.match(route, /WHERE r\.status = 'approved'/);
+    assert.doesNotMatch(route, /WHERE r\.status = 'approved'\s+AND r\.technician_id IS NULL/);
+    assert.match(route, /t\.full_name AS technician_name/);
+});
+
 test('customer review browser code and admin template compile', () => {
     const browserCode = fs.readFileSync(path.join(__dirname, '../../dienlanh- web/js/account.js'), 'utf8');
     assert.doesNotThrow(() => new Function(browserCode));

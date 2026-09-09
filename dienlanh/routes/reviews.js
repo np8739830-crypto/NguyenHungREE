@@ -19,8 +19,6 @@ router.get('/', async (req, res, next) => {
             FROM reviews r LEFT JOIN users u ON u.id = r.user_id
             LEFT JOIN technicians t ON t.id = r.technician_id
             WHERE r.status = 'approved'
-              AND r.technician_id IS NULL
-              AND r.booking_id IS NULL
             ORDER BY r.created_at DESC, r.id DESC`);
         return res.json({ reviews: result.recordset });
     } catch (error) { return next(error); }
