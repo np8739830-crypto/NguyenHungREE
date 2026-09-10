@@ -124,7 +124,12 @@ const sessionOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    const sessionDir = path.resolve(__dirname, process.env.SESSION_DB_DIR || 'data');
+    // Vercel mounts the deployed source under /var/task as read-only. Its
+    // serverless functions may only write temporary runtime files under /tmp.
+    const defaultSessionDir = process.env.VERCEL
+        ? path.join(os.tmpdir(), 'dienlanh-sessions')
+        : path.resolve(__dirname, 'data');
+    const sessionDir = process.env.SESSION_DB_DIR || defaultSessionDir;
     fs.mkdirSync(sessionDir, { recursive: true });
     sessionOptions.store = new SQLiteStore({ db: 'sessions.sqlite', dir: sessionDir });
 }
