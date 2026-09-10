@@ -123,13 +123,11 @@ const sessionOptions = {
     }
 };
 
-if (process.env.NODE_ENV === 'production') {
-    // Vercel mounts the deployed source under /var/task as read-only. Its
-    // serverless functions may only write temporary runtime files under /tmp.
-    const defaultSessionDir = process.env.VERCEL
-        ? path.join(os.tmpdir(), 'dienlanh-sessions')
-        : path.resolve(__dirname, 'data');
-    const sessionDir = process.env.SESSION_DB_DIR || defaultSessionDir;
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+    // A persistent Node.js server can keep sessions in a local SQLite file.
+    // Vercel functions cannot reliably use a native, filesystem-backed store,
+    // so they fall back to express-session's in-memory store instead.
+    const sessionDir = process.env.SESSION_DB_DIR || path.resolve(__dirname, 'data');
     fs.mkdirSync(sessionDir, { recursive: true });
     sessionOptions.store = new SQLiteStore({ db: 'sessions.sqlite', dir: sessionDir });
 }
