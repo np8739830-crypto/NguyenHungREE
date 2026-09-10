@@ -6149,6 +6149,53 @@ body > .hero .hero__actions .btn--outline-blue:hover {
 
 body > .hero .hero__illustration { display: none; }
 
+/* Keep both hero actions fully visible on short laptop screens and when the
+   browser is zoomed in. Width alone is not enough to detect this layout. */
+@media (min-width: 769px) and (max-height: 820px) {
+    body > .hero {
+        min-height: calc(100vh - var(--header-height));
+        padding: 20px 0 24px;
+        align-items: center;
+    }
+
+    body > .hero .hero__badge {
+        margin-bottom: 8px;
+        padding-block: 6px;
+    }
+
+    body > .hero .hero__title {
+        margin-bottom: 8px;
+        font-size: clamp(2rem, 3.2vw, 2.55rem);
+        line-height: 1.03;
+    }
+
+    body > .hero .hero__desc {
+        margin-bottom: 10px;
+        font-size: .94rem;
+        line-height: 1.42;
+    }
+
+    body > .hero .hero__benefits {
+        margin-bottom: 12px;
+    }
+
+    body > .hero .hero__benefits > div {
+        gap: 4px;
+        font-size: .72rem;
+    }
+
+    body > .hero .hero__benefits i {
+        width: 34px;
+        height: 34px;
+        font-size: .9rem;
+    }
+
+    body > .hero .hero__actions .btn {
+        min-height: 46px;
+        padding-block: 9px;
+    }
+}
+
 @media (max-width: 1024px) {
     body > .hero { min-height: 620px; background-position: 60% center; }
     body > .hero .hero__content { width: 52%; margin-left: 0; }
