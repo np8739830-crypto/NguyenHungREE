@@ -22,6 +22,7 @@ const { runRequestCodeMigration } = require('./services/requestCodeMigrationServ
 const { runContactOwnershipMigration } = require('./services/contactOwnershipMigrationService');
 const { runPayrollMigration } = require('./services/payrollMigrationService');
 const { runAttendanceMigration } = require('./services/attendanceMigrationService');
+const { addBuiltInServices } = require('./scripts/add-built-in-services');
 const { setUserLocals, csrfProtect } = require('./middleware/auth');
 
 const app = express();
@@ -218,6 +219,7 @@ async function start() {
             await runContactOwnershipMigration();
             await runPayrollMigration();
             await runAttendanceMigration();
+            await addBuiltInServices();
             console.log('✅ Cấu trúc phân quyền Admin đã sẵn sàng');
         } catch (error) {
             dbConnected = false;

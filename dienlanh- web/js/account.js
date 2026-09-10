@@ -113,7 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactSubjectLabels = {
         'su-may-lanh': 'Sửa máy lạnh', 've-sinh-may-lanh': 'Vệ sinh máy lạnh',
         'su-tu-lanh': 'Sửa tủ lạnh', 'su-may-giat': 'Sửa máy giặt',
-        'su-may-nuoc-nong': 'Sửa máy nước nóng', other: 'Khác'
+        'su-may-nuoc-nong': 'Sửa máy nước nóng',
+        've-sinh-may-giat': 'Vệ sinh máy giặt',
+        'trien-khai-he-thong-dien-lanh': 'Triển khai hệ thống điện lạnh',
+        'bao-tri-he-thong-dien-lanh': 'Bảo trì hệ thống điện lạnh',
+        other: 'Khác'
     };
     const formatHistoryDate = value => value ? new Date(value).toLocaleDateString('vi-VN', { timeZone: 'UTC' }) : '—';
     const formatHistoryTime = value => value ? new Date(value).toLocaleTimeString('vi-VN', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' }) : '—';

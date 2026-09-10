@@ -79,6 +79,30 @@ test('contact service subjects use readable Vietnamese labels', () => {
     assert.doesNotMatch(message, /su-tu-lanh/);
 });
 
+test('three new services use their full Vietnamese names in Telegram', () => {
+    const services = [
+        ['ve-sinh-may-giat', 'Vệ sinh máy giặt'],
+        ['trien-khai-he-thong-dien-lanh', 'Triển khai hệ thống điện lạnh'],
+        ['bao-tri-he-thong-dien-lanh', 'Bảo trì hệ thống điện lạnh']
+    ];
+
+    for (const [slug, label] of services) {
+        assert.equal(formatServiceLabel(slug), label);
+        assert.equal(formatContactSubject(slug), label);
+
+        const bookingMessage = formatBookingNotification({
+            device_type: slug === 've-sinh-may-giat' ? 'may-giat' : 'he-thong-dien-lanh',
+            service_type: slug
+        });
+        assert.match(bookingMessage, new RegExp(`- Dịch vụ: ${label}`));
+        assert.doesNotMatch(bookingMessage, new RegExp(slug));
+
+        const contactMessage = formatContactNotification({ subject: slug });
+        assert.match(contactMessage, new RegExp(`- Chủ đề: ${label}`));
+        assert.doesNotMatch(contactMessage, new RegExp(slug));
+    }
+});
+
 test('unknown slugs use readable title case fallback', () => {
     assert.equal(formatDeviceLabel('may-loc-khong-khi'), 'Máy Lọc Không Khí');
     assert.equal(formatServiceLabel('bao-tri-dinh-ky'), 'Bao Tri Dinh Ky');

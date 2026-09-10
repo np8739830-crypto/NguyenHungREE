@@ -60,7 +60,16 @@ const DEVICE_LABELS = Object.freeze({
     'tu-lanh': 'Tủ lạnh',
     'may-giat': 'Máy giặt',
     'may-nuoc-nong': 'Máy nước nóng',
+    'he-thong-dien-lanh': 'Hệ thống điện lạnh',
     'quat-dieu-hoa': 'Quạt điều hòa'
+});
+const SERVICE_LABELS = Object.freeze({
+    've-sinh-may-giat': 'Vệ sinh máy giặt',
+    'vệ sinh máy giặt': 'Vệ sinh máy giặt',
+    'trien-khai-he-thong-dien-lanh': 'Triển khai hệ thống điện lạnh',
+    'triển khai hệ thống điện lạnh': 'Triển khai hệ thống điện lạnh',
+    'bao-tri-he-thong-dien-lanh': 'Bảo trì hệ thống điện lạnh',
+    'bảo trì hệ thống điện lạnh': 'Bảo trì hệ thống điện lạnh'
 });
 const SLUG_WORD_LABELS = Object.freeze({
     may: 'Máy',
@@ -91,6 +100,7 @@ function formatServiceLabel(value) {
     const raw = valueOrFallback(value);
     if (raw === valueOrFallback()) return raw;
     const normalized = raw.toLowerCase();
+    if (SERVICE_LABELS[normalized]) return SERVICE_LABELS[normalized];
     if (normalized === 'sửa chữa' || normalized === 'sua-chua' || /^(su|sua)(-|$)/.test(normalized)) return 'Sửa chữa';
     if (normalized === 'vệ sinh' || normalized === 've-sinh' || /^ve-sinh(-|$)/.test(normalized)) return 'Vệ sinh';
     if (normalized === 'lắp đặt' || normalized === 'lap-dat' || /^lap-dat(-|$)/.test(normalized)) return 'Lắp đặt';
@@ -106,6 +116,7 @@ function formatContactSubject(value) {
         { pattern: /^(?:su|sua)-(.+)$/, label: 'Sửa' },
         { pattern: /^ve-sinh-(.+)$/, label: 'Vệ sinh' },
         { pattern: /^lap-dat-(.+)$/, label: 'Lắp đặt' },
+        { pattern: /^trien-khai-(.+)$/, label: 'Triển khai' },
         { pattern: /^bao-tri-(.+)$/, label: 'Bảo trì' }
     ];
 

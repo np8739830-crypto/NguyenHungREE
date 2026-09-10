@@ -332,6 +332,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const bookingFormWrapper = document.getElementById('bookingFormWrapper');
         const bookingTechniciansSection = document.querySelector('.booking-technicians-section');
         restoreRequestForm(bookingForm);
+        const requestedServiceSlug = new URLSearchParams(window.location.search).get('service');
+        const bookingServicePresets = {
+            'sua-may-lanh': { service: 'Sửa chữa', device: 'may-lanh' },
+            've-sinh-may-lanh': { service: 'Vệ sinh', device: 'may-lanh' },
+            'lap-dat-may-lanh': { service: 'Lắp đặt', device: 'may-lanh' },
+            'sua-tu-lanh': { service: 'Sửa chữa', device: 'tu-lanh' },
+            'sua-may-giat': { service: 'Sửa chữa', device: 'may-giat' },
+            'sua-may-nuoc-nong': { service: 'Sửa chữa', device: 'may-nuoc-nong' },
+            've-sinh-may-giat': { service: 'Vệ sinh máy giặt', device: 'may-giat' },
+            'trien-khai-he-thong-dien-lanh': { service: 'Triển khai hệ thống điện lạnh', device: 'he-thong-dien-lanh' },
+            'bao-tri-he-thong-dien-lanh': { service: 'Bảo trì hệ thống điện lạnh', device: 'he-thong-dien-lanh' }
+        };
+        const requestedServicePreset = bookingServicePresets[requestedServiceSlug];
+        if (requestedServicePreset) {
+            const serviceSelect = document.getElementById('booking-service');
+            const deviceSelect = document.getElementById('device-type');
+            if (serviceSelect) serviceSelect.value = requestedServicePreset.service;
+            if (deviceSelect) deviceSelect.value = requestedServicePreset.device;
+        }
+        const bookingServiceSelect = document.getElementById('booking-service');
+        const bookingDeviceSelect = document.getElementById('device-type');
+        const deviceBySpecificService = {
+            'Vệ sinh máy giặt': 'may-giat',
+            'Triển khai hệ thống điện lạnh': 'he-thong-dien-lanh',
+            'Bảo trì hệ thống điện lạnh': 'he-thong-dien-lanh'
+        };
+        bookingServiceSelect?.addEventListener('change', () => {
+            const matchingDevice = deviceBySpecificService[bookingServiceSelect.value];
+            if (matchingDevice && bookingDeviceSelect) bookingDeviceSelect.value = matchingDevice;
+        });
         const technicianSelect = document.getElementById('booking-technician');
         const appointmentDate = document.getElementById('booking-date');
         const appointmentTime = document.getElementById('booking-time');

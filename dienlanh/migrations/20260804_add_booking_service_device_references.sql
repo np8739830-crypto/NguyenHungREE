@@ -15,6 +15,7 @@ USING (VALUES
     (N'tu-lanh', N'Tủ lạnh'),
     (N'may-giat', N'Máy giặt'),
     (N'may-nuoc-nong', N'Máy nước nóng'),
+    (N'he-thong-dien-lanh', N'Hệ thống điện lạnh'),
     (N'khac', N'Thiết bị khác')
 ) AS source(slug, name)
 ON target.slug = source.slug

@@ -111,26 +111,30 @@
                                     <option value="tu-lanh">Tủ lạnh</option>
                                     <option value="may-giat">Máy giặt</option>
                                     <option value="may-nuoc-nong">Máy nước nóng</option>
+                                    <option value="he-thong-dien-lanh">Hệ thống điện lạnh</option>
                                     <option value="khac">Thiết bị khác</option>
                                 </select>
                                 <span class="form-error">Vui lòng chọn loại thiết bị</span>
                             </div>
                             <div class="form-group">
-                                <label for="booking-service">Dịch vụ cần sửa <span class="required">*</span></label>
+                                <label for="booking-service">Dịch vụ cần đặt <span class="required">*</span></label>
                                 <select id="booking-service" name="service_type" class="form-control" required>
                                     <option value="">Chọn dịch vụ</option>
                                     <option value="Lắp đặt">Lắp đặt</option>
                                     <option value="Vệ sinh">Vệ sinh</option>
                                     <option value="Sửa chữa">Sửa chữa</option>
+                                    <option value="Vệ sinh máy giặt">Vệ sinh máy giặt</option>
+                                    <option value="Triển khai hệ thống điện lạnh">Triển khai hệ thống điện lạnh</option>
+                                    <option value="Bảo trì hệ thống điện lạnh">Bảo trì hệ thống điện lạnh</option>
                                 </select>
                                 <span class="form-error">Vui lòng chọn dịch vụ</span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="description">Mô tả tình trạng thiết bị <span class="required">*</span></label>
-                            <textarea id="description" name="description" class="form-control" placeholder="Vui lòng mô tả chi tiết tình trạng thiết bị, lỗi gặp phải..." required></textarea>
-                            <span class="form-error">Vui lòng mô tả tình trạng thiết bị</span>
+                            <label for="description">Mô tả nhu cầu hoặc tình trạng thiết bị <span class="required">*</span></label>
+                            <textarea id="description" name="description" class="form-control" placeholder="Vui lòng mô tả nhu cầu thực hiện hoặc tình trạng thiết bị..." required></textarea>
+                            <span class="form-error">Vui lòng mô tả nhu cầu hoặc tình trạng thiết bị</span>
                         </div>
 
                         <div class="form-group request-image-upload">
@@ -352,8 +356,8 @@
     </div>
 
     <script src="js/request-image-upload.js"></script>
-    <script src="/js/script.js"></script>
-    <script src="js/backend.js"></script>
+    <script src="/js/script.js?v=20260910-booking-services"></script>
+    <script src="/js/backend.js?v=20260910-nine-services"></script>
 </body>
 
 </html>

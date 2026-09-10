@@ -111,8 +111,8 @@
                     </p>
 
                     <div class="service-detail__actions">
-                        <a href="/booking" class="btn btn--primary btn--large">
-                            <i class="fas fa-calendar-check"></i> ĐẶT LỊCH SỬA CHỮA NGAY
+                        <a href="/booking" class="btn btn--primary btn--large" id="serviceBookingButton">
+                            <i class="fas fa-calendar-check"></i> <span>ĐẶT LỊCH SỬA CHỮA NGAY</span>
                         </a>
                         <a href="tel:02822422822" class="btn btn--cyan btn--large">
                             <i class="fas fa-phone-alt"></i> GỌI 028 2242 2822
@@ -123,7 +123,7 @@
                     <div class="service-detail__card">
                         <div class="service-detail__card-header">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <h3 class="service-detail__card-title">Các lỗi thường gặp</h3>
+                            <h3 class="service-detail__card-title" id="serviceIssuesTitle">Các lỗi thường gặp</h3>
                         </div>
                         <ul class="service-detail__list" id="commonIssues">
                             <li>Máy lạnh không chạy, không lạnh</li>
@@ -136,7 +136,7 @@
 
                     <!-- Quy trình sửa chữa -->
                     <div class="service-detail__section">
-                        <h3 class="service-detail__section-title">Quy trình sửa chữa</h3>
+                        <h3 class="service-detail__section-title" id="serviceProcessTitle">Quy trình sửa chữa</h3>
                         <ol class="service-detail__process" id="repairProcess">
                             <li>Tiếp nhận yêu cầu qua điện thoại hoặc website</li>
                             <li>Kỹ thuật viên đến tận nơi kiểm tra thiết bị</li>
@@ -334,7 +334,7 @@
     </div>
 
     <script src="/js/script.js"></script>
-    <script src="js/backend.js"></script>
+    <script src="/js/backend.js?v=20260910-nine-services"></script>
     <script>
         // Dynamic service detail data based on URL parameter
         document.addEventListener('DOMContentLoaded', function() {
@@ -478,6 +478,89 @@
                         'Kiểm tra an toàn điện sau sửa chữa',
                         'Bàn giao và cấp phiếu bảo hành'
                     ]
+                },
+                've-sinh-may-giat': {
+                    name: 'Vệ sinh máy giặt',
+                    image: 'images/dich-vu/vsmaygiat.png',
+                    icon: 'fa-soap',
+                    price: 'Liên hệ để được báo giá',
+                    desc: 'Dịch vụ vệ sinh máy giặt chuyên sâu dành cho máy cửa trên và cửa ngang. Kỹ thuật viên tháo vệ sinh các bộ phận cần thiết, loại bỏ cặn bột giặt, xơ vải, nấm mốc và mùi hôi, giúp quần áo sạch hơn, máy vận hành ổn định và kéo dài tuổi thọ.',
+                    issuesTitle: 'Dấu hiệu máy giặt cần vệ sinh',
+                    processTitle: 'Quy trình vệ sinh máy giặt',
+                    bookingText: 'ĐẶT LỊCH VỆ SINH NGAY',
+                    issues: [
+                        'Lồng giặt xuất hiện cặn bẩn, nấm mốc hoặc mùi hôi',
+                        'Quần áo giặt xong còn bám cặn hoặc có mùi khó chịu',
+                        'Máy giặt thoát nước chậm, hoạt động lâu hơn bình thường',
+                        'Máy phát ra tiếng ồn hoặc rung mạnh khi vận hành',
+                        'Gioăng cao su, khay chứa bột giặt và bộ lọc bị bám bẩn',
+                        'Máy đã sử dụng từ 6 đến 12 tháng nhưng chưa được vệ sinh'
+                    ],
+                    process: [
+                        'Tiếp nhận thông tin loại máy và tình trạng đang sử dụng',
+                        'Kiểm tra hoạt động tổng quát trước khi vệ sinh',
+                        'Tháo các bộ phận cần thiết theo đúng kỹ thuật',
+                        'Làm sạch lồng giặt, mâm giặt, gioăng cửa, khay chứa và bộ lọc',
+                        'Khử khuẩn, loại bỏ cặn bẩn, nấm mốc và mùi hôi',
+                        'Lắp ráp hoàn chỉnh và chạy thử chương trình giặt',
+                        'Bàn giao, vệ sinh khu vực làm việc và hướng dẫn sử dụng'
+                    ]
+                },
+                'bao-tri-he-thong-dien-lanh': {
+                    name: 'Bảo trì hệ thống điện lạnh',
+                    image: 'images/dich-vu/baotrihethong.png',
+                    icon: 'fa-cogs',
+                    price: 'Liên hệ khảo sát và báo giá',
+                    desc: 'Dịch vụ bảo trì hệ thống điện lạnh định kỳ dành cho nhà ở, văn phòng, cửa hàng, nhà hàng và công trình. Kỹ thuật viên kiểm tra toàn diện thiết bị, vệ sinh hệ thống, đo thông số vận hành và xử lý sớm các nguy cơ hư hỏng, giúp hệ thống hoạt động ổn định, tiết kiệm điện và kéo dài tuổi thọ.',
+                    issuesTitle: 'Dấu hiệu hệ thống cần bảo trì',
+                    processTitle: 'Quy trình bảo trì hệ thống',
+                    bookingText: 'ĐẶT LỊCH BẢO TRÌ NGAY',
+                    issues: [
+                        'Khả năng làm lạnh giảm hoặc nhiệt độ giữa các khu vực không đồng đều',
+                        'Hệ thống tiêu thụ điện nhiều hơn so với bình thường',
+                        'Dàn lạnh, dàn nóng phát ra tiếng ồn hoặc rung bất thường',
+                        'Thiết bị chảy nước, đọng sương hoặc xuất hiện mùi khó chịu',
+                        'Áp suất gas, dòng điện hoặc nhiệt độ vận hành không ổn định',
+                        'Hệ thống thường xuyên báo lỗi hoặc tự động ngắt',
+                        'Thiết bị đã hoạt động liên tục trong thời gian dài chưa được kiểm tra'
+                    ],
+                    process: [
+                        'Tiếp nhận thông tin hệ thống và lịch sử vận hành',
+                        'Khảo sát toàn bộ dàn lạnh, dàn nóng và hệ thống điều khiển',
+                        'Kiểm tra nguồn điện, áp suất gas, dòng tải và nhiệt độ hoạt động',
+                        'Vệ sinh lưới lọc, dàn trao đổi nhiệt, máng và đường thoát nước',
+                        'Kiểm tra đường ống, mối nối, độ kín gas và các linh kiện',
+                        'Khắc phục hạng mục bất thường sau khi khách hàng xác nhận',
+                        'Chạy thử, ghi nhận thông số và lập biên bản bảo trì',
+                        'Bàn giao và đề xuất lịch bảo trì định kỳ tiếp theo'
+                    ]
+                },
+                'trien-khai-he-thong-dien-lanh': {
+                    name: 'Triển khai hệ thống điện lạnh',
+                    image: 'images/dich-vu/hethong.png',
+                    icon: 'fa-drafting-compass',
+                    price: 'Liên hệ khảo sát và báo giá',
+                    desc: 'Chúng tôi tư vấn, thiết kế và thi công hệ thống điện lạnh trọn gói cho nhà ở, văn phòng, cửa hàng, nhà hàng và công trình. Giải pháp được tính toán theo diện tích, công năng và ngân sách, bảo đảm đúng kỹ thuật, an toàn, thẩm mỹ và tiết kiệm năng lượng.',
+                    issuesTitle: 'Nhu cầu triển khai phổ biến',
+                    processTitle: 'Quy trình triển khai hệ thống',
+                    bookingText: 'ĐẶT LỊCH KHẢO SÁT NGAY',
+                    issues: [
+                        'Thiết kế hệ thống điều hòa cho nhà ở, văn phòng và cửa hàng',
+                        'Thi công hệ thống máy lạnh âm trần, cassette hoặc multi',
+                        'Lắp đặt đường ống đồng, ống thoát nước và dây điện âm tường',
+                        'Bố trí dàn nóng, dàn lạnh phù hợp với công năng và thẩm mỹ',
+                        'Cải tạo hoặc mở rộng hệ thống điện lạnh đang sử dụng',
+                        'Tối ưu công suất, điện năng và chi phí vận hành'
+                    ],
+                    process: [
+                        'Tiếp nhận nhu cầu, quy mô và thông tin công trình',
+                        'Khảo sát mặt bằng và đo đạc thực tế tại công trình',
+                        'Tư vấn thiết bị, công suất và phương án thi công phù hợp',
+                        'Lập bản vẽ phương án, dự toán và báo giá chi tiết',
+                        'Thi công hệ thống theo đúng tiêu chuẩn kỹ thuật và an toàn',
+                        'Chạy thử, nghiệm thu, bàn giao và hướng dẫn vận hành',
+                        'Bảo hành, bảo trì hệ thống sau khi đưa vào sử dụng'
+                    ]
                 }
             };
 
@@ -499,6 +582,10 @@
             document.getElementById('serviceDetailName').textContent = data.name;
             document.getElementById('servicePrice').textContent = 'Giá tham khảo: ' + data.price;
             document.getElementById('serviceDetailDesc').textContent = data.desc;
+            document.getElementById('serviceIssuesTitle').textContent = data.issuesTitle || 'Các lỗi thường gặp';
+            document.getElementById('serviceProcessTitle').textContent = data.processTitle || 'Quy trình sửa chữa';
+            document.querySelector('#serviceBookingButton span').textContent = data.bookingText || 'ĐẶT LỊCH SỬA CHỮA NGAY';
+            document.getElementById('serviceBookingButton').href = '/booking?service=' + encodeURIComponent(service);
 
             // Update issues
             const issuesList = document.getElementById('commonIssues');

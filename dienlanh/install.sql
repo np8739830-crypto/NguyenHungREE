@@ -540,11 +540,15 @@ SET [image] = CASE [slug]
     WHEN 'sua-tu-lanh' THEN 'dich-vu/suatulanh.png'
     WHEN 'sua-may-giat' THEN 'dich-vu/suamaygiat.png'
     WHEN 'sua-may-nuoc-nong' THEN 'dich-vu/suamaynong.png'
+    WHEN 've-sinh-may-giat' THEN 'dich-vu/vsmaygiat.png'
+    WHEN 'trien-khai-he-thong-dien-lanh' THEN 'dich-vu/hethong.png'
+    WHEN 'bao-tri-he-thong-dien-lanh' THEN 'dich-vu/baotrihethong.png'
     ELSE [image]
 END
 WHERE [slug] IN (
     'sua-may-lanh', 've-sinh-may-lanh', 'lap-dat-may-lanh',
-    'sua-tu-lanh', 'sua-may-giat', 'sua-may-nuoc-nong'
+    'sua-tu-lanh', 'sua-may-giat', 'sua-may-nuoc-nong',
+    've-sinh-may-giat', 'trien-khai-he-thong-dien-lanh', 'bao-tri-he-thong-dien-lanh'
 );
 GO
 

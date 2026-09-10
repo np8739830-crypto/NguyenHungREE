@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="pricing-category${groupIndex === 0 ? ' pricing-category--mobile-blue' : ''}">
                     <h3 class="pricing-category__title"><i class="fas ${escapeHtml(group.service_icon || 'fa-tools')}"></i> ${escapeHtml(group.service_name)}</h3>
                     <table class="pricing-table"><thead><tr><th>Dịch vụ</th><th>Mô tả</th><th>Giá tham khảo</th><th style="width:120px;">Đặt lịch</th></tr></thead>
-                    <tbody>${group.items.map(item => `<tr><td><strong>${escapeHtml(item.item_name)}</strong></td><td>${escapeHtml(item.description || '')}</td><td class="price-cell">${escapeHtml(item.price)}</td><td class="action-cell"><a href="/booking" class="btn btn--red btn-small">Đặt ngay</a></td></tr>`).join('')}</tbody></table>
+                    <tbody>${group.items.map(item => `<tr><td><strong>${escapeHtml(item.item_name)}</strong></td><td>${escapeHtml(item.description || '')}</td><td class="price-cell">${escapeHtml(item.price)}</td><td class="action-cell"><a href="/booking?service=${encodeURIComponent(group.service_slug)}" class="btn btn--red btn-small">Đặt ngay</a></td></tr>`).join('')}</tbody></table>
                 </div>`).join('');
         }
 
@@ -261,9 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (label.includes('Lịch sử đặt lịch') || label.includes('Lịch sử đặt hàng')) window.location.assign('/account/bookings');
     });
 
-    const servicesGrid = document.getElementById('servicesGrid');
-    if (servicesGrid) {
-        const additionalServices = [
+    const additionalServices = [
             {
                 name: 'Vệ sinh máy giặt',
                 slug: 've-sinh-may-giat',
@@ -285,7 +283,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: 'Kiểm tra, bảo dưỡng và bảo trì định kỳ hệ thống điện lạnh. Phát hiện sớm sự cố, duy trì hiệu suất hoạt động và kéo dài tuổi thọ thiết bị.',
                 sort_order: 9
             }
-        ];
+    ];
+
+    document.querySelectorAll('.footer__links').forEach(list => {
+        if (!list.querySelector('a[href*="/service-detail?"]')) return;
+        additionalServices.forEach(service => {
+            if (list.querySelector(`a[href="/service-detail?service=${service.slug}"]`)) return;
+            const item = document.createElement('li');
+            item.innerHTML = `<a href="/service-detail?service=${encodeURIComponent(service.slug)}">${escapeHtml(service.name)}</a>`;
+            list.appendChild(item);
+        });
+    });
+
+    const servicesGrid = document.getElementById('servicesGrid');
+    if (servicesGrid) {
 
         request('/services/api').then(apiServices => {
             const existingSlugs = new Set(apiServices.map(service => service.slug));

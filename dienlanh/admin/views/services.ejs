@@ -66,7 +66,10 @@
                                 'lap-dat-may-lanh': 'dich-vu/ldmaylanh.png',
                                 'sua-tu-lanh': 'dich-vu/suatulanh.png',
                                 'sua-may-giat': 'dich-vu/suamaygiat.png',
-                                'sua-may-nuoc-nong': 'dich-vu/suamaynong.png'
+                                'sua-may-nuoc-nong': 'dich-vu/suamaynong.png',
+                                've-sinh-may-giat': 'dich-vu/vsmaygiat.png',
+                                'trien-khai-he-thong-dien-lanh': 'dich-vu/hethong.png',
+                                'bao-tri-he-thong-dien-lanh': 'dich-vu/baotrihethong.png'
                             }; %>
                             <% services.forEach(service => { %>
                                 <tr data-service-name="<%= service.name.toLowerCase() %>" data-service='<%- JSON.stringify({ id: service.id, name: service.name, slug: service.slug, icon: service.icon || "", price_range: service.price_range || "", image: service.image || "", sort_order: service.sort_order || 0, status: service.status, description: service.description, full_description: service.full_description || "" }).replace(/'/g, "&#39;") %>'>
