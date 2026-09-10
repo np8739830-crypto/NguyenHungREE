@@ -263,7 +263,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const servicesGrid = document.getElementById('servicesGrid');
     if (servicesGrid) {
-        request('/services/api').then(services => {
+        const additionalServices = [
+            {
+                name: 'Vệ sinh máy giặt',
+                slug: 've-sinh-may-giat',
+                icon: 'fa-soap',
+                description: 'Vệ sinh máy giặt cửa trên, cửa ngang, loại bỏ bụi bẩn, cặn bám và mùi hôi. Giúp máy hoạt động sạch sẽ, hiệu quả và bền hơn.',
+                sort_order: 7
+            },
+            {
+                name: 'Triển khai hệ thống điện lạnh',
+                slug: 'trien-khai-he-thong-dien-lanh',
+                icon: 'fa-drafting-compass',
+                description: 'Thi công, lắp đặt hệ thống điện lạnh cho nhà ở, văn phòng, cửa hàng và công trình. Đảm bảo đúng kỹ thuật, an toàn và tối ưu hiệu quả.',
+                sort_order: 8
+            },
+            {
+                name: 'Bảo trì hệ thống điện lạnh',
+                slug: 'bao-tri-he-thong-dien-lanh',
+                icon: 'fa-cogs',
+                description: 'Kiểm tra, bảo dưỡng và bảo trì định kỳ hệ thống điện lạnh. Phát hiện sớm sự cố, duy trì hiệu suất hoạt động và kéo dài tuổi thọ thiết bị.',
+                sort_order: 9
+            }
+        ];
+
+        request('/services/api').then(apiServices => {
+            const existingSlugs = new Set(apiServices.map(service => service.slug));
+            const allServices = apiServices
+                .concat(additionalServices.filter(service => !existingSlugs.has(service.slug)))
+                .sort((first, second) => Number(first.sort_order || 0) - Number(second.sort_order || 0));
+            const serviceLimit = Number.parseInt(servicesGrid.dataset.serviceLimit || '', 10);
+            const services = Number.isInteger(serviceLimit) && serviceLimit > 0
+                ? allServices.slice(0, serviceLimit)
+                : allServices;
+
             servicesGrid.innerHTML = services.length ? services.map(service => `
                 <article class="service-card" data-service="${escapeHtml(service.slug)}">
                     <div class="service-card__icon"><i class="fas ${escapeHtml(service.icon || 'fa-tools')}"></i></div>

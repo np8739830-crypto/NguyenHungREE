@@ -3442,6 +3442,11 @@
     max-width: 1280px;
 }
 
+/* Trang chủ chỉ giới thiệu ba dịch vụ đầu; trang Dịch vụ không có giới hạn này. */
+.services__grid[data-service-limit='3'] .service-card:nth-child(n+4) {
+    display: none;
+}
+
 .services__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 28px;
@@ -6032,7 +6037,8 @@ body > .hero .hero__container {
 
 body > .hero .hero__content {
     width: min(44%, 590px);
-    margin-left: clamp(-52px, -3vw, -24px);
+    min-width: 0;
+    margin-left: 0;
     animation: fadeUp .8s ease;
 }
 

@@ -14,7 +14,8 @@
         "db:hash-passwords": "node scripts/hash-existing-passwords.js",
         "db:migrate-frontend": "node migrate-frontend-data.js",
         "db:migrate-rbac": "node scripts/migrate-rbac.js",
-        "db:migrate-payroll": "node scripts/migrate-payroll.js"
+        "db:migrate-payroll": "node scripts/migrate-payroll.js",
+        "db:add-built-in-services": "node scripts/add-built-in-services.js"
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
