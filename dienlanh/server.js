@@ -259,4 +259,8 @@ if (require.main === module) {
     start();
 }
 
-module.exports = { app, start };
+// Export the Express handler directly for serverless platforms such as
+// Vercel, while preserving the named properties used by local tooling/tests.
+module.exports = app;
+module.exports.app = app;
+module.exports.start = start;
