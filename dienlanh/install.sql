@@ -515,6 +515,22 @@ BEGIN
 END
 GO
 
+-- Additional built-in services (kept separate so existing databases can be upgraded safely).
+IF NOT EXISTS (SELECT * FROM [dbo].[services] WHERE [slug] = 've-sinh-may-giat')
+    INSERT INTO [dbo].[services] ([name], [slug], [icon], [description], [price_range], [sort_order])
+    VALUES (N'Vệ sinh máy giặt', 've-sinh-may-giat', 'fa-soap', N'Vệ sinh máy giặt cửa trên, cửa ngang, loại bỏ bụi bẩn, cặn bám và mùi hôi. Giúp máy hoạt động sạch sẽ, hiệu quả và bền hơn.', N'Liên hệ', 7);
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[services] WHERE [slug] = 'trien-khai-he-thong-dien-lanh')
+    INSERT INTO [dbo].[services] ([name], [slug], [icon], [description], [price_range], [sort_order])
+    VALUES (N'Triển khai hệ thống điện lạnh', 'trien-khai-he-thong-dien-lanh', 'fa-drafting-compass', N'Thi công, lắp đặt hệ thống điện lạnh cho nhà ở, văn phòng, cửa hàng và công trình. Đảm bảo đúng kỹ thuật, an toàn và tối ưu hiệu quả.', N'Liên hệ', 8);
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[services] WHERE [slug] = 'bao-tri-he-thong-dien-lanh')
+    INSERT INTO [dbo].[services] ([name], [slug], [icon], [description], [price_range], [sort_order])
+    VALUES (N'Bảo trì hệ thống điện lạnh', 'bao-tri-he-thong-dien-lanh', 'fa-cogs', N'Kiểm tra, bảo dưỡng và bảo trì định kỳ hệ thống điện lạnh. Phát hiện sớm sự cố, duy trì hiệu suất hoạt động và kéo dài tuổi thọ thiết bị.', N'Liên hệ', 9);
+GO
+
 -- Keep the built-in services associated with their matching image assets.
 UPDATE [dbo].[services]
 SET [image] = CASE [slug]

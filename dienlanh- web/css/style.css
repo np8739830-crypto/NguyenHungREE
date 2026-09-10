@@ -3449,7 +3449,7 @@
 }
 
 .services__grid .service-card {
-    --service-art: url('/images/service-card/sua-may-lanh.png');
+    --service-art: url('/images/service-card/sua-may-lanh-v5.png');
     isolation: isolate;
     min-width: 0;
     min-height: 360px;
@@ -3464,15 +3464,18 @@
 }
 
 .services__grid .service-card:nth-child(2),
-.services__grid .service-card[data-service='ve-sinh-may-lanh'] { --service-art: url('/images/service-card/ve-sinh-may-lanh.png'); }
+.services__grid .service-card[data-service='ve-sinh-may-lanh'] { --service-art: url('/images/service-card/ve-sinh-may-lanh-v3.png'); }
 .services__grid .service-card:nth-child(3),
-.services__grid .service-card[data-service='lap-dat-may-lanh'] { --service-art: url('/images/service-card/lap-dat-may-lanh.png'); }
+.services__grid .service-card[data-service='lap-dat-may-lanh'] { --service-art: url('/images/service-card/lap-dat-may-lanh-v6.png'); }
 .services__grid .service-card:nth-child(4),
-.services__grid .service-card[data-service='sua-tu-lanh'] { --service-art: url('/images/service-card/sua-tu-lanh.png'); }
+.services__grid .service-card[data-service='sua-tu-lanh'] { --service-art: url('/images/service-card/sua-tu-lanh-v7.png'); }
 .services__grid .service-card:nth-child(5),
-.services__grid .service-card[data-service='sua-may-giat'] { --service-art: url('/images/service-card/sua-may-giat.png'); }
+.services__grid .service-card[data-service='sua-may-giat'] { --service-art: url('/images/service-card/sua-may-giat-v3.png'); }
 .services__grid .service-card:nth-child(6),
-.services__grid .service-card[data-service='sua-may-nuoc-nong'] { --service-art: url('/images/service-card/sua-may-nuoc-nong.png'); }
+.services__grid .service-card[data-service='sua-may-nuoc-nong'] { --service-art: url('/images/service-card/sua-may-nuoc-nong-v3.png'); }
+.services__grid .service-card[data-service='ve-sinh-may-giat'] { --service-art: url('/images/service-card/ve-sinh-may-giat.png'); }
+.services__grid .service-card[data-service='trien-khai-he-thong-dien-lanh'] { --service-art: url('/images/service-card/trien-khai-he-thong-dien-lanh.png'); }
+.services__grid .service-card[data-service='bao-tri-he-thong-dien-lanh'] { --service-art: url('/images/service-card/bao-tri-he-thong-dien-lanh.png?v=2'); }
 
 .services__grid .service-card::before {
     content: '';
