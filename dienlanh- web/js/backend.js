@@ -3,12 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // When this frontend is opened through a static preview server, its
             // relative API calls would otherwise target that preview server instead
             // of the Express backend.
-            const localPreview = window.location.protocol !== 'file:' &&
-                window.location.port !== '5000';
             const apiHost = window.location.hostname || 'localhost';
+            const localPreviewHost = apiHost === 'localhost' || apiHost === '127.0.0.1' ||
+                /^10\./.test(apiHost) || /^192\.168\./.test(apiHost) ||
+                /^172\.(1[6-9]|2\d|3[01])\./.test(apiHost);
+            const localPreview = window.location.protocol !== 'file:' &&
+                localPreviewHost && window.location.port !== '5000';
             const apiBase = localPreview || window.location.protocol === 'file:' ?
-                `http://${apiHost}:5000` :
-                '';
+                `http://${apiHost}:5000` : '';
 
             function setAuthenticatedUser(user) {
                 const headerAuth = document.querySelector('.header__auth');
