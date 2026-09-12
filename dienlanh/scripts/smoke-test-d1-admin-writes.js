@@ -4,11 +4,13 @@ process.env.DATABASE_PROVIDER = 'd1';
 const database = require('../config/database');
 const attendance = require('../services/attendanceService');
 const rbac = require('../controllers/rbacController');
+const technicianDeletion = require('../services/technicianDeletionService');
 
 async function main() {
     const query = database.query;
     const tag = `codex-${Date.now()}`;
     let roleId;
+    let temporaryTechnicianId;
     const actor = (await query("SELECT id FROM users WHERE role='admin' OR role='administrator' ORDER BY id LIMIT 1")).recordset[0];
     const technician = (await query("SELECT id FROM technicians WHERE COALESCE(work_status,'active')<>'inactive' ORDER BY id LIMIT 1")).recordset[0];
     if (!actor || !technician) throw new Error('Can actor admin va ky thuat vien de chay smoke test.');
@@ -45,6 +47,14 @@ async function main() {
         const count = Number((await query('SELECT COUNT(*) total FROM role_permissions WHERE role_id=@roleId', { roleId })).recordset[0].total);
         if (!count) throw new Error('RBAC permissions were not saved');
         console.log('PASS role permission update');
+
+        temporaryTechnicianId = (await query("INSERT INTO technicians(full_name,phone,email,specialty,service_area,work_status) VALUES(@name,@phone,@email,'test','test','active') RETURNING id", {
+            name: tag, phone: `09${String(Date.now()).slice(-8)}`, email: `${tag}@example.invalid`
+        })).recordset[0].id;
+        const deletion = await technicianDeletion.removeOrDeactivate(temporaryTechnicianId);
+        if (!deletion.deleted || deletion.deactivated) throw new Error(`Technician delete failed: ${JSON.stringify(deletion)}`);
+        temporaryTechnicianId = undefined;
+        console.log('PASS technician safe deletion');
     } finally {
         await query('DELETE FROM attendance_audit_logs WHERE reason=@tag OR attendance_date=@date', { tag, date: '2099-12-30' }).catch(() => {});
         await query('DELETE FROM attendance WHERE attendance_date=@date', { date: '2099-12-30' }).catch(() => {});
@@ -53,6 +63,7 @@ async function main() {
             await query('DELETE FROM role_permissions WHERE role_id=@roleId', { roleId }).catch(() => {});
             await query('DELETE FROM roles WHERE id=@roleId', { roleId }).catch(() => {});
         }
+        if (temporaryTechnicianId) await query('DELETE FROM technicians WHERE id=@id', { id: temporaryTechnicianId }).catch(() => {});
     }
 }
 
