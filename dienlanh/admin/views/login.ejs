@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
-    <link rel="stylesheet" href="/admin/css/admin-login.css?v=20260811-2">
+    <link rel="stylesheet" href="/admin/css/admin-login.css?v=20260912-1">
 </head>
 <body class="admin-login-page">
     <main class="admin-login" aria-labelledby="admin-login-title">
@@ -22,10 +22,22 @@
                 <p>Vui lòng đăng nhập để tiếp tục</p>
             </div>
 
+            <div class="admin-login__alert admin-login__alert--warning" role="note">
+                <span aria-hidden="true">!</span>
+                <div><strong>Cảnh báo:</strong> Đây là khu vực quản trị. Chỉ người được cấp quyền mới được phép đăng nhập.</div>
+            </div>
+
             <% if (error_msg && error_msg.length) { %>
                 <div class="admin-login__alert" role="alert">
                     <span aria-hidden="true">!</span>
                     <%= error_msg[0] %>
+                </div>
+            <% } %>
+
+            <% if (warning_msg && warning_msg.length) { %>
+                <div class="admin-login__alert admin-login__alert--warning" role="alert">
+                    <span aria-hidden="true">!</span>
+                    <%= warning_msg[0] %>
                 </div>
             <% } %>
 

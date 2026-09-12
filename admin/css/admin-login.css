@@ -108,6 +108,16 @@
     font-weight: 800;
 }
 
+.admin-login__alert--warning {
+    border-color: #fde68a;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.admin-login__alert--warning span {
+    background: #d97706;
+}
+
 .admin-login__form {
     display: grid;
     gap: 18px;

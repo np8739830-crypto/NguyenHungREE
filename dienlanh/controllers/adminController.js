@@ -50,11 +50,11 @@ async function dashboard(req, res, next) {
                 (SELECT COUNT(*) FROM bookings WHERE status = 'completed') AS completedBookings,
                 (SELECT COUNT(*) FROM users WHERE created_at >= DATEADD(day, -30, GETDATE())) AS newCustomers
             `),
-            query(`SELECT TOP 5 s.id, s.name, s.image, s.icon, s.price_range, s.status,
+            query(`SELECT s.id, s.name, s.slug, s.image, s.icon, s.price_range, s.status,
                 COUNT(b.id) AS booking_count
                 FROM services s
                 LEFT JOIN bookings b ON ${serviceJoinCondition}
-                GROUP BY s.id, s.name, s.image, s.icon, s.price_range, s.status
+                GROUP BY s.id, s.name, s.slug, s.image, s.icon, s.price_range, s.status
                 ORDER BY COUNT(b.id) DESC, s.id ASC`),
             query(`SELECT TOP 5 b.id, b.fullname, b.phone, b.service_type, b.device_type, b.booking_date, b.booking_time, b.created_at, b.status,
                 s.name AS service_name, d.name AS device_name
