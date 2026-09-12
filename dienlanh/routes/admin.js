@@ -17,11 +17,13 @@ const reviewAdminController = require('../controllers/reviewAdminController');
 const payrollController = require('../controllers/payrollController');
 const attendanceController = require('../controllers/attendanceController');
 const { getAuthorization, can } = require('../services/authorizationService');
+const { persistMulterFile } = require('../services/blobStorageService');
 const router = express.Router();
+const runtimeUploadDirectory = process.env.VERCEL ? '/tmp' : path.join(__dirname, '../public/uploads');
 
 const upload = multer({
-    storage: multer.diskStorage({
-        destination: path.join(__dirname, '../public/uploads'),
+    storage: process.env.VERCEL ? multer.memoryStorage() : multer.diskStorage({
+        destination: runtimeUploadDirectory,
         filename: (req, file, callback) => callback(null, `avatar-${req.session.admin.id}-${Date.now()}${path.extname(file.originalname).toLowerCase()}`)
     }),
     limits: { fileSize: 2 * 1024 * 1024 },
@@ -37,8 +39,8 @@ const upload = multer({
 });
 
 const serviceImageUpload = multer({
-    storage: multer.diskStorage({
-        destination: path.join(__dirname, '../public/uploads'),
+    storage: process.env.VERCEL ? multer.memoryStorage() : multer.diskStorage({
+        destination: runtimeUploadDirectory,
         filename: (req, file, callback) => callback(null, `service-${req.session.admin.id}-${Date.now()}${path.extname(file.originalname).toLowerCase()}`)
     }),
     limits: { fileSize: 5 * 1024 * 1024 },
@@ -55,7 +57,11 @@ const serviceImageUpload = multer({
 
 function uploadServiceImage(req, res, next) {
     serviceImageUpload.single('service_image')(req, res, error => {
-        if (!error) return next();
+        if (!error) {
+            if (!req.file || !process.env.VERCEL) return next();
+            const filename = `service-${req.session.admin.id}-${Date.now()}${path.extname(req.file.originalname).toLowerCase()}`;
+            return persistMulterFile(req.file, filename).then(() => next()).catch(next);
+        }
         req.flash('error', error.code === 'LIMIT_FILE_SIZE' ? 'Ảnh dịch vụ tối đa 5 MB' : error.message);
         return res.redirect('/admin/products');
     });
@@ -71,7 +77,9 @@ function uploadAvatar(redirectPath) {
                 req.flash('error', message);
                 return res.redirect(redirectPath);
             }
-            return next();
+            if (!req.file || !process.env.VERCEL) return next();
+            const filename = `avatar-${req.session.admin.id}-${Date.now()}${path.extname(req.file.originalname).toLowerCase()}`;
+            return persistMulterFile(req.file, filename).then(() => next()).catch(next);
         });
     };
 }

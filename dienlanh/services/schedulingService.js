@@ -1,4 +1,5 @@
-const { query, getConnection, sql } = require('../config/database');
+const database = require('../config/database');
+const { query, getConnection, sql } = database;
 
 const WORKING_SLOTS = Object.freeze([
     '07:45 - 09:45',
@@ -117,6 +118,23 @@ async function createBookingAtomically(data) {
         const error = new Error('Khung giờ hẹn không hợp lệ.');
         error.statusCode = 400;
         throw error;
+    }
+
+    // D1's HTTPS API does not expose the SQL Server transaction objects used
+    // below. Perform the same validation immediately before the insert. The
+    // database remains the source of truth and duplicate checks are repeated.
+    if (database.provider === 'd1') {
+        await assertAvailableTechnician({
+            technicianId: data.technician_id,
+            appointmentDate: data.booking_date,
+            appointmentTime: data.booking_time
+        });
+        const keys = Object.keys(data).filter(key => data[key] !== undefined && data[key] !== null && data[key] !== '');
+        const result = await query(
+            `INSERT INTO bookings (${keys.join(', ')}) VALUES (${keys.map(key => `@${key}`).join(', ')}) RETURNING id`,
+            data
+        );
+        return result.recordset[0].id;
     }
 
     const pool = await getConnection();

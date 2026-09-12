@@ -184,7 +184,7 @@ async function testConnection() {
     }
 }
 
-module.exports = {
+const sqlServerExports = {
     sql,
     getConnection,
     query,
@@ -198,3 +198,12 @@ module.exports = {
     paginate,
     testConnection
 };
+
+const shouldUseD1 = process.env.DATABASE_PROVIDER === 'd1' || (
+    Boolean(process.env.VERCEL) &&
+    Boolean(process.env.CLOUDFLARE_ACCOUNT_ID) &&
+    Boolean(process.env.CLOUDFLARE_D1_DATABASE_ID) &&
+    Boolean(process.env.CLOUDFLARE_D1_API_TOKEN)
+);
+
+module.exports = shouldUseD1 ? require('./d1Database') : sqlServerExports;

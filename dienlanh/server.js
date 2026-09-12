@@ -6,7 +6,6 @@
 require('dotenv').config({ override: true });
 const express = require('express');
 const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
 const flash = require('connect-flash');
 const os = require('os');
 const fs = require('fs');
@@ -14,7 +13,8 @@ const path = require('path');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
-const { testConnection } = require('./config/database');
+const database = require('./config/database');
+const { testConnection } = database;
 const { runRbacMigration } = require('./services/rbacMigrationService');
 const { runPasswordResetMigration } = require('./services/passwordResetMigrationService');
 const { runReviewMigration } = require('./services/reviewMigrationService');
@@ -22,7 +22,6 @@ const { runRequestCodeMigration } = require('./services/requestCodeMigrationServ
 const { runContactOwnershipMigration } = require('./services/contactOwnershipMigrationService');
 const { runPayrollMigration } = require('./services/payrollMigrationService');
 const { runAttendanceMigration } = require('./services/attendanceMigrationService');
-const { addBuiltInServices } = require('./scripts/add-built-in-services');
 const { setUserLocals, csrfProtect } = require('./middleware/auth');
 
 const app = express();
@@ -94,6 +93,17 @@ app.use(cookieParser());
 
 // Static files
 app.use('/public', express.static(path.join(__dirname, 'public')));
+if (process.env.VERCEL) {
+    app.get('/uploads/:filename', async (req, res, next) => {
+        try {
+            const { pipeBlob, safeFilename } = require('./services/blobStorageService');
+            const filename = safeFilename(req.params.filename);
+            if (!filename || !await pipeBlob(`public-uploads/${filename}`, res)) return res.sendStatus(404);
+        } catch (error) {
+            return next(error);
+        }
+    });
+}
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use('/admin/css', express.static(path.join(legacyAdmin, 'css')));
 app.use('/admin/js', express.static(path.join(legacyAdmin, 'js')));
@@ -124,12 +134,16 @@ const sessionOptions = {
     }
 };
 
-if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+if (database.provider === 'd1') {
+    const D1SessionStore = require('./services/d1SessionStore');
+    sessionOptions.store = new D1SessionStore({ ttl: sessionOptions.cookie.maxAge });
+} else if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     // A persistent Node.js server can keep sessions in a local SQLite file.
     // Vercel functions cannot reliably use a native, filesystem-backed store,
     // so they fall back to express-session's in-memory store instead.
     const sessionDir = process.env.SESSION_DB_DIR || path.resolve(__dirname, 'data');
     fs.mkdirSync(sessionDir, { recursive: true });
+    const SQLiteStore = require('connect-sqlite3')(session);
     sessionOptions.store = new SQLiteStore({ db: 'sessions.sqlite', dir: sessionDir });
 }
 
@@ -210,8 +224,9 @@ async function start() {
     // Test database connection
     let dbConnected = await testConnection();
 
-    if (dbConnected) {
+    if (dbConnected && database.provider !== 'd1') {
         try {
+            const { addBuiltInServices } = require('./scripts/add-built-in-services');
             await runRbacMigration();
             await runPasswordResetMigration();
             await runReviewMigration();

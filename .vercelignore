@@ -1,0 +1,16 @@
+.git
+.vercel
+.env
+.env.*
+node_modules
+edge
+tools
+tmp
+**/node_modules
+**/tests
+**/scripts
+**/migrations
+**/*.sql
+dienlanh/private
+dienlanh/data
+dienlanh/public/uploads/*

@@ -3,6 +3,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const multer = require('multer');
 const { query } = require('../config/database');
+const { isBlobEnabled, uploadBuffer, deleteBlob } = require('./blobStorageService');
 
 const MAX_IMAGES = 3;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -11,6 +12,9 @@ const TYPES = {
     'image/png': { extensions: ['.png'], signature: buffer => buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), extension: '.png' },
     'image/webp': { extensions: ['.webp'], signature: buffer => buffer.length >= 12 && buffer.subarray(0, 4).toString() === 'RIFF' && buffer.subarray(8, 12).toString() === 'WEBP', extension: '.webp' }
 };
+const requestImageDirectory = process.env.VERCEL
+    ? path.join('/tmp', 'request-images')
+    : path.join(__dirname, '../private/request-images');
 
 const uploadRequestImages = multer({
     storage: multer.memoryStorage(), limits: { files: MAX_IMAGES, fileSize: MAX_FILE_SIZE },
@@ -31,13 +35,14 @@ function validateImages(files = []) {
 
 async function storeImages(requestType, requestId, files = []) {
     validateImages(files);
-    const directory = path.join(__dirname, '../private/request-images');
+    const directory = requestImageDirectory;
     await fs.mkdir(directory, { recursive: true });
     const saved = [];
     try {
         for (const file of files) {
             const filename = `${requestType}-${requestId}-${crypto.randomBytes(20).toString('hex')}${TYPES[file.mimetype].extension}`;
-            await fs.writeFile(path.join(directory, filename), file.buffer, { flag: 'wx' });
+            if (isBlobEnabled()) await uploadBuffer(`request-images/${filename}`, file.buffer, file.mimetype);
+            else await fs.writeFile(path.join(directory, filename), file.buffer, { flag: 'wx' });
             saved.push({ filename, mime_type: file.mimetype, size_bytes: file.size });
         }
         return saved;
@@ -48,7 +53,9 @@ async function storeImages(requestType, requestId, files = []) {
 }
 
 async function removeStoredImages(filenames = []) {
-    await Promise.all(filenames.map(filename => fs.unlink(path.join(__dirname, '../private/request-images', filename)).catch(() => {})));
+    await Promise.all(filenames.map(filename => isBlobEnabled()
+        ? deleteBlob(`request-images/${filename}`).catch(() => {})
+        : fs.unlink(path.join(requestImageDirectory, filename)).catch(() => {})));
 }
 
 function isMissingRequestImagesTable(error) {

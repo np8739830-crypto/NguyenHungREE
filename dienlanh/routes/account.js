@@ -4,13 +4,14 @@ const crypto = require('crypto');
 const multer = require('multer');
 const { query } = require('../config/database');
 const { getRequestImages } = require('../services/requestImageService');
+const { persistMulterFile } = require('../services/blobStorageService');
 const { requireAuth, csrfProtect } = require('../middleware/auth');
 
 const router = express.Router();
 const site = path.resolve(__dirname, '../../dienlanh- web');
 
 const profileFields = 'id, name, email, phone, address, avatar, created_at';
-const avatarStorage = multer.diskStorage({
+const avatarStorage = process.env.VERCEL ? multer.memoryStorage() : multer.diskStorage({
     destination: path.resolve(__dirname, '../public/uploads'),
     filename: (req, file, callback) => callback(null, `avatar-${req.session.customer.id}-${Date.now()}-${crypto.randomBytes(6).toString('hex')}${path.extname(file.originalname).toLowerCase()}`)
 });
@@ -40,7 +41,18 @@ router.get('/api/profile', requireAuth, async (req, res, next) => {
     }
 });
 
-router.put('/api/profile', requireAuth, uploadAvatar.single('avatar'), async (req, res, next) => {
+async function persistCustomerAvatar(req, res, next) {
+    if (!req.file || !process.env.VERCEL) return next();
+    const filename = `avatar-${req.session.customer.id}-${Date.now()}-${crypto.randomBytes(6).toString('hex')}${path.extname(req.file.originalname).toLowerCase()}`;
+    try {
+        await persistMulterFile(req.file, filename);
+        return next();
+    } catch (error) {
+        return next(error);
+    }
+}
+
+router.put('/api/profile', requireAuth, uploadAvatar.single('avatar'), persistCustomerAvatar, async (req, res, next) => {
     try {
         const name = String(req.body.name || '').trim();
         const phone = String(req.body.phone || '').trim();
