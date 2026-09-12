@@ -92,22 +92,29 @@ function bindParameters(statement, parameters) {
 
 async function requestD1(sql, params = []) {
     assertConfigured();
-    const response = await fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
-        {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sql, params })
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+            const response = await fetch(
+                `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
+                {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sql, params })
+                }
+            );
+            const payload = await response.json();
+            const failed = payload.result?.find(item => item.success === false || item.error);
+            if (!response.ok || !payload.success || failed) {
+                const error = new Error(payload.errors?.[0]?.message || failed?.error || `Cloudflare D1 HTTP ${response.status}`);
+                error.status = response.status;
+                throw error;
+            }
+            return payload.result?.[0] || { results: [], meta: {} };
+        } catch (error) {
+            const retryable = !error.status || error.status === 429 || error.status >= 500;
+            if (!retryable || attempt === 2) throw error;
         }
-    );
-    const payload = await response.json();
-    const failed = payload.result?.find(item => item.success === false || item.error);
-    if (!response.ok || !payload.success || failed) {
-        const error = new Error(payload.errors?.[0]?.message || failed?.error || `Cloudflare D1 HTTP ${response.status}`);
-        error.status = response.status;
-        throw error;
     }
-    return payload.result?.[0] || { results: [], meta: {} };
 }
 
 async function query(sqlText, parameters = {}) {

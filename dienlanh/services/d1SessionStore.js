@@ -7,7 +7,11 @@ class D1SessionStore extends session.Store {
     constructor(options = {}) {
         super();
         this.ttl = Number(options.ttl) || 24 * 60 * 60 * 1000;
-        this.ready = requestD1(`
+        this.ready = this.initialize();
+    }
+
+    initialize() {
+        const ready = requestD1(`
             CREATE TABLE IF NOT EXISTS app_sessions (
                 sid TEXT PRIMARY KEY,
                 data TEXT NOT NULL,
@@ -17,6 +21,19 @@ class D1SessionStore extends session.Store {
         `).then(() => requestD1(
             'CREATE INDEX IF NOT EXISTS ix_app_sessions_expires_at ON app_sessions(expires_at)'
         ));
+        // Attach a handler immediately so a short network failure during a
+        // serverless cold start can never become an unhandled rejection.
+        ready.catch(() => {});
+        return ready;
+    }
+
+    async ensureReady() {
+        try {
+            await this.ready;
+        } catch {
+            this.ready = this.initialize();
+            await this.ready;
+        }
     }
 
     expiry(value) {
@@ -28,7 +45,7 @@ class D1SessionStore extends session.Store {
 
     async execute(callback, operation) {
         try {
-            await this.ready;
+            await this.ensureReady();
             callback(null, await operation());
         } catch (error) {
             callback(error);

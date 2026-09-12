@@ -212,6 +212,7 @@ app.use((req, res) => {
 // ===== ERROR HANDLER =====
 app.use((err, req, res, next) => {
     console.error('❌ Server Error:', err.stack);
+    if (res.headersSent) return next(err);
     res.status(500).render('pages/500', {
         title: '500 - Lỗi máy chủ',
         layout: 'layouts/main',
