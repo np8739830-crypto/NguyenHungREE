@@ -1,4 +1,5 @@
-const { query, getConnection, sql } = require('../config/database');
+const database = require('../config/database');
+const { query, getConnection, sql } = database;
 const crypto = require('crypto');
 const attendanceService = require('./attendanceService');
 const round = value => Math.round((Number(value) || 0) * 100) / 100;
@@ -64,6 +65,18 @@ function verifyDeletePassword(password){
 async function remove(id,actor,deletePassword){
  if(!Number.isInteger(id)||id<=0)throw Object.assign(new Error('Mã bảng lương không hợp lệ.'),{statusCode:400});
  verifyDeletePassword(deletePassword);
+ if(database.provider==='d1'){
+  const payroll=(await query(`SELECT p.id,p.employee_id,p.payroll_month,p.payroll_year,p.net_salary,p.status,p.is_locked,t.full_name,CONCAT('KT-',RIGHT('000'+CAST(t.id AS VARCHAR(10)),3)) employee_code FROM dbo.payrolls p JOIN dbo.technicians t ON t.id=p.employee_id WHERE p.id=@id`,{id})).recordset[0];
+  if(!payroll)return false;
+  const counts={};
+  for(const [key,table] of [['advances','payroll_advances'],['payments','payroll_payments'],['deductions','payroll_deductions'],['bonuses','payroll_bonuses'],['audit','payroll_audit_logs']]){
+   counts[key]=(await query(`DELETE FROM dbo.${table} WHERE payroll_id=@id`,{id})).rowsAffected[0]||0;
+  }
+  await query('DELETE FROM dbo.payrolls WHERE id=@id',{id});
+  const details=`Admin da xoa bang luong #${payroll.id}, ${payroll.employee_code} - ${payroll.full_name}, ky ${String(payroll.payroll_month).padStart(2,'0')}/${payroll.payroll_year}, thuc nhan ${num(payroll.net_salary).toLocaleString('vi-VN')}d, trang thai ${payroll.status}.`;
+  await query(`INSERT dbo.payroll_audit_logs(payroll_id,employee_id,action_key,actor_id,details) VALUES(NULL,@employeeId,'delete',@actor,@details)`,{employeeId:payroll.employee_id,actor,details});
+  return{deleted:true,payroll,counts};
+ }
  const connection=await getConnection(),transaction=new sql.Transaction(connection);await transaction.begin();
  try{
   const payrollRequest=new sql.Request(transaction);payrollRequest.input('id',sql.Int,id);

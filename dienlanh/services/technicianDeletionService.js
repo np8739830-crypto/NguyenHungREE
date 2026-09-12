@@ -1,8 +1,26 @@
-const { query } = require('../config/database');
+const database = require('../config/database');
+const { query } = database;
 
 async function removeOrDeactivate(technicianId) {
     const id = Number(technicianId);
     if (!Number.isInteger(id) || id <= 0) return { notFound: true };
+    if (database.provider === 'd1') {
+        const technician = (await query('SELECT id FROM technicians WHERE id=@id', { id })).recordset[0];
+        if (!technician) return { notFound: true };
+        const related = Number((await query(`SELECT
+            (SELECT COUNT(*) FROM bookings WHERE technician_id=@id) +
+            (SELECT COUNT(*) FROM attendance WHERE technician_id=@id) +
+            (SELECT COUNT(*) FROM attendance_audit_logs WHERE technician_id=@id) +
+            (SELECT COUNT(*) FROM payrolls WHERE employee_id=@id) +
+            (SELECT COUNT(*) FROM salary_history WHERE employee_id=@id) +
+            (SELECT COUNT(*) FROM payroll_revenue WHERE technician_id=@id) AS total`, { id })).recordset[0]?.total || 0);
+        if (related > 0) {
+            await query("UPDATE technicians SET work_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE id=@id", { id });
+            return { deactivated: true, deleted: false, relatedRecords: related };
+        }
+        await query('DELETE FROM technicians WHERE id=@id', { id });
+        return { deactivated: false, deleted: true, relatedRecords: 0 };
+    }
     const result = await query(`
         SET XACT_ABORT ON;
         BEGIN TRY

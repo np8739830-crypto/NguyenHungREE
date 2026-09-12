@@ -1,4 +1,5 @@
-const { query, getConnection } = require('../config/database');
+const database = require('../config/database');
+const { query, getConnection } = database;
 const statuses = ['present', 'leave', 'unauthorized_leave', 'holiday', 'business_trip', 'off'];
 const datePattern = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -63,7 +64,14 @@ async function period(month,year,value,actor){if(!validPeriod(month,year))return
 async function removePeriod(month,year,actor){
  if(!validPeriod(month,year))return{errors:['Tháng hoặc năm chấm công không hợp lệ.']};
  if(await closed(month,year))return{errors:['Tháng chấm công đã chốt. Vui lòng mở khóa trước khi xóa.']};
- const start=`${year}-${String(month).padStart(2,'0')}-01`,pool=await getConnection(),transaction=pool.transaction();
+ const start=`${year}-${String(month).padStart(2,'0')}-01`;
+ if(database.provider==='d1'){
+  const end=new Date(Date.UTC(year,month,1)).toISOString().slice(0,10),reason=`Xoa cham cong thang ${month}/${year}`;
+  await query(`INSERT dbo.attendance_audit_logs(attendance_id,technician_id,attendance_date,old_status,new_status,action_key,actor_id,reason) SELECT id,technician_id,attendance_date,status,NULL,'delete',@actor,@reason FROM dbo.attendance WHERE attendance_date>=@start AND attendance_date<@end`,{start,end,actor,reason});
+  const result=await query('DELETE FROM dbo.attendance WHERE attendance_date>=@start AND attendance_date<@end',{start,end});
+  return{deleted:result.rowsAffected[0]||0};
+ }
+ const pool=await getConnection(),transaction=pool.transaction();
  await transaction.begin();
  try{
   const request=()=>transaction.request().input('start',start).input('actor',actor);

@@ -63,6 +63,22 @@ function translateOutput(statement) {
 
 function translateSql(sqlText) {
     let statement = String(sqlText).trim();
+    if (/^MERGE\s+(?:dbo\.)?attendance\s+/i.test(statement)) {
+        return `INSERT INTO attendance(technician_id,attendance_date,status,check_in,check_out,work_hours,overtime_hours,overtime_approved_by,overtime_approved_at,note,created_by)
+            VALUES(@id,@date,@status,@checkIn,@checkOut,@work,@ot,CASE WHEN @ot>0 THEN @actor ELSE NULL END,CASE WHEN @ot>0 THEN CURRENT_TIMESTAMP ELSE NULL END,@note,@actor)
+            ON CONFLICT(technician_id,attendance_date) DO UPDATE SET status=excluded.status,check_in=excluded.check_in,check_out=excluded.check_out,work_hours=excluded.work_hours,overtime_hours=excluded.overtime_hours,overtime_approved_by=excluded.overtime_approved_by,overtime_approved_at=excluded.overtime_approved_at,note=excluded.note,updated_by=@actor,updated_at=CURRENT_TIMESTAMP
+            RETURNING id,technician_id,attendance_date,status,check_in,check_out,work_hours,overtime_hours,note`;
+    }
+    if (/^MERGE\s+(?:dbo\.)?attendance_periods\s+/i.test(statement)) {
+        return `INSERT INTO attendance_periods(attendance_month,attendance_year,is_closed,closed_by,closed_at)
+            VALUES(@month,@year,@value,CASE WHEN @value=1 THEN @actor END,CASE WHEN @value=1 THEN CURRENT_TIMESTAMP END)
+            ON CONFLICT(attendance_month,attendance_year) DO UPDATE SET is_closed=excluded.is_closed,closed_by=CASE WHEN @value=1 THEN @actor ELSE closed_by END,closed_at=CASE WHEN @value=1 THEN CURRENT_TIMESTAMP ELSE closed_at END,reopened_by=CASE WHEN @value=0 THEN @actor ELSE reopened_by END,reopened_at=CASE WHEN @value=0 THEN CURRENT_TIMESTAMP ELSE reopened_at END`;
+    }
+    if (/^MERGE\s+(?:dbo\.)?payroll_revenue\s+/i.test(statement)) {
+        return `INSERT INTO payroll_revenue(technician_id,revenue_month,revenue_year,revenue_amount,source,note,created_by)
+            VALUES(@employeeId,@month,@year,@amount,'manual',@note,@actor)
+            ON CONFLICT(technician_id,revenue_month,revenue_year) DO UPDATE SET revenue_amount=excluded.revenue_amount,note=excluded.note,updated_at=CURRENT_TIMESTAMP`;
+    }
     const outerTop = statement.match(/^SELECT\s+TOP\s*\(?\s*(\d+)\s*\)?\s+/i);
     statement = statement
         .replace(/\bdbo\./gi, '')
@@ -72,7 +88,11 @@ function translateSql(sqlText) {
         .replace(/\bSELECT\s+TOP\s*\(?\s*\d+\s*\)?\s+/gi, 'SELECT ')
         .replace(/\bINSERT\s+(?!INTO\b)(["A-Za-z_]["A-Za-z0-9_]*)\s*\(/gi, 'INSERT INTO $1 (')
         .replace(/OFFSET\s+(@\w+|\d+)\s+ROWS\s+FETCH\s+NEXT\s+(@\w+|\d+)\s+ROWS\s+ONLY/gi, 'LIMIT $2 OFFSET $1')
-        .replace(/\bISNULL\s*\(/gi, 'IFNULL(');
+        .replace(/\bISNULL\s*\(/gi, 'IFNULL(')
+        .replace(/RIGHT\s*\(\s*('(?:[^']|'')*')\s*\+\s*CAST\s*\(\s*([^()]+?)\s+AS\s+VARCHAR\s*\(\s*\d+\s*\)\s*\)\s*,\s*(\d+)\s*\)/gi,
+            'substr($1 || CAST($2 AS TEXT), -$3)')
+        .replace(/LEFT\s*\(\s*('(?:[^']|'')*')\s*\+\s*CAST\s*\(\s*([^()]+?)\s+AS\s+VARCHAR\s*\(\s*\d+\s*\)\s*\)\s*,\s*(\d+)\s*\)/gi,
+            'substr($1 || CAST($2 AS TEXT), 1, $3)');
     statement = translateDateFunctions(statement);
     statement = translateOutput(statement);
     if (outerTop && !/\bLIMIT\s+\d+\s*$/i.test(statement)) statement += ` LIMIT ${outerTop[1]}`;

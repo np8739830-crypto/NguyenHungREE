@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const { query, getConnection, sql } = require('../config/database');
+const database = require('../config/database');
+const { query, getConnection, sql } = database;
 const { MODULES, ACTIONS } = require('../services/authorizationService');
 
 const USERNAME_PATTERN = /^[a-zA-Z0-9._-]{3,50}$/;
@@ -284,6 +285,15 @@ async function updateRolePermissions(req, res, next) {
         allPermissions.filter(item => item.action_key === 'view' && selectedModules.has(item.module_key))
             .forEach(item => requested.add(item.id));
         const validIds = allPermissions.filter(item => requested.has(item.id)).map(item => item.id);
+
+        if (database.provider === 'd1') {
+            await query('DELETE FROM dbo.role_permissions WHERE role_id=@roleId', { roleId });
+            for (const permissionId of validIds) {
+                await query('INSERT dbo.role_permissions(role_id,permission_id) VALUES(@roleId,@permissionId)', { roleId, permissionId });
+            }
+            req.flash('success', `Da cap nhat quyen cho vai tro ${role.name}`);
+            return res.redirect(`/admin/access/roles?role=${roleId}`);
+        }
 
         const pool = await getConnection();
         transaction = new sql.Transaction(pool);
