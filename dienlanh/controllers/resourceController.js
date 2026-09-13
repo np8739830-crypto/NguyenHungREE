@@ -1,5 +1,6 @@
 const CrudModel = require('../models/CrudModel');
-const { query } = require('../config/database');
+const database = require('../config/database');
+const { query } = database;
 const { storeImages, removeStoredImages, validateImages, createRequestImage } = require('../services/requestImageService');
 
 const FIELD_MESSAGES = {
@@ -85,6 +86,13 @@ function createResourceController(table, fields, options = {}) {
                 if (options.includeRequestCode) {
                     const savedItem = await model.find(itemId);
                     requestCode = savedItem?.request_code || null;
+                    if (!requestCode && database.provider === 'd1') {
+                        const prefix = table === 'bookings' ? 'DL' : table === 'contacts' ? 'LH' : 'YC';
+                        const datePart = String(savedItem?.created_at || new Date().toISOString())
+                            .slice(0, 10).replace(/\D/g, '');
+                        requestCode = `${prefix}-${datePart}-${String(itemId).padStart(4, '0')}`;
+                        await query(`UPDATE ${table} SET request_code=@requestCode WHERE id=@itemId`, { requestCode, itemId });
+                    }
                     if (!requestCode) throw new Error(`Request code was not generated for ${table} item ${itemId}.`);
                     data.request_code = requestCode;
                 }
