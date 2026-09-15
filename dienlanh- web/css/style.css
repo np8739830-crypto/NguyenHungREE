@@ -448,10 +448,11 @@
         content: '';
         position: absolute;
         right: 0;
-        bottom: 0;
+        bottom: -4px;
         left: 0;
         height: 4px;
         background: linear-gradient(to right, var(--blue-bright), var(--cyan-cool), var(--brand-blue));
+        z-index: 1;
         pointer-events: none;
     }
     
