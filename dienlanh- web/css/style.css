@@ -7077,25 +7077,50 @@ body > .hero .hero__illustration { display: none; }
 
 body > #faq {
     background-color: #e8f3ff;
-    background-image: var(--home-background-1);
 }
 
 body > .process {
     background-color: #eaf4ff;
-    background-image: var(--home-background-3);
 }
-
 
 body > .process,
 body > #faq {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image: none;
+}
+
+body > .process::before,
+body > #faq::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    filter: saturate(1.7) contrast(1.12);
+    pointer-events: none;
+}
+
+body > .process::before {
+    background-image: var(--home-background-3);
+}
+
+body > #faq::before {
+    background-image: var(--home-background-1);
+}
+
+body > .process > .container,
+body > #faq > .container {
+    position: relative;
+    z-index: 1;
 }
 
 @media (max-width: 768px) {
-    body > .process,
-    body > #faq {
+    body > .process::before,
+    body > #faq::before {
         background-position: center center;
         background-size: 100% 100%;
     }
