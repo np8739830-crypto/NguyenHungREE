@@ -54,10 +54,11 @@ if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 // separate website. All public aliases permanently resolve to one canonical
 // domain while localhost/LAN development continues to work normally.
 app.use((req, res, next) => {
-    if (process.env.NODE_ENV !== 'production') return next();
-
     const canonicalHostname = 'linhkienchinhhang.com.vn';
-    const requestHostname = String(req.hostname || '').toLowerCase();
+    const forwardedHost = String(req.get('x-forwarded-host') || '').split(',')[0].trim();
+    const requestHostname = String(req.get('host') || forwardedHost || req.hostname || '')
+        .toLowerCase()
+        .replace(/:\d+$/, '');
     const redirectHosts = new Set([
         'www.linhkienchinhhang.com.vn',
         'nguyen-hung-ree-dienlanh.vercel.app'
