@@ -85,6 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            function cachedRequest(url, cacheKey, ttl = 5 * 60 * 1000) {
+                try {
+                    const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+                    if (cached && Date.now() - cached.savedAt < ttl) return Promise.resolve(cached.value);
+                } catch {}
+
+                return request(url).then(value => {
+                    try {
+                        sessionStorage.setItem(cacheKey, JSON.stringify({ savedAt: Date.now(), value }));
+                    } catch {}
+                    return value;
+                });
+            }
+
             function finishAuthNavigation(user) {
                 if (!user) return false;
 
@@ -189,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setAuthenticatedUser(user);
         finishAuthNavigation(user);
     }).catch(() => setAuthenticatedUser(null));
-    request('/content/bootstrap').then(renderContent).catch(() => {});
+    cachedRequest('/content/bootstrap', 'dienlanh.contentBootstrap').then(renderContent).catch(() => {});
 
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -308,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const servicesGrid = document.getElementById('servicesGrid');
     if (servicesGrid) {
 
-        request('/services/api').then(apiServices => {
+        cachedRequest('/services/api', 'dienlanh.publicServices').then(apiServices => {
             const existingSlugs = new Set(apiServices.map(service => service.slug));
             const allServices = apiServices
                 .concat(additionalServices.filter(service => !existingSlugs.has(service.slug)))

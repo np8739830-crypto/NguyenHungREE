@@ -92,7 +92,17 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 
 // Static files
-app.use('/public', express.static(path.join(__dirname, 'public')));
+const staticAssetOptions = {
+    etag: true,
+    maxAge: '1d',
+    setHeaders: res => res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800')
+};
+const imageAssetOptions = {
+    etag: true,
+    maxAge: '7d',
+    setHeaders: res => res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=2592000')
+};
+app.use('/public', express.static(path.join(__dirname, 'public'), staticAssetOptions));
 if (process.env.VERCEL) {
     app.get('/uploads/:filename', async (req, res, next) => {
         try {
@@ -104,9 +114,9 @@ if (process.env.VERCEL) {
         }
     });
 }
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-app.use('/admin/css', express.static(path.join(legacyAdmin, 'css')));
-app.use('/admin/js', express.static(path.join(legacyAdmin, 'js')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'), imageAssetOptions));
+app.use('/admin/css', express.static(path.join(legacyAdmin, 'css'), staticAssetOptions));
+app.use('/admin/js', express.static(path.join(legacyAdmin, 'js'), staticAssetOptions));
 // Existing Admin templates use ../css/1.css and ../js/1.js. Keep those asset
 // URLs working when a template is rendered from an MVC route such as /admin/orders.
 app.get('/css/1.css', (req, res) => res.sendFile(path.join(legacyAdmin, 'css', '1.css')));
@@ -115,9 +125,9 @@ app.get('/js/1.js', (req, res) => res.sendFile(path.join(legacyAdmin, 'js', '1.j
 // directory made EJS tags appear as plain text and allowed directory browsing.
 app.get('/admin/html/:file', (req, res) => res.redirect(302, '/admin'));
 app.get('/admin/html', (req, res) => res.redirect(302, '/admin'));
-app.use('/css', express.static(path.join(staticSite, 'css')));
-app.use('/js', express.static(path.join(staticSite, 'js')));
-app.use('/images', express.static(path.join(staticSite, 'images')));
+app.use('/css', express.static(path.join(staticSite, 'css'), staticAssetOptions));
+app.use('/js', express.static(path.join(staticSite, 'js'), staticAssetOptions));
+app.use('/images', express.static(path.join(staticSite, 'images'), imageAssetOptions));
 
 // Keep production sessions across process restarts. The default in-memory
 // store remains useful for local development and automated tests.

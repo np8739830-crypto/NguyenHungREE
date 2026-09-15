@@ -55,7 +55,7 @@
                                                             <td><strong><%= c.request_code || `LH-${String(c.id).padStart(3, '0')}` %></strong></td>
                                                             <td class="product-name">
                                                                 <%= c.name %>
-                                                                <% if (contactImages.length) { %><div class="request-image-gallery contact-image-gallery"><% contactImages.slice(0, 3).forEach((image, index) => { %><a href="/attachments/<%= image.id %>" target="_blank" rel="noopener"><img src="/attachments/<%= image.id %>" alt="Ảnh liên hệ <%= index + 1 %>"></a><% }) %></div><% } %>
+                                                                <% if (contactImages.length) { %><div class="request-image-gallery contact-image-gallery"><% contactImages.slice(0, 3).forEach((image, index) => { %><a href="/attachments/<%= image.id %>" target="_blank" rel="noopener"><img src="/attachments/<%= image.id %>" alt="Ảnh liên hệ <%= index + 1 %>" loading="lazy" decoding="async"></a><% }) %></div><% } %>
                                                             </td>
                                                             <td>
                                                                 <%= c.phone %>

@@ -128,7 +128,7 @@
                                                         ? serviceImage
                                                         : `/images/${serviceImage}`; %>
                                                     <tr>
-                                                        <td><img src="<%= serviceImageUrl %>" alt="<%= service.name %>" class="product-thumb" onerror="this.onerror=null;this.src='/images/logo.png';"></td>
+                                                        <td><img src="<%= serviceImageUrl %>" alt="<%= service.name %>" class="product-thumb" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/images/logo.png';"></td>
                                                         <td class="product-name">
                                                             <%= service.name %>
                                                         </td>

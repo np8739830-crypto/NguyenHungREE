@@ -185,7 +185,7 @@
                                                             <td class="product-name">
                                                                 <div class="tech-table-identity">
                                                                     <% if (t.avatar) { %>
-                                                                        <img class="tech-table-avatar" src="<%= t.avatar %>" alt="Ảnh đại diện của <%= t.full_name %>">
+                                                                        <img class="tech-table-avatar" src="<%= t.avatar %>" alt="Ảnh đại diện của <%= t.full_name %>" loading="lazy" decoding="async">
                                                                     <% } else { %>
                                                                         <span class="tech-table-avatar tech-table-avatar--empty"><i class="fa-solid fa-user"></i></span>
                                                                     <% } %>
