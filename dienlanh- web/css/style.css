@@ -22,6 +22,7 @@
         --text-body: #334155;
         --text-muted: #64748B;
         --border-light: #E2E8F0;
+        --section-divider: linear-gradient(to right, var(--blue-bright), var(--cyan-cool), var(--brand-blue));
         --shadow-sm: 0 1px 3px rgba(7, 17, 44, 0.08);
         --shadow-md: 0 4px 16px rgba(7, 17, 44, 0.12);
         --shadow-lg: 0 10px 40px rgba(7, 17, 44, 0.15);
@@ -451,7 +452,7 @@
         bottom: -4px;
         left: 0;
         height: 4px;
-        background: linear-gradient(to right, var(--blue-bright), var(--cyan-cool), var(--brand-blue));
+        background: var(--section-divider);
         z-index: 1;
         pointer-events: none;
     }
@@ -3186,7 +3187,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(to right, var(--blue-bright), var(--cyan-cool), var(--brand-blue));
+        background: var(--section-divider);
     }
     
     .footer__container {
