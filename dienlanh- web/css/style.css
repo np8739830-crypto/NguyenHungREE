@@ -1964,13 +1964,17 @@
     }
 
     .contact-grid--success .contact-form-wrapper {
-        min-height: 420px;
+        min-height: clamp(420px, 58vh, 590px);
         display: grid;
         place-items: center;
     }
 
     .contact-grid--success .form-success {
         width: 100%;
+    }
+
+    #contactEmergencySupport[hidden] {
+        display: none !important;
     }
     
     .contact-info {

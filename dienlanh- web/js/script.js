@@ -303,9 +303,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const contactFormColumn = document.getElementById('contactFormColumn');
                     const contactFormTitle = document.getElementById('contactFormTitle');
                     const contactFormDescription = document.getElementById('contactFormDescription');
+                    const contactEmergencySupport = document.getElementById('contactEmergencySupport');
                     if (contactInfo) contactInfo.hidden = true;
                     if (contactFormTitle) contactFormTitle.hidden = true;
                     if (contactFormDescription) contactFormDescription.hidden = true;
+                    if (contactEmergencySupport) contactEmergencySupport.hidden = true;
                     if (contactGrid) contactGrid.classList.add('contact-grid--success');
                     if (contactFormColumn) contactFormColumn.classList.add('contact-form-column--success');
                     const contactRequestCode = document.getElementById('contactRequestCode');
@@ -317,7 +319,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (contactSuccessMessage && body.telegramStatus === 'pending') {
                         contactSuccessMessage.textContent = body.message;
                     }
-                    if (formSuccess) formSuccess.classList.add('show');
+                    if (formSuccess) {
+                        formSuccess.classList.add('show');
+                        requestAnimationFrame(() => {
+                            const successCard = document.getElementById('contactFormWrapper') || formSuccess;
+                            const cardRect = successCard.getBoundingClientRect();
+                            const targetTop = window.scrollY + cardRect.top - Math.max(16, (window.innerHeight - cardRect.height) / 2);
+                            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
+                        });
+                    }
                 } catch (error) {
                     alert(error.message);
                     focusFirstInvalidField();
