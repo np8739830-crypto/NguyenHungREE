@@ -362,10 +362,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'top5loimaylanh.png', 'suamaylanh.png', 'vsmaylanh.png',
         'ldmaylanh.png', 'suatulanh.png', 'suamaygiat.png', 'suamaynong.png'
     ]);
+    const sharedServiceImageFiles = new Set([
+        'ldmaylanh.jpg', 'suatulanh.jpg', 'suamaygiat.jpg',
+        'suamaylanh.jpg', 'suamaynong.jpg', 'vsmaylanh.jpg'
+    ]);
     const newsImagePath = imageName => {
         const normalized = String(imageName || '').replace(/^\/?images\//i, '').replace(/^\/+/, '');
         const fileName = normalized.split('/').pop().toLowerCase();
         const jpgFileName = newsImageFiles.has(fileName) ? fileName.replace(/\.png$/i, '.jpg') : fileName;
+        if (sharedServiceImageFiles.has(jpgFileName)) return `/images/dich-vu/${jpgFileName}`;
         if (normalized.startsWith('tin-tuc/')) return `/images/${normalized.replace(/\.png$/i, '.jpg')}`;
         if (newsImageFiles.has(fileName)) return `/images/tin-tuc/${jpgFileName}`;
         return `/images/${normalized}`;
