@@ -15,7 +15,8 @@
         "db:migrate-frontend": "node migrate-frontend-data.js",
         "db:migrate-rbac": "node scripts/migrate-rbac.js",
         "db:migrate-payroll": "node scripts/migrate-payroll.js",
-        "db:add-built-in-services": "node scripts/add-built-in-services.js"
+        "db:add-built-in-services": "node scripts/add-built-in-services.js",
+        "db:reset-customer-requests": "node scripts/reset-production-requests.js"
     },
     "dependencies": {
         "@vercel/blob": "^2.8.0",
