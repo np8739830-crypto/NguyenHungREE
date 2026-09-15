@@ -146,7 +146,7 @@ app.get('/admin/html', (req, res) => res.redirect(302, '/admin'));
 app.use('/css', express.static(path.join(staticSite, 'css'), staticAssetOptions));
 app.use('/js', express.static(path.join(staticSite, 'js'), staticAssetOptions));
 app.get('/favicon.ico', (req, res) => {
-    res.type('png').sendFile(path.join(staticSite, 'images', 'logo.png'));
+    res.type('png').sendFile(path.join(staticSite, 'images', 'logo-transparent.png'));
 });
 // Preserve legacy database/content URLs after opaque PNG photos were optimized
 // to JPG. Transparent PNG assets have no JPG counterpart and pass through.
