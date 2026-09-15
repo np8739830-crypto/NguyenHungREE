@@ -127,6 +127,18 @@ app.get('/admin/html/:file', (req, res) => res.redirect(302, '/admin'));
 app.get('/admin/html', (req, res) => res.redirect(302, '/admin'));
 app.use('/css', express.static(path.join(staticSite, 'css'), staticAssetOptions));
 app.use('/js', express.static(path.join(staticSite, 'js'), staticAssetOptions));
+// Preserve legacy database/content URLs after opaque PNG photos were optimized
+// to JPG. Transparent PNG assets have no JPG counterpart and pass through.
+app.use('/images', (req, res, next) => {
+    if (!req.path.toLowerCase().endsWith('.png')) return next();
+    const jpgPath = req.path.replace(/\.png$/i, '.jpg');
+    const localJpg = path.resolve(staticSite, `images${jpgPath}`);
+    const imageRoot = path.resolve(staticSite, 'images');
+    if (localJpg.startsWith(`${imageRoot}${path.sep}`) && fs.existsSync(localJpg)) {
+        return res.redirect(301, `/images${jpgPath}`);
+    }
+    return next();
+});
 app.use('/images', express.static(path.join(staticSite, 'images'), imageAssetOptions));
 
 // Keep production sessions across process restarts. The default in-memory

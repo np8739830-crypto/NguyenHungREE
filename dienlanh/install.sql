@@ -534,15 +534,15 @@ GO
 -- Keep the built-in services associated with their matching image assets.
 UPDATE [dbo].[services]
 SET [image] = CASE [slug]
-    WHEN 'sua-may-lanh' THEN 'dich-vu/suamaylanh.png'
-    WHEN 've-sinh-may-lanh' THEN 'dich-vu/vsmaylanh.png'
-    WHEN 'lap-dat-may-lanh' THEN 'dich-vu/ldmaylanh.png'
-    WHEN 'sua-tu-lanh' THEN 'dich-vu/suatulanh.png'
-    WHEN 'sua-may-giat' THEN 'dich-vu/suamaygiat.png'
-    WHEN 'sua-may-nuoc-nong' THEN 'dich-vu/suamaynong.png'
-    WHEN 've-sinh-may-giat' THEN 'dich-vu/vsmaygiat.png'
-    WHEN 'trien-khai-he-thong-dien-lanh' THEN 'dich-vu/hethong.png'
-    WHEN 'bao-tri-he-thong-dien-lanh' THEN 'dich-vu/baotrihethong.png'
+    WHEN 'sua-may-lanh' THEN 'dich-vu/suamaylanh.jpg'
+    WHEN 've-sinh-may-lanh' THEN 'dich-vu/vsmaylanh.jpg'
+    WHEN 'lap-dat-may-lanh' THEN 'dich-vu/ldmaylanh.jpg'
+    WHEN 'sua-tu-lanh' THEN 'dich-vu/suatulanh.jpg'
+    WHEN 'sua-may-giat' THEN 'dich-vu/suamaygiat.jpg'
+    WHEN 'sua-may-nuoc-nong' THEN 'dich-vu/suamaynong.jpg'
+    WHEN 've-sinh-may-giat' THEN 'dich-vu/vsmaygiat.jpg'
+    WHEN 'trien-khai-he-thong-dien-lanh' THEN 'dich-vu/hethong.jpg'
+    WHEN 'bao-tri-he-thong-dien-lanh' THEN 'dich-vu/baotrihethong.jpg'
     ELSE [image]
 END
 WHERE [slug] IN (

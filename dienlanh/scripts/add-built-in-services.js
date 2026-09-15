@@ -8,7 +8,7 @@ const services = [
         slug: 've-sinh-may-giat',
         icon: 'fa-soap',
         description: 'Vệ sinh máy giặt cửa trên, cửa ngang, loại bỏ bụi bẩn, cặn bám và mùi hôi. Giúp máy hoạt động sạch sẽ, hiệu quả và bền hơn.',
-        image: 'dich-vu/vsmaygiat.png',
+        image: 'dich-vu/vsmaygiat.jpg',
         priceRange: 'Liên hệ',
         sortOrder: 7
     },
@@ -17,7 +17,7 @@ const services = [
         slug: 'trien-khai-he-thong-dien-lanh',
         icon: 'fa-drafting-compass',
         description: 'Thi công, lắp đặt hệ thống điện lạnh cho nhà ở, văn phòng, cửa hàng và công trình. Đảm bảo đúng kỹ thuật, an toàn và tối ưu hiệu quả.',
-        image: 'dich-vu/hethong.png',
+        image: 'dich-vu/hethong.jpg',
         priceRange: 'Liên hệ',
         sortOrder: 8
     },
@@ -26,7 +26,7 @@ const services = [
         slug: 'bao-tri-he-thong-dien-lanh',
         icon: 'fa-cogs',
         description: 'Kiểm tra, bảo dưỡng và bảo trì định kỳ hệ thống điện lạnh. Phát hiện sớm sự cố, duy trì hiệu suất hoạt động và kéo dài tuổi thọ thiết bị.',
-        image: 'dich-vu/baotrihethong.png',
+        image: 'dich-vu/baotrihethong.jpg',
         priceRange: 'Liên hệ',
         sortOrder: 9
     }

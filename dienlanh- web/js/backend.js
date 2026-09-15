@@ -365,8 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const newsImagePath = imageName => {
         const normalized = String(imageName || '').replace(/^\/?images\//i, '').replace(/^\/+/, '');
         const fileName = normalized.split('/').pop().toLowerCase();
-        if (normalized.startsWith('tin-tuc/')) return `/images/${normalized}`;
-        if (newsImageFiles.has(fileName)) return `/images/tin-tuc/${fileName}`;
+        const jpgFileName = newsImageFiles.has(fileName) ? fileName.replace(/\.png$/i, '.jpg') : fileName;
+        if (normalized.startsWith('tin-tuc/')) return `/images/${normalized.replace(/\.png$/i, '.jpg')}`;
+        if (newsImageFiles.has(fileName)) return `/images/tin-tuc/${jpgFileName}`;
         return `/images/${normalized}`;
     };
 
@@ -380,15 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const normalized = rawImage.replace(/\.(?=[^.]*$)/, match => match.toLowerCase());
                 const imageWithExtension = /\.(png|jpe?g|webp)$/i.test(normalized) ? normalized : `${normalized}.png`;
                 const imageSrc = newsImagePath(imageWithExtension);
-                const finalImageSrc = article.title.includes('Máy lạnh Inverter') || /inverter/i.test(article.slug) ? '/images/tin-tuc/maylanhinverter.png' :
-                    article.title.includes('Top 5 lỗi máy lạnh') || /top-5-loi-may-lanh/i.test(article.slug) ? '/images/tin-tuc/top5loimaylanh.png' :
-                    article.title.includes('Cách chọn công suất') || /chon-cong-suat/i.test(article.slug) ? '/images/tin-tuc/cachchoncongsuat.png' :
-                    (article.title.includes('Bảo dưỡng') || article.title.includes('Bảo trì máy lạnh') || /bao-(duong|tri)-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/baoduongmaylanh.png' :
-                    (article.title.includes('Máy lạnh không lạnh') || /may-lanh-khong-lanh-nguyen-nhan/i.test(article.slug) || /khong-lanh/i.test(article.slug)) ? '/images/tin-tuc/maylanhkhonglanh.png' :
-                    /dau-hieu-nhan-biet-may-lanh-sap-hong/i.test(article.slug) || article.title.includes('Dấu hiệu nhận biết') || article.title.includes('máy lạnh sắp hỏng') || /dau-hieu-nhan-biet/i.test(article.slug) ? '/images/tin-tuc/dauhieunhanbiet.png' :
-                    (article.title.includes('Cách kiểm tra gas') || /kiem-tra-gas/i.test(article.slug)) ? '/images/tin-tuc/kiemtragas.png' :
-                    (article.title.includes('Nên mua máy lạnh hãng nào') || /mua-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/hangmaylanh.png' :
-                    (article.title.includes('Cách sử dụng máy lạnh tiết kiệm điện') || /tiet-kiem-dien/i.test(article.slug)) ? '/images/tin-tuc/sudunghieuqua.png' :
+                const finalImageSrc = article.title.includes('Máy lạnh Inverter') || /inverter/i.test(article.slug) ? '/images/tin-tuc/maylanhinverter.jpg' :
+                    article.title.includes('Top 5 lỗi máy lạnh') || /top-5-loi-may-lanh/i.test(article.slug) ? '/images/tin-tuc/top5loimaylanh.jpg' :
+                    article.title.includes('Cách chọn công suất') || /chon-cong-suat/i.test(article.slug) ? '/images/tin-tuc/cachchoncongsuat.jpg' :
+                    (article.title.includes('Bảo dưỡng') || article.title.includes('Bảo trì máy lạnh') || /bao-(duong|tri)-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/baoduongmaylanh.jpg' :
+                    (article.title.includes('Máy lạnh không lạnh') || /may-lanh-khong-lanh-nguyen-nhan/i.test(article.slug) || /khong-lanh/i.test(article.slug)) ? '/images/tin-tuc/maylanhkhonglanh.jpg' :
+                    /dau-hieu-nhan-biet-may-lanh-sap-hong/i.test(article.slug) || article.title.includes('Dấu hiệu nhận biết') || article.title.includes('máy lạnh sắp hỏng') || /dau-hieu-nhan-biet/i.test(article.slug) ? '/images/tin-tuc/dauhieunhanbiet.jpg' :
+                    (article.title.includes('Cách kiểm tra gas') || /kiem-tra-gas/i.test(article.slug)) ? '/images/tin-tuc/kiemtragas.jpg' :
+                    (article.title.includes('Nên mua máy lạnh hãng nào') || /mua-may-lanh/i.test(article.slug)) ? '/images/tin-tuc/hangmaylanh.jpg' :
+                    (article.title.includes('Cách sử dụng máy lạnh tiết kiệm điện') || /tiet-kiem-dien/i.test(article.slug)) ? '/images/tin-tuc/sudunghieuqua.jpg' :
                     imageSrc;
                 return `
                 <article class="news-card">
@@ -416,15 +417,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Some articles use legacy image fields like images/news-... which are not present
                 // in the current static /images folder. Map those legacy values to real hero assets.
                 if (/^\/images\/news-.*\.(png|jpe?g|webp|svg)$/i.test(imagePath) || /^images\/news-.*\.(png|jpe?g|webp|svg)$/i.test(normalized)) {
-                    if (/cách kiểm tra gas/i.test(title) || /kiem-tra-gas/i.test(slug)) return '/images/tin-tuc/kiemtragas.png';
-                    if (/inverter/i.test(title) || /inverter/i.test(slug)) return '/images/tin-tuc/maylanhinverter.png';
-                    if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(title) || /top-5-loi-may-lanh/i.test(slug)) return '/images/tin-tuc/top5loimaylanh.png';
-                    if (/cách chọn công suất/i.test(title) || /chon-cong-suat/i.test(slug)) return '/images/tin-tuc/cachchoncongsuat.png';
-                    if (/(bảo|bảo trì|bảo dưỡng)/i.test(title) || /bao-duong-may-lanh/i.test(slug)) return '/images/tin-tuc/baoduongmaylanh.png';
-                    if (/không lạnh/i.test(title) || /khong-lanh/i.test(slug)) return '/images/tin-tuc/maylanhkhonglanh.png';
-                    if (/dấu hiệu nhận biết/i.test(title) || /dau-hieu-nhan-biet/i.test(slug)) return '/images/tin-tuc/dauhieunhanbiet.png';
-                    if (/nên mua máy lạnh hãng nào/i.test(title) || /mua-may-lanh/i.test(slug)) return '/images/tin-tuc/hangmaylanh.png';
-                    if (/cách sử dụng máy lạnh tiết kiệm điện/i.test(title) || /tiet-kiem-dien/i.test(slug)) return '/images/tin-tuc/sudunghieuqua.png';
+                    if (/cách kiểm tra gas/i.test(title) || /kiem-tra-gas/i.test(slug)) return '/images/tin-tuc/kiemtragas.jpg';
+                    if (/inverter/i.test(title) || /inverter/i.test(slug)) return '/images/tin-tuc/maylanhinverter.jpg';
+                    if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(title) || /top-5-loi-may-lanh/i.test(slug)) return '/images/tin-tuc/top5loimaylanh.jpg';
+                    if (/cách chọn công suất/i.test(title) || /chon-cong-suat/i.test(slug)) return '/images/tin-tuc/cachchoncongsuat.jpg';
+                    if (/(bảo|bảo trì|bảo dưỡng)/i.test(title) || /bao-duong-may-lanh/i.test(slug)) return '/images/tin-tuc/baoduongmaylanh.jpg';
+                    if (/không lạnh/i.test(title) || /khong-lanh/i.test(slug)) return '/images/tin-tuc/maylanhkhonglanh.jpg';
+                    if (/dấu hiệu nhận biết/i.test(title) || /dau-hieu-nhan-biet/i.test(slug)) return '/images/tin-tuc/dauhieunhanbiet.jpg';
+                    if (/nên mua máy lạnh hãng nào/i.test(title) || /mua-may-lanh/i.test(slug)) return '/images/tin-tuc/hangmaylanh.jpg';
+                    if (/cách sử dụng máy lạnh tiết kiệm điện/i.test(title) || /tiet-kiem-dien/i.test(slug)) return '/images/tin-tuc/sudunghieuqua.jpg';
                     return '/images/logo.png';
                 }
 
@@ -432,11 +433,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Fallback to specific hero images for known topics when no article image is provided
-            if (/inverter/i.test(String(title || ''))) return '/images/tin-tuc/maylanhinverter.png';
-            if (/cách chọn công suất/i.test(String(title || ''))) return '/images/tin-tuc/cachchoncongsuat.png';
-            if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(String(title || '')) || /Top 5 lỗi máy lạnh/i.test(String(title || ''))) return '/images/tin-tuc/top5loimaylanh.png';
-            if (/cách kiểm tra gas/i.test(String(title || ''))) return '/images/tin-tuc/kiemtragas.png';
-            if (/nên mua máy lạnh hãng nào/i.test(String(title || ''))) return '/images/tin-tuc/hangmaylanh.png';
+            if (/inverter/i.test(String(title || ''))) return '/images/tin-tuc/maylanhinverter.jpg';
+            if (/cách chọn công suất/i.test(String(title || ''))) return '/images/tin-tuc/cachchoncongsuat.jpg';
+            if (/top\s*5\s*lỗi\s*máy\s*lạnh/i.test(String(title || '')) || /Top 5 lỗi máy lạnh/i.test(String(title || ''))) return '/images/tin-tuc/top5loimaylanh.jpg';
+            if (/cách kiểm tra gas/i.test(String(title || ''))) return '/images/tin-tuc/kiemtragas.jpg';
+            if (/nên mua máy lạnh hãng nào/i.test(String(title || ''))) return '/images/tin-tuc/hangmaylanh.jpg';
             // Final fallback
             return '/images/logo.png';
         };

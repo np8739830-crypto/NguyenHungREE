@@ -37,7 +37,7 @@ async function detailBySlug(req, res, next) {
         };
 
         if (!apiArticle.image && /Cách chọn công suất/i.test(String(apiArticle.title || ''))) {
-            apiArticle.image = 'tin-tuc/cachchoncongsuat.png';
+            apiArticle.image = 'tin-tuc/cachchoncongsuat.jpg';
         }
 
         return res.json({

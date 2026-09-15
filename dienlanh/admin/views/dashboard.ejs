@@ -102,28 +102,30 @@
                                             <tbody>
                                                 <% recentServices.forEach(service => { %>
                                                     <% const serviceImageBySlug = {
-                                                        'sua-may-lanh': 'dich-vu/suamaylanh.png',
-                                                        've-sinh-may-lanh': 'dich-vu/vsmaylanh.png',
-                                                        'lap-dat-may-lanh': 'dich-vu/ldmaylanh.png',
-                                                        'sua-tu-lanh': 'dich-vu/suatulanh.png',
-                                                        'sua-may-giat': 'dich-vu/suamaygiat.png',
-                                                        'sua-may-nuoc-nong': 'dich-vu/suamaynong.png',
-                                                        've-sinh-may-giat': 'dich-vu/vsmaygiat.png',
-                                                        'trien-khai-he-thong-dien-lanh': 'dich-vu/hethong.png',
-                                                        'bao-tri-he-thong-dien-lanh': 'dich-vu/baotrihethong.png'
+                                                        'sua-may-lanh': 'dich-vu/suamaylanh.jpg',
+                                                        've-sinh-may-lanh': 'dich-vu/vsmaylanh.jpg',
+                                                        'lap-dat-may-lanh': 'dich-vu/ldmaylanh.jpg',
+                                                        'sua-tu-lanh': 'dich-vu/suatulanh.jpg',
+                                                        'sua-may-giat': 'dich-vu/suamaygiat.jpg',
+                                                        'sua-may-nuoc-nong': 'dich-vu/suamaynong.jpg',
+                                                        've-sinh-may-giat': 'dich-vu/vsmaygiat.jpg',
+                                                        'trien-khai-he-thong-dien-lanh': 'dich-vu/hethong.jpg',
+                                                        'bao-tri-he-thong-dien-lanh': 'dich-vu/baotrihethong.jpg'
                                                     };
                                                     const serviceImageByName = {
-                                                        'Sửa máy lạnh': 'dich-vu/suamaylanh.png',
-                                                        'Vệ sinh máy lạnh': 'dich-vu/vsmaylanh.png',
-                                                        'Lắp đặt máy lạnh': 'dich-vu/ldmaylanh.png',
-                                                        'Sửa tủ lạnh': 'dich-vu/suatulanh.png',
-                                                        'Sửa máy giặt': 'dich-vu/suamaygiat.png',
-                                                        'Sửa máy nước nóng': 'dich-vu/suamaynong.png',
-                                                        'Vệ sinh máy giặt': 'dich-vu/vsmaygiat.png',
-                                                        'Triển khai hệ thống điện lạnh': 'dich-vu/hethong.png',
-                                                        'Bảo trì hệ thống điện lạnh': 'dich-vu/baotrihethong.png'
+                                                        'Sửa máy lạnh': 'dich-vu/suamaylanh.jpg',
+                                                        'Vệ sinh máy lạnh': 'dich-vu/vsmaylanh.jpg',
+                                                        'Lắp đặt máy lạnh': 'dich-vu/ldmaylanh.jpg',
+                                                        'Sửa tủ lạnh': 'dich-vu/suatulanh.jpg',
+                                                        'Sửa máy giặt': 'dich-vu/suamaygiat.jpg',
+                                                        'Sửa máy nước nóng': 'dich-vu/suamaynong.jpg',
+                                                        'Vệ sinh máy giặt': 'dich-vu/vsmaygiat.jpg',
+                                                        'Triển khai hệ thống điện lạnh': 'dich-vu/hethong.jpg',
+                                                        'Bảo trì hệ thống điện lạnh': 'dich-vu/baotrihethong.jpg'
                                                     };
-                                                    const serviceImage = serviceImageBySlug[service.slug] || serviceImageByName[service.name] || service.image || 'logo.png';
+                                                    const serviceImageSource = serviceImageBySlug[service.slug] || serviceImageByName[service.name] || service.image || 'logo.png';
+                                                    const serviceImage = /^dich-vu\/.*\.png$/i.test(serviceImageSource)
+                                                        ? serviceImageSource.replace(/\.png$/i, '.jpg') : serviceImageSource;
                                                     const serviceImageUrl = serviceImage.startsWith('/') || serviceImage.startsWith('http')
                                                         ? serviceImage
                                                         : `/images/${serviceImage}`; %>

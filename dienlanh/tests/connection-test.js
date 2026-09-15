@@ -333,12 +333,12 @@ async function checkStaticFiles() {
         { path: '/js/backend.js', name: 'JS backend.js', type: 'javascript' },
         { path: '/images/logo.png', name: 'Image logo.png', type: 'image' },
         { path: '/images/giadung.png', name: 'Image giadung.png', type: 'image' },
-        { path: '/images/dich-vu/suamaylanh.png', name: 'Image suamaylanh.png', type: 'image' },
-        { path: '/images/dich-vu/suamaygiat.png', name: 'Image suamaygiat.png', type: 'image' },
-        { path: '/images/dich-vu/suatulanh.png', name: 'Image suatulanh.png', type: 'image' },
-        { path: '/images/dich-vu/suamaynong.png', name: 'Image suamaynong.png', type: 'image' },
-        { path: '/images/dich-vu/vsmaylanh.png', name: 'Image vsmaylanh.png', type: 'image' },
-        { path: '/images/dich-vu/ldmaylanh.png', name: 'Image ldmaylanh.png', type: 'image' },
+        { path: '/images/dich-vu/suamaylanh.jpg', name: 'Image suamaylanh.jpg', type: 'image' },
+        { path: '/images/dich-vu/suamaygiat.jpg', name: 'Image suamaygiat.jpg', type: 'image' },
+        { path: '/images/dich-vu/suatulanh.jpg', name: 'Image suatulanh.jpg', type: 'image' },
+        { path: '/images/dich-vu/suamaynong.jpg', name: 'Image suamaynong.jpg', type: 'image' },
+        { path: '/images/dich-vu/vsmaylanh.jpg', name: 'Image vsmaylanh.jpg', type: 'image' },
+        { path: '/images/dich-vu/ldmaylanh.jpg', name: 'Image ldmaylanh.jpg', type: 'image' },
     ];
 
     for (const file of staticFiles) {

@@ -61,23 +61,25 @@
                         <thead><tr><th>Hình ảnh</th><th>Tên dịch vụ</th><th>Slug</th><th>Khoảng giá</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
                         <tbody id="serviceListBody">
                             <% const serviceImageBySlug = {
-                                'sua-may-lanh': 'dich-vu/suamaylanh.png',
-                                've-sinh-may-lanh': 'dich-vu/vsmaylanh.png',
-                                'lap-dat-may-lanh': 'dich-vu/ldmaylanh.png',
-                                'sua-tu-lanh': 'dich-vu/suatulanh.png',
-                                'sua-may-giat': 'dich-vu/suamaygiat.png',
-                                'sua-may-nuoc-nong': 'dich-vu/suamaynong.png',
-                                've-sinh-may-giat': 'dich-vu/vsmaygiat.png',
-                                'trien-khai-he-thong-dien-lanh': 'dich-vu/hethong.png',
-                                'bao-tri-he-thong-dien-lanh': 'dich-vu/baotrihethong.png'
+                                'sua-may-lanh': 'dich-vu/suamaylanh.jpg',
+                                've-sinh-may-lanh': 'dich-vu/vsmaylanh.jpg',
+                                'lap-dat-may-lanh': 'dich-vu/ldmaylanh.jpg',
+                                'sua-tu-lanh': 'dich-vu/suatulanh.jpg',
+                                'sua-may-giat': 'dich-vu/suamaygiat.jpg',
+                                'sua-may-nuoc-nong': 'dich-vu/suamaynong.jpg',
+                                've-sinh-may-giat': 'dich-vu/vsmaygiat.jpg',
+                                'trien-khai-he-thong-dien-lanh': 'dich-vu/hethong.jpg',
+                                'bao-tri-he-thong-dien-lanh': 'dich-vu/baotrihethong.jpg'
                             }; %>
                             <% services.forEach(service => { %>
                                 <tr data-service-name="<%= service.name.toLowerCase() %>" data-service='<%- JSON.stringify({ id: service.id, name: service.name, slug: service.slug, icon: service.icon || "", price_range: service.price_range || "", image: service.image || "", sort_order: service.sort_order || 0, status: service.status, description: service.description, full_description: service.full_description || "" }).replace(/'/g, "&#39;") %>'>
                                     <% const legacyServiceImages = ['suamaylanh.png', 'vsmaylanh.png', 'ldmaylanh.png', 'suatulanh.png', 'suamaygiat.png', 'suamaynong.png'];
                                        const storedServiceImage = service.image || '';
-                                       const serviceImage = legacyServiceImages.includes(storedServiceImage)
-                                           ? `dich-vu/${storedServiceImage}`
-                                           : storedServiceImage || serviceImageBySlug[service.slug] || 'logo.png';
+                                       const serviceImageSource = (legacyServiceImages.includes(storedServiceImage)
+                                            ? `dich-vu/${storedServiceImage}`
+                                            : storedServiceImage || serviceImageBySlug[service.slug] || 'logo.png');
+                                       const serviceImage = /^dich-vu\/.*\.png$/i.test(serviceImageSource)
+                                           ? serviceImageSource.replace(/\.png$/i, '.jpg') : serviceImageSource;
                                        const serviceImageUrl = serviceImage.startsWith('/') || serviceImage.startsWith('http')
                                            ? serviceImage
                                            : `/images/${serviceImage}`; %>
