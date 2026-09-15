@@ -7071,11 +7071,10 @@ body > .hero .hero__illustration { display: none; }
 
 /* ===== CONNECTED HOME PAGE BACKGROUNDS ===== */
 :root {
-    --home-background-1: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-1.jpg');
-    --home-background-3: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-3.jpg');
+    --home-background-1: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-1.jpg?v=20260915-home-bg-v2');
+    --home-background-3: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-3.jpg?v=20260915-home-bg-v2');
 }
 
-body > .quick-info,
 body > #faq {
     background-color: #e8f3ff;
     background-image: var(--home-background-1);
@@ -7087,7 +7086,6 @@ body > .process {
 }
 
 
-body > .quick-info,
 body > .process,
 body > #faq {
     background-position: center center;
@@ -7096,7 +7094,6 @@ body > #faq {
 }
 
 @media (max-width: 768px) {
-    body > .quick-info,
     body > .process,
     body > #faq {
         background-position: center center;
