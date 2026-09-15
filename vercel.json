@@ -8,6 +8,24 @@
       "includeFiles": "{dienlanh/views/**,dienlanh/public/**,dienlanh- web/**,admin/**}"
     }
   },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "nguyen-hung-ree-dienlanh.vercel.app" }
+      ],
+      "destination": "https://linhkienchinhhang.com.vn/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "www.linhkienchinhhang.com.vn" }
+      ],
+      "destination": "https://linhkienchinhhang.com.vn/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index.js" }
   ]
