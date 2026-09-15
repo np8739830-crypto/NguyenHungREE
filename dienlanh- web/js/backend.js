@@ -318,14 +318,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? allServices.slice(0, serviceLimit)
                 : allServices;
 
-            servicesGrid.innerHTML = services.length ? services.map(service => `
+            const renderCards = items => items.map(service => `
                 <article class="service-card" data-service="${escapeHtml(service.slug)}">
                     <div class="service-card__icon"><i class="fas ${escapeHtml(service.icon || 'fa-tools')}"></i></div>
                     <h3 class="service-card__title">${escapeHtml(service.name)}</h3>
                     <p class="service-card__desc">${escapeHtml(service.description)}</p>
                     <a href="/service-detail?service=${encodeURIComponent(service.slug)}" class="service-card__link">Xem chi tiết <i class="fas fa-arrow-right"></i></a>
-                </article>`).join('') : '<p>Chưa có dịch vụ.</p>';
-        }).catch(() => { servicesGrid.innerHTML = '<p>Không thể tải dịch vụ.</p>'; });
+                </article>`).join('');
+            const renderedSlugs = new Set([...servicesGrid.querySelectorAll('.service-card__link')]
+                .map(link => new URL(link.href, window.location.origin).searchParams.get('service'))
+                .filter(Boolean));
+
+            if (!servicesGrid.querySelector('.service-card')) {
+                servicesGrid.innerHTML = services.length ? renderCards(services) : '<p>Chưa có dịch vụ.</p>';
+                return;
+            }
+
+            const missingServices = services.filter(service => !renderedSlugs.has(service.slug));
+            servicesGrid.insertAdjacentHTML('beforeend', renderCards(missingServices));
+        }).catch(() => {
+            if (!servicesGrid.querySelector('.service-card')) servicesGrid.innerHTML = '<p>Không thể tải dịch vụ.</p>';
+        });
     }
 
     const newsImageFiles = new Set([
