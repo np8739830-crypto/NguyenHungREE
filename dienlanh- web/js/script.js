@@ -322,10 +322,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (formSuccess) {
                         formSuccess.classList.add('show');
                         requestAnimationFrame(() => {
-                            const successCard = document.getElementById('contactFormWrapper') || formSuccess;
-                            const cardRect = successCard.getBoundingClientRect();
-                            const targetTop = window.scrollY + cardRect.top - Math.max(16, (window.innerHeight - cardRect.height) / 2);
-                            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
+                            requestAnimationFrame(() => {
+                                const successCard = document.getElementById('contactFormWrapper') || formSuccess;
+                                const headerHeight = document.getElementById('header')?.getBoundingClientRect().height || 0;
+                                const cardTop = window.scrollY + successCard.getBoundingClientRect().top;
+                                window.scrollTo({
+                                    top: Math.max(0, cardTop - headerHeight - 24),
+                                    behavior: 'auto'
+                                });
+                            });
                         });
                     }
                 } catch (error) {
