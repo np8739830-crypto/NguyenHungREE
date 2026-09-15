@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
             const CUSTOMER_TAB_SESSION_KEY = 'dienlanh.customerTabAuthenticated';
+            const navigationEntry = performance.getEntriesByType('navigation')[0];
+            const openedDirectly = navigationEntry?.type === 'navigate' && !document.referrer;
             const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '<', '>': '>', "'": '&#39;', '"': '"' })[character]);
             // When this frontend is opened through a static preview server, its
             // relative API calls would otherwise target that preview server instead
@@ -178,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollRevealAfterRender();
     }
 
+    if (openedDirectly) sessionStorage.removeItem(CUSTOMER_TAB_SESSION_KEY);
     const customerSessionReady = sessionStorage.getItem(CUSTOMER_TAB_SESSION_KEY) === '1'
         ? Promise.resolve()
         : request('/auth/logout', { method: 'POST' }).catch(() => {});

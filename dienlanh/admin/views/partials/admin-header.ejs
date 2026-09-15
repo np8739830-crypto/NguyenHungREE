@@ -22,7 +22,10 @@ const reviewType = typeof selectedType !== 'undefined' && selectedType === 'tech
     <script>
         (() => {
             const key = 'dienlanh.adminTabAuthenticated';
-            if (sessionStorage.getItem(key) === '1') return;
+            const navigationEntry = performance.getEntriesByType('navigation')[0];
+            const openedDirectly = navigationEntry?.type === 'navigate' && !document.referrer;
+            if (!openedDirectly && sessionStorage.getItem(key) === '1') return;
+            sessionStorage.removeItem(key);
             document.documentElement.style.visibility = 'hidden';
             fetch('/admin/logout', {
                 method: 'POST',
