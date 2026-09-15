@@ -6310,23 +6310,17 @@ body > .hero .hero__illustration { display: none; }
 
 /* One uninterrupted background for the feature cards and services catalog. */
 .home-info-services-background {
-    background: none;
-}
-
-.home-info-services-background > .quick-info {
     background-color: #e8f3ff;
-    background-image: var(--home-background-1);
+    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/nen-chung-thong-tin-dich-vu.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 
+.home-info-services-background > .quick-info,
 .home-info-services-background > .services {
-    background-color: #edf6ff;
-    background-image: var(--home-background-2);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-color: transparent;
+    background-image: none;
 }
 .account-card { background: #fff; border: 1px solid rgba(18,59,143,.08); border-radius: 22px; box-shadow: 0 18px 50px rgba(16,26,69,.10); padding: 40px 44px; }
 .account-card__head { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #e9edf2; }
@@ -7078,7 +7072,6 @@ body > .hero .hero__illustration { display: none; }
 /* ===== CONNECTED HOME PAGE BACKGROUNDS ===== */
 :root {
     --home-background-1: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-1.jpg');
-    --home-background-2: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-2.jpg');
     --home-background-3: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-3.jpg');
 }
 
@@ -7088,11 +7081,6 @@ body > #faq {
     background-image: var(--home-background-1);
 }
 
-body > .services {
-    background-color: #edf6ff;
-    background-image: var(--home-background-2);
-}
-
 body > .process {
     background-color: #eaf4ff;
     background-image: var(--home-background-3);
@@ -7100,7 +7088,6 @@ body > .process {
 
 
 body > .quick-info,
-body > .services,
 body > .process,
 body > #faq {
     background-position: center center;
@@ -7110,7 +7097,6 @@ body > #faq {
 
 @media (max-width: 768px) {
     body > .quick-info,
-    body > .services,
     body > .process,
     body > #faq {
         background-position: center center;
