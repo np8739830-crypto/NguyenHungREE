@@ -121,6 +121,7 @@ app.use('/images', express.static(path.join(staticSite, 'images')));
 
 // Keep production sessions across process restarts. The default in-memory
 // store remains useful for local development and automated tests.
+const serverSessionTtl = 24 * 60 * 60 * 1000;
 const sessionOptions = {
     secret: process.env.SESSION_SECRET || 'local-development-only-change-me',
     resave: false,
@@ -129,14 +130,15 @@ const sessionOptions = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        // A session cookie is removed when the browser is fully closed.
+        // Reloading or navigating between customer/admin pages still works.
+        sameSite: 'lax'
     }
 };
 
 if (database.provider === 'd1') {
     const D1SessionStore = require('./services/d1SessionStore');
-    sessionOptions.store = new D1SessionStore({ ttl: sessionOptions.cookie.maxAge });
+    sessionOptions.store = new D1SessionStore({ ttl: serverSessionTtl });
 } else if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     // A persistent Node.js server can keep sessions in a local SQLite file.
     // Vercel functions cannot reliably use a native, filesystem-backed store,
