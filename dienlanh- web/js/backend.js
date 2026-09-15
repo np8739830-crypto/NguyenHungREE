@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+            const CUSTOMER_TAB_SESSION_KEY = 'dienlanh.customerTabAuthenticated';
             const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '<', '>': '>', "'": '&#39;', '"': '"' })[character]);
             // When this frontend is opened through a static preview server, its
             // relative API calls would otherwise target that preview server instead
@@ -177,7 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollRevealAfterRender();
     }
 
-    request('/auth/me').then(({ user }) => {
+    const customerSessionReady = sessionStorage.getItem(CUSTOMER_TAB_SESSION_KEY) === '1'
+        ? Promise.resolve()
+        : request('/auth/logout', { method: 'POST' }).catch(() => {});
+
+    customerSessionReady.then(() => request('/auth/me')).then(({ user }) => {
         setAuthenticatedUser(user);
         finishAuthNavigation(user);
     }).catch(() => setAuthenticatedUser(null));
@@ -197,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identity, password })
                 });
+                sessionStorage.setItem(CUSTOMER_TAB_SESSION_KEY, '1');
                 setAuthenticatedUser(user);
                 if (finishAuthNavigation(user)) return;
                 document.getElementById('loginOverlay')?.classList.remove('active');
@@ -248,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         event.stopImmediatePropagation();
         await request('/auth/logout', { method: 'POST' });
+        sessionStorage.removeItem(CUSTOMER_TAB_SESSION_KEY);
         setAuthenticatedUser(null);
     }, true);
 

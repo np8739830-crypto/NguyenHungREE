@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.btn-logout').forEach(function(link) {
         link.addEventListener('click', function(event) {
             event.preventDefault();
+            sessionStorage.removeItem('dienlanh.adminTabAuthenticated');
             const form = document.createElement('form');
             form.method = 'post';
             form.action = '/admin/logout';

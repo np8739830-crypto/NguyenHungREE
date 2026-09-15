@@ -83,6 +83,7 @@
                 toggle.setAttribute('aria-label', visible ? 'Hiện mật khẩu' : 'Ẩn mật khẩu');
             });
             form.addEventListener('submit', () => {
+                sessionStorage.setItem('dienlanh.adminTabAuthenticated', '1');
                 const submit = form.querySelector('.admin-login__submit');
                 submit.disabled = true;
                 submit.classList.add('is-loading');

@@ -19,6 +19,18 @@ const accessActive = ['accounts', 'roles'].includes(activePage);
 const reviewsActive = activePage === 'reviews';
 const reviewType = typeof selectedType !== 'undefined' && selectedType === 'technician' ? 'technician' : 'customer';
 %>
+    <script>
+        (() => {
+            const key = 'dienlanh.adminTabAuthenticated';
+            if (sessionStorage.getItem(key) === '1') return;
+            document.documentElement.style.visibility = 'hidden';
+            fetch('/admin/logout', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { Accept: 'text/html' }
+            }).finally(() => window.location.replace('/admin/login'));
+        })();
+    </script>
     <header class="main-header">
         <div class="header-left">
             <a href="/admin" class="logo"><img src="/images/logo.png" alt="Logo Nguyên Hùng" class="brand-logo"><span class="logo-lg">NGUYÊN HÙNG</span></a>
