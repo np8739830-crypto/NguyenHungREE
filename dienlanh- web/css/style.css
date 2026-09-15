@@ -6310,8 +6310,11 @@ body > .hero .hero__illustration { display: none; }
 
 /* One uninterrupted background for the feature cards and services catalog. */
 .home-info-services-background {
-    background-color: #e8f3ff;
-    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/nen-chung-thong-tin-dich-vu.jpg');
+    background-color: #d9ecff;
+    background-image:
+        url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/nen-chung-thong-tin-dich-vu.jpg'),
+        linear-gradient(135deg, #d8edff 0%, #f4f9ff 48%, #c9e6ff 100%);
+    background-blend-mode: multiply;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
