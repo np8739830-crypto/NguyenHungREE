@@ -3401,7 +3401,7 @@
     /* Connected background for the services catalog page. */
     .page-section--services-bg {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/dich-vu-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/dich-vu-background.jpg');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -3410,7 +3410,7 @@
     /* Tall connected background for the full pricing catalog. */
     .page-section--pricing-bg {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20b%E1%BA%A3ng%20gi%C3%A1/bang-gia-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20b%E1%BA%A3ng%20gi%C3%A1/bang-gia-background.jpg');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -3428,7 +3428,7 @@
         position: absolute;
         inset: 0;
         z-index: -2;
-        background: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chi%20ti%E1%BA%BFt%20d%E1%BB%8Bch%20v%E1%BB%A5/chi-tiet-dich-vu-background.png') center / 100% 100% no-repeat;
+        background: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chi%20ti%E1%BA%BFt%20d%E1%BB%8Bch%20v%E1%BB%A5/chi-tiet-dich-vu-background.jpg') center / 100% 100% no-repeat;
     }
 
     .page-section--service-detail-bg::after {
@@ -3448,7 +3448,7 @@
     /* One continuous background across all light sections of the About page. */
     .about-page {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20gi%E1%BB%9Bi%20thi%E1%BB%87u/gioi-thieu-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20gi%E1%BB%9Bi%20thi%E1%BB%87u/gioi-thieu-background.jpg');
         background-position: center top;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3462,7 +3462,7 @@
     /* Connected background for the responsive news listing. */
     .page-section--news-bg {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20tin%20t%E1%BB%A9c/tin-tuc-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20tin%20t%E1%BB%A9c/tin-tuc-background.jpg');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3471,7 +3471,7 @@
     /* Connected background sized to the contact information and form area. */
     .page-section--contact-bg {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20li%C3%AAn%20h%E1%BB%87/lien-he-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20li%C3%AAn%20h%E1%BB%87/lien-he-background.jpg');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3480,7 +3480,7 @@
     /* Tall background that follows the dynamically sized reviews content. */
     .reviews-page .reviews-main {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20%C4%91%C3%A1nh%20gi%C3%A1/danh-gia-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20%C4%91%C3%A1nh%20gi%C3%A1/danh-gia-background.jpg');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -3489,7 +3489,7 @@
     /* One continuous background behind the booking form and technician grid. */
     .booking-page {
         background-color: #edf7ff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20%C4%91%E1%BA%B7t%20l%E1%BB%8Bch/dat-lich-background.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20%C4%91%E1%BA%B7t%20l%E1%BB%8Bch/dat-lich-background.jpg');
         background-position: center top;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -5450,7 +5450,7 @@
     .news-detail-page {
         padding: calc(var(--header-height) + 42px) 0 72px;
         background-color: #f7fbff;
-        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chi%20ti%E1%BA%BFt%20tin%20t%E1%BB%A9c/nen-chi-tiet-tin-tuc.png');
+        background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chi%20ti%E1%BA%BFt%20tin%20t%E1%BB%A9c/nen-chi-tiet-tin-tuc.jpg');
         background-position: center top;
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -6021,7 +6021,7 @@
 .pricing-category,
 .pricing-category.pricing-category--fridge-blue {
     /* Purpose-built abstract light-trail artwork; contains no appliances. */
-    background: #1748a6 url('/images/n%E1%BB%81n/n%E1%BB%81n%20b%E1%BA%A3ng%20gi%C3%A1/bang-gia-vet-sang.png') center / cover no-repeat;
+    background: #1748a6 url('/images/n%E1%BB%81n/n%E1%BB%81n%20b%E1%BA%A3ng%20gi%C3%A1/bang-gia-vet-sang.jpg') center / cover no-repeat;
     border-color: rgba(147, 197, 253, .9);
     box-shadow: 0 14px 30px rgba(37, 99, 235, .25);
 }
@@ -6064,7 +6064,7 @@
 .profile-background {
     min-height: 760px;
     background-color: #f4faff;
-    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20th%C3%B4ng%20tin%20c%C3%A1%20nh%C3%A2n/nen-thong-tin-ca-nhan.png');
+    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20th%C3%B4ng%20tin%20c%C3%A1%20nh%C3%A2n/nen-thong-tin-ca-nhan.jpg');
     background-position: center top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -6073,7 +6073,7 @@
 .transaction-history-background {
     min-height: 980px;
     background-color: #f4faff;
-    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20l%E1%BB%8Bch%20s%E1%BB%AD%20giao%20d%E1%BB%8Bch/nen-lich-su-giao-dich.png');
+    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20l%E1%BB%8Bch%20s%E1%BB%AD%20giao%20d%E1%BB%8Bch/nen-lich-su-giao-dich.jpg');
     background-position: center top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -6085,7 +6085,7 @@ body > .hero {
     padding: 38px 0 34px;
     overflow: hidden;
     background-color: #eaf7ff;
-    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/banner-trang-chu-v2.png');
+    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/banner-trang-chu-v2.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -6298,7 +6298,7 @@ body > .hero .hero__illustration { display: none; }
 /* One uninterrupted background for the feature cards and services catalog. */
 .home-info-services-background {
     background-color: #f4faff;
-    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/nen-chung-thong-tin-dich-vu.png');
+    background-image: url('/images/n%E1%BB%81n/n%E1%BB%81n%20chung%204%20%C3%B4%20v%C3%A0%20d%E1%BB%8Bch%20v%E1%BB%A5/nen-chung-thong-tin-dich-vu.jpg');
     background-position: center top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -7058,9 +7058,9 @@ body > .hero .hero__illustration { display: none; }
 
 /* ===== CONNECTED HOME PAGE BACKGROUNDS ===== */
 :root {
-    --home-background-1: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-1.png');
-    --home-background-2: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-2.png');
-    --home-background-3: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-3.png');
+    --home-background-1: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-1.jpg');
+    --home-background-2: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-2.jpg');
+    --home-background-3: url('/images/n%E1%BB%81n/n%E1%BB%81n%20banner%20trang%20ch%E1%BB%A7/trang-chu-3.jpg');
 }
 
 body > .quick-info,
