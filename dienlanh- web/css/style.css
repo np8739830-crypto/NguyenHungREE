@@ -1942,6 +1942,30 @@
         grid-template-columns: 1fr 1fr;
         gap: 40px;
     }
+
+    .contact-grid--success {
+        grid-template-columns: minmax(0, 750px);
+        justify-content: center;
+    }
+
+    .contact-grid--success > .contact-info {
+        display: none;
+    }
+
+    .contact-grid--success .contact-form__title,
+    .contact-grid--success .contact-form__desc {
+        display: none;
+    }
+
+    .contact-grid--success .contact-form-wrapper {
+        min-height: 420px;
+        display: grid;
+        place-items: center;
+    }
+
+    .contact-grid--success .form-success {
+        width: 100%;
+    }
     
     .contact-info {
         display: flex;

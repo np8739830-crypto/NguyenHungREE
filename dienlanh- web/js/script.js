@@ -298,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     contactForm.reset();
                     clearSavedRequestForm(contactForm);
                     contactForm.style.display = 'none';
+                    contactForm.closest('.contact-grid')?.classList.add('contact-grid--success');
                     const contactRequestCode = document.getElementById('contactRequestCode');
                     if (contactRequestCode && body.requestCode) {
                         contactRequestCode.querySelector('strong').textContent = body.requestCode;
