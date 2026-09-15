@@ -3,6 +3,7 @@
  */
 
 const { getAuthorization, can } = require('../services/authorizationService');
+const ADMIN_AUTHORIZATION_TTL = 30 * 1000;
 
 function expectsJson(req) {
     return req.originalUrl?.startsWith('/api/') ||
@@ -46,25 +47,38 @@ async function loadAdminAuthorization(req, res, next) {
     if (!req.session?.admin?.id) return requireAdmin(req, res, next);
 
     try {
-        const authorization = await getAuthorization(req.session.admin.id);
+        const cachedAuthorization = req.session.adminAuthorizationCache;
+        const cacheIsFresh = cachedAuthorization?.userId === req.session.admin.id &&
+            Date.now() - Number(cachedAuthorization.cachedAt || 0) < ADMIN_AUTHORIZATION_TTL;
+        const authorization = cacheIsFresh
+            ? cachedAuthorization.authorization
+            : await getAuthorization(req.session.admin.id);
         if (!authorization || authorization.status !== 'active' || !authorization.roleId) {
             delete req.session.admin;
+            delete req.session.adminAuthorizationCache;
             req.flash('error', 'Tài khoản đã bị khóa hoặc chưa được cấp vai trò');
             return res.redirect('/admin/login');
         }
 
         req.adminAuthorization = authorization;
-        req.session.admin = {
-            id: authorization.id,
-            username: authorization.username,
-            name: authorization.name,
-            email: authorization.email,
-            avatar: authorization.avatar,
-            role: 'admin',
-            roleId: authorization.roleId,
-            roleSlug: authorization.roleSlug,
-            roleName: authorization.roleName
-        };
+        if (!cacheIsFresh) {
+            req.session.admin = {
+                id: authorization.id,
+                username: authorization.username,
+                name: authorization.name,
+                email: authorization.email,
+                avatar: authorization.avatar,
+                role: 'admin',
+                roleId: authorization.roleId,
+                roleSlug: authorization.roleSlug,
+                roleName: authorization.roleName
+            };
+            req.session.adminAuthorizationCache = {
+                userId: req.session.admin.id,
+                cachedAt: Date.now(),
+                authorization
+            };
+        }
         res.locals.admin = req.session.admin;
         res.locals.adminAuthorization = authorization;
         res.locals.adminPermissions = authorization.permissions;

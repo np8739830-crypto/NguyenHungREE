@@ -114,6 +114,7 @@ router.post('/login', async(req, res, next) => {
             username: user.username,
             name: user.name,
             email: user.email,
+            avatar: user.avatar,
             role: 'admin',
             roleId: user.role_id,
             roleSlug: user.role_slug,
@@ -121,6 +122,11 @@ router.post('/login', async(req, res, next) => {
         };
         await query('UPDATE dbo.users SET last_login = GETDATE() WHERE id = @id', { id: user.id });
         const authorization = await getAuthorization(user.id);
+        req.session.adminAuthorizationCache = {
+            userId: user.id,
+            cachedAt: Date.now(),
+            authorization
+        };
         const landingPages = [
             ['dashboard', '/admin'],
             ['services', '/admin/products'],
@@ -143,6 +149,7 @@ router.use(requireAdmin, loadAdminAuthorization);
 
 router.post('/logout', (req, res, next) => {
     delete req.session.admin;
+    delete req.session.adminAuthorizationCache;
     return req.session.save(error => {
         if (error) return next(error);
         return res.redirect('/admin/login');
