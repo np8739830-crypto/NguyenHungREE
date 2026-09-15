@@ -298,7 +298,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     contactForm.reset();
                     clearSavedRequestForm(contactForm);
                     contactForm.style.display = 'none';
-                    contactForm.closest('.contact-grid')?.classList.add('contact-grid--success');
+                    const contactGrid = document.getElementById('contactGrid');
+                    const contactInfo = document.getElementById('contactInfo');
+                    const contactFormColumn = document.getElementById('contactFormColumn');
+                    const contactFormTitle = document.getElementById('contactFormTitle');
+                    const contactFormDescription = document.getElementById('contactFormDescription');
+                    if (contactInfo) contactInfo.hidden = true;
+                    if (contactFormTitle) contactFormTitle.hidden = true;
+                    if (contactFormDescription) contactFormDescription.hidden = true;
+                    if (contactGrid) contactGrid.classList.add('contact-grid--success');
+                    if (contactFormColumn) contactFormColumn.classList.add('contact-form-column--success');
                     const contactRequestCode = document.getElementById('contactRequestCode');
                     if (contactRequestCode && body.requestCode) {
                         contactRequestCode.querySelector('strong').textContent = body.requestCode;

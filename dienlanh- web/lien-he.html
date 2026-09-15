@@ -7,7 +7,7 @@
     <title>Liên Hệ | Điện Máy Nguyên Hùng</title>
     <meta name="description" content="Liên hệ với Điện Máy Nguyên Hùng qua hotline, email, địa chỉ. Đặt lịch sửa chữa, bảo trì thiết bị điện máy nhanh chóng.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=20260909-all-heroes-match-reviews">
+    <link rel="stylesheet" href="/css/style.css?v=20260915-contact-success-center">
 </head>
 
 <body>
@@ -34,9 +34,9 @@
     <!-- ==================== LIÊN HỆ ==================== -->
     <section class="page-section page-section--bg page-section--contact-bg">
         <div class="container">
-            <div class="contact-grid">
+            <div class="contact-grid" id="contactGrid">
                 <!-- Thông tin liên hệ -->
-                <div class="contact-info">
+                <div class="contact-info" id="contactInfo">
                     <div class="contact-info__card">
                         <div class="contact-info__icon">
                             <i class="fas fa-phone-alt"></i>
@@ -105,10 +105,10 @@
                 </div>
 
                 <!-- Form liên hệ -->
-                <div>
+                <div id="contactFormColumn">
                     <div class="contact-form-wrapper" id="contactFormWrapper">
-                        <h3 class="contact-form__title">GỬI YÊU CẦU CHO CHÚNG TÔI</h3>
-                        <p class="contact-form__desc">Điền thông tin bên dưới, chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.</p>
+                        <h3 class="contact-form__title" id="contactFormTitle">GỬI YÊU CẦU CHO CHÚNG TÔI</h3>
+                        <p class="contact-form__desc" id="contactFormDescription">Điền thông tin bên dưới, chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.</p>
 
                         <form id="contactForm" action="/contact" method="post" enctype="multipart/form-data" novalidate>
                             <div class="form-row">
@@ -360,7 +360,7 @@
     </div>
 
     <script src="js/request-image-upload.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="/js/script.js?v=20260915-contact-success-center"></script>
     <script src="/js/backend.js?v=20260910-nine-services"></script>
 </body>
 

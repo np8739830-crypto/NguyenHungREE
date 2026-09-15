@@ -1944,17 +1944,23 @@
     }
 
     .contact-grid--success {
-        grid-template-columns: minmax(0, 750px);
-        justify-content: center;
+        grid-template-columns: minmax(0, 750px) !important;
+        justify-content: center !important;
     }
 
     .contact-grid--success > .contact-info {
-        display: none;
+        display: none !important;
     }
 
     .contact-grid--success .contact-form__title,
     .contact-grid--success .contact-form__desc {
-        display: none;
+        display: none !important;
+    }
+
+    .contact-form-column--success {
+        width: 100%;
+        max-width: 750px;
+        margin-inline: auto;
     }
 
     .contact-grid--success .contact-form-wrapper {
