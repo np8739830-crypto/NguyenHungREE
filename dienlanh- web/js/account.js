@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
-    const formatDate = value => value ? new Date(value).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
+    const parseStoredDate = value => {
+        const text = String(value || '').trim();
+        const normalized = /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(text)
+            ? `${text.replace(' ', 'T')}Z`
+            : text;
+        return new Date(normalized);
+    };
+    const formatDate = value => value ? parseStoredDate(value).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : 'Chưa cập nhật';
     const formatMoney = value => value === null || value === undefined ? 'Chưa có' : `${new Intl.NumberFormat('vi-VN').format(value)} đ`;
     const statusLabels = { pending: 'Chờ xác nhận', confirmed: 'Đang xử lý', in_progress: 'Đang xử lý', completed: 'Hoàn thành', cancelled: 'Đã hủy' };
 
@@ -119,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'bao-tri-he-thong-dien-lanh': 'Bảo trì hệ thống điện lạnh',
         other: 'Khác'
     };
-    const formatHistoryDate = value => value ? new Date(value).toLocaleDateString('vi-VN', { timeZone: 'UTC' }) : '—';
-    const formatHistoryTime = value => value ? new Date(value).toLocaleTimeString('vi-VN', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' }) : '—';
+    const formatHistoryDate = value => value ? parseStoredDate(value).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—';
+    const formatHistoryTime = value => value ? parseStoredDate(value).toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit' }) : '—';
     const friendlySubject = value => contactSubjectLabels[value] || String(value || 'Khác').replace(/-/g, ' ').replace(/\b\p{L}/gu, letter => letter.toLocaleUpperCase('vi-VN'));
     const compactText = (value, length = 58) => String(value || '').length > length ? `${String(value).slice(0, length).trim()}…` : String(value || '—');
 

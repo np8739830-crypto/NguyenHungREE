@@ -182,16 +182,18 @@ async function sendTelegramMessage(text, parseMode = 'HTML') {
  * Send a local image file to Telegram.
  * Node 18+ provides the global FormData/Blob APIs used here.
  */
-async function sendTelegramPhoto(filePath, caption = '') {
+async function sendTelegramPhoto(fileSource, caption = '') {
     const { token, chatId } = telegramConfig();
     if (!token || !chatId) return false;
 
     try {
-        const buffer = await fs.readFile(filePath);
-        const filename = path.basename(filePath);
+        const isMemoryUpload = Buffer.isBuffer(fileSource?.buffer);
+        const buffer = isMemoryUpload ? fileSource.buffer : await fs.readFile(fileSource);
+        const filename = isMemoryUpload ? fileSource.filename : path.basename(fileSource);
+        const mimeType = isMemoryUpload ? fileSource.mime_type : 'application/octet-stream';
         const form = new FormData();
         form.append('chat_id', String(chatId));
-        form.append('photo', new Blob([buffer]), filename);
+        form.append('photo', new Blob([buffer], { type: mimeType }), filename);
         if (caption) {
             form.append('caption', caption.slice(0, 1024));
             form.append('parse_mode', 'HTML');
@@ -316,7 +318,7 @@ async function sendBookingNotification(data, bookingId) {
 
     const imageDirectory = path.join(__dirname, '../private/request-images');
     for (const image of notification.images || []) {
-        const imagePath = path.join(imageDirectory, image.filename);
+        const imagePath = image.buffer ? image : path.join(imageDirectory, image.filename);
         const reference = notification.request_code || `#${bookingId}`;
         const sent = await sendTelegramPhoto(imagePath, `🖼 Ảnh thiết bị của yêu cầu ${escapeTelegramHtml(reference)}`);
         if (!sent) success = false;
@@ -370,7 +372,7 @@ async function sendContactNotification(data, contactId) {
         ? data._storedImages
         : [];
 
-    console.log('📷 Ảnh liên hệ cần gửi Telegram:', images);
+    console.log('Contact images queued for Telegram:', images.map(image => image.filename));
 
     // Gửi từng ảnh lên Telegram
     for (const image of images) {
@@ -379,13 +381,13 @@ async function sendContactNotification(data, contactId) {
             continue;
         }
 
-        const imagePath = path.join(
+        const imagePath = image.buffer ? image : path.join(
             imageDirectory,
             image.filename
         );
 
         try {
-            await fs.access(imagePath);
+            if (!image.buffer) await fs.access(imagePath);
 
             const sent = await sendTelegramPhoto(
                 imagePath,

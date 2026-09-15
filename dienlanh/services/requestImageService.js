@@ -43,7 +43,12 @@ async function storeImages(requestType, requestId, files = []) {
             const filename = `${requestType}-${requestId}-${crypto.randomBytes(20).toString('hex')}${TYPES[file.mimetype].extension}`;
             if (isBlobEnabled()) await uploadBuffer(`request-images/${filename}`, file.buffer, file.mimetype);
             else await fs.writeFile(path.join(directory, filename), file.buffer, { flag: 'wx' });
-            saved.push({ filename, mime_type: file.mimetype, size_bytes: file.size });
+            saved.push({
+                filename,
+                mime_type: file.mimetype,
+                size_bytes: file.size,
+                buffer: file.buffer
+            });
         }
         return saved;
     } catch (error) {

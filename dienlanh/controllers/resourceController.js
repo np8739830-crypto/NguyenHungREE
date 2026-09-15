@@ -119,7 +119,8 @@ function createResourceController(table, fields, options = {}) {
                 if (storedImages.length) data._storedImages = storedImages.map(image => ({
                     filename: image.filename,
                     mime_type: image.mime_type,
-                    size_bytes: image.size_bytes
+                    size_bytes: image.size_bytes,
+                    buffer: image.buffer
                 }));
 
                 if (typeof options.afterCreate === 'function') {
