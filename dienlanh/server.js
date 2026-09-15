@@ -50,6 +50,23 @@ function getLanIPv4Addresses() {
 // Secure cookies must trust the TLS-terminating proxy in production.
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
+// Keep search engines from indexing the Vercel deployment hostname as a
+// separate website. All public aliases permanently resolve to one canonical
+// domain while localhost/LAN development continues to work normally.
+app.use((req, res, next) => {
+    if (process.env.NODE_ENV !== 'production') return next();
+
+    const canonicalHostname = 'linhkienchinhhang.com.vn';
+    const requestHostname = String(req.hostname || '').toLowerCase();
+    const redirectHosts = new Set([
+        'www.linhkienchinhhang.com.vn',
+        'nguyen-hung-ree-dienlanh.vercel.app'
+    ]);
+
+    if (!redirectHosts.has(requestHostname)) return next();
+    return res.redirect(308, `https://${canonicalHostname}${req.originalUrl}`);
+});
+
 // Allow the static frontend to be previewed from localhost or another device
 // on the private LAN (for example by VS Code Live Server).
 app.use((req, res, next) => {
