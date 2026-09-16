@@ -18,6 +18,7 @@ const payrollController = require('../controllers/payrollController');
 const attendanceController = require('../controllers/attendanceController');
 const { getAuthorization, can } = require('../services/authorizationService');
 const { persistMulterFile } = require('../services/blobStorageService');
+const { rateLimit, rejectBots } = require('../middleware/security');
 const router = express.Router();
 const runtimeUploadDirectory = process.env.VERCEL ? '/tmp' : path.join(__dirname, '../public/uploads');
 
@@ -94,7 +95,7 @@ router.get('/login', (req, res) => {
     });
 });
 
-router.post('/login', async(req, res, next) => {
+router.post('/login', rateLimit({ namespace: 'admin-login', max: 10, windowMs: 15 * 60 * 1000 }), rejectBots, async(req, res, next) => {
     try {
         const login = String(req.body.username || req.body.email || '').trim().toLowerCase();
         const user = (await query(`SELECT u.*, r.slug AS role_slug, r.name AS role_name
@@ -109,7 +110,7 @@ router.post('/login', async(req, res, next) => {
             return res.redirect('/admin/login');
         }
 
-        req.session.admin = {
+        const admin = {
             id: user.id,
             username: user.username,
             name: user.name,
@@ -122,7 +123,7 @@ router.post('/login', async(req, res, next) => {
         };
         await query('UPDATE dbo.users SET last_login = GETDATE() WHERE id = @id', { id: user.id });
         const authorization = await getAuthorization(user.id);
-        req.session.adminAuthorizationCache = {
+        const authorizationCache = {
             userId: user.id,
             cachedAt: Date.now(),
             authorization
@@ -139,7 +140,18 @@ router.post('/login', async(req, res, next) => {
             ['roles', '/admin/access/roles']
         ];
         const landing = landingPages.find(([moduleKey]) => can(authorization, moduleKey, 'view'));
-        return res.redirect(landing?.[1] || '/admin/account');
+        const customer = req.session.customer;
+        const csrfToken = req.session.csrfToken;
+        return req.session.regenerate(error => {
+            if (error) return next(error);
+            if (customer) req.session.customer = customer;
+            if (csrfToken) req.session.csrfToken = csrfToken;
+            req.session.admin = admin;
+            req.session.adminAuthorizationCache = authorizationCache;
+            return req.session.save(saveError => saveError
+                ? next(saveError)
+                : res.redirect(landing?.[1] || '/admin/account'));
+        });
     } catch (error) {
         return next(error);
     }

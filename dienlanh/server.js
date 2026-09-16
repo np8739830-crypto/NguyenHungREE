@@ -13,6 +13,7 @@ const path = require('path');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const database = require('./config/database');
 const { testConnection } = database;
 const { runRbacMigration } = require('./services/rbacMigrationService');
@@ -23,6 +24,8 @@ const { runContactOwnershipMigration } = require('./services/contactOwnershipMig
 const { runPayrollMigration } = require('./services/payrollMigrationService');
 const { runAttendanceMigration } = require('./services/attendanceMigrationService');
 const { setUserLocals, csrfProtect } = require('./middleware/auth');
+const { securityHeaders, requestIdentity, rateLimit, rejectBots } = require('./middleware/security');
+const { alertSystem } = require('./services/monitoringService');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -95,6 +98,7 @@ app.use((req, res, next) => {
 
 // ===== VIEW ENGINE =====
 app.set('view engine', 'ejs');
+app.engine('ejs', require('ejs').__express);
 app.engine('html', require('ejs').renderFile);
 app.set('views', [
     path.join(__dirname, 'views'),
@@ -104,8 +108,12 @@ app.set('views', [
 
 // ===== MIDDLEWARE =====
 app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(requestIdentity);
+app.use(securityHeaders);
+app.use(rateLimit({ namespace: 'global', max: 500, windowMs: 15 * 60 * 1000 }));
+app.use(compression({ threshold: 1024 }));
+app.use(express.json({ limit: '200kb' }));
+app.use(express.urlencoded({ extended: true, limit: '200kb', parameterLimit: 100 }));
 app.use(methodOverride('_method'));
 app.use(cookieParser());
 
@@ -183,13 +191,8 @@ if (database.provider === 'd1') {
     const D1SessionStore = require('./services/d1SessionStore');
     sessionOptions.store = new D1SessionStore({ ttl: serverSessionTtl });
 } else if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
-    // A persistent Node.js server can keep sessions in a local SQLite file.
-    // Vercel functions cannot reliably use a native, filesystem-backed store,
-    // so they fall back to express-session's in-memory store instead.
-    const sessionDir = process.env.SESSION_DB_DIR || path.resolve(__dirname, 'data');
-    fs.mkdirSync(sessionDir, { recursive: true });
-    const SQLiteStore = require('connect-sqlite3')(session);
-    sessionOptions.store = new SQLiteStore({ db: 'sessions.sqlite', dir: sessionDir });
+    const SqlSessionStore = require('./services/sqlSessionStore');
+    sessionOptions.store = new SqlSessionStore({ ttl: serverSessionTtl });
 }
 
 app.use(session(sessionOptions));
@@ -223,22 +226,28 @@ const accountRoutes = require('./routes/account');
 const forgotPasswordRoutes = require('./routes/forgotPassword');
 const attachmentRoutes = require('./routes/attachments');
 const schedulingRoutes = require('./routes/scheduling');
+const operationsRoutes = require('./routes/operations');
+
+const authRateLimit = rateLimit({ namespace: 'auth', max: 15, windowMs: 15 * 60 * 1000, methods: ['POST'] });
+const requestRateLimit = rateLimit({ namespace: 'customer-request', max: 20, windowMs: 60 * 60 * 1000, methods: ['POST'] });
+const reviewRateLimit = rateLimit({ namespace: 'review', max: 10, windowMs: 60 * 60 * 1000, methods: ['POST'] });
 
 app.use('/forgot-password', forgotPasswordRoutes);
 app.use('/', homeRoutes);
-app.use('/auth', authRoutes);
+app.use('/auth', authRateLimit, rejectBots, authRoutes);
 app.use('/services', serviceRoutes);
-app.use('/booking', bookingRoutes);
-app.use('/contact', contactRoutes);
+app.use('/booking', requestRateLimit, rejectBots, bookingRoutes);
+app.use('/contact', requestRateLimit, rejectBots, contactRoutes);
 // The API aliases share the same protected handlers as the public forms.
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/contacts', contactRoutes);
+app.use('/api/bookings', requestRateLimit, rejectBots, bookingRoutes);
+app.use('/api/contacts', requestRateLimit, rejectBots, contactRoutes);
 app.use('/api', schedulingRoutes);
-app.use('/reviews', reviewRoutes);
+app.use('/reviews', reviewRateLimit, rejectBots, reviewRoutes);
 app.use('/news', newsRoutes);
 app.use('/content', contentRoutes);
 app.use('/account', accountRoutes);
 app.use('/attachments', attachmentRoutes);
+app.use('/_ops', operationsRoutes);
 // Admin pages are session-specific and must always reference the latest asset version.
 app.use('/admin', (req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
@@ -257,11 +266,19 @@ app.use((req, res) => {
 // ===== ERROR HANDLER =====
 app.use((err, req, res, next) => {
     console.error('❌ Server Error:', err.stack);
+    void alertSystem('Lỗi HTTP 500', err, {
+        path: req.path,
+        method: req.method,
+        requestId: req.requestId
+    });
     if (res.headersSent) return next(err);
+    if (req.accepts('json') && !req.accepts('html')) {
+        return res.status(500).json({ error: 'Lỗi máy chủ', requestId: req.requestId });
+    }
     res.status(500).render('pages/500', {
         title: '500 - Lỗi máy chủ',
         layout: 'layouts/main',
-        error: process.env.NODE_ENV === 'development' ? err.message : 'Đã xảy ra lỗi máy chủ'
+        error: process.env.NODE_ENV === 'development' ? err.message : `Đã xảy ra lỗi máy chủ. Mã: ${req.requestId}`
     });
 });
 

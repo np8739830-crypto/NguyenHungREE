@@ -28,5 +28,8 @@
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index.js" }
+  ],
+  "crons": [
+    { "path": "/_ops/maintenance", "schedule": "0 18 * * *" }
   ]
 }

@@ -3,19 +3,31 @@ const { query } = require('../config/database');
 
 async function register(req, res, next) {
     try {
-        const { name, email, phone, password } = req.body;
+        const name = String(req.body.name || '').trim();
+        const email = String(req.body.email || '').trim().toLowerCase() || null;
+        const phone = String(req.body.phone || '').trim();
+        const password = String(req.body.password || '');
         if (!name || !phone || !password) return res.status(400).json({ error: 'Vui lòng nhập họ tên, số điện thoại và mật khẩu.' });
+        if (name.length > 100 || !/^0(?:3|5|7|8|9)\d{8}$/.test(phone)) {
+            return res.status(400).json({ error: 'Họ tên hoặc số điện thoại không hợp lệ.' });
+        }
+        if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+            return res.status(400).json({ error: 'Email không hợp lệ.' });
+        }
+        if (password.length < 8 || password.length > 128) {
+            return res.status(400).json({ error: 'Mật khẩu phải có từ 8 đến 128 ký tự.' });
+        }
 
         const existingUser = (await query(
             'SELECT id FROM users WHERE email = @email OR phone = @phone',
-            { email: email || null, phone }
+            { email, phone }
         )).recordset[0];
         if (existingUser) return res.status(409).json({ error: 'Email hoặc số điện thoại đã được sử dụng.' });
 
         const passwordHash = await bcrypt.hash(password, 10);
         const result = await query(
             'INSERT INTO users (name, email, phone, password_hash) OUTPUT INSERTED.id VALUES (@name, @email, @phone, @passwordHash)',
-            { name, email: email || null, phone, passwordHash }
+            { name, email, phone, passwordHash }
         );
         return res.status(201).json({ id: result.recordset[0].id, message: 'Đăng ký tài khoản thành công.' });
     } catch (error) {
