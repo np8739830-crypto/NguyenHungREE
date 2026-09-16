@@ -581,6 +581,104 @@ async function deleteService(req, res, next) {
     }
 }
 
+async function pricing(req, res, next) {
+    try {
+        const [pricingResult, servicesResult] = await Promise.all([
+            query(`SELECT p.id, p.service_id, p.category, p.item_name, p.description, p.price,
+                          p.sort_order, p.status, s.name AS service_name, s.slug AS service_slug
+                   FROM pricing p JOIN services s ON s.id = p.service_id
+                   ORDER BY s.sort_order ASC, p.sort_order ASC, p.id ASC`),
+            query('SELECT id, name, slug, status FROM services ORDER BY sort_order ASC, name ASC')
+        ]);
+        return res.render('pricing', {
+            title: 'Quản lý bảng giá - NGUYỄN HÙNG',
+            activePage: 'pricing',
+            pricingItems: pricingResult.recordset,
+            services: servicesResult.recordset
+        });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+function normalizePricingInput(body) {
+    return {
+        serviceId: Number.parseInt(body.service_id, 10),
+        category: String(body.category || '').trim() || null,
+        itemName: String(body.item_name || '').trim(),
+        description: String(body.description || '').trim() || null,
+        price: String(body.price || '').trim(),
+        sortOrder: Math.max(0, Number.parseInt(body.sort_order, 10) || 0),
+        status: body.status === 'inactive' ? 'inactive' : 'active'
+    };
+}
+
+async function validatePricingInput(data) {
+    if (!Number.isInteger(data.serviceId) || data.serviceId < 1 || !data.itemName || !data.price) {
+        return 'Vui lòng chọn dịch vụ, nhập tên hạng mục và giá tham khảo';
+    }
+    if (data.itemName.length > 200 || (data.description && data.description.length > 500) || data.price.length > 100) {
+        return 'Thông tin bảng giá vượt quá độ dài cho phép';
+    }
+    const service = (await query('SELECT id FROM services WHERE id = @id', { id: data.serviceId })).recordset[0];
+    return service ? null : 'Dịch vụ được chọn không tồn tại';
+}
+
+async function createPricing(req, res, next) {
+    try {
+        const data = normalizePricingInput(req.body);
+        const validationError = await validatePricingInput(data);
+        if (validationError) {
+            req.flash('error', validationError);
+            return res.redirect('/admin/pricing');
+        }
+        await query(`INSERT INTO pricing (service_id, category, item_name, description, price, sort_order, status)
+                     VALUES (@serviceId, @category, @itemName, @description, @price, @sortOrder, @status)`, data);
+        req.flash('success', 'Đã thêm hạng mục bảng giá');
+        return res.redirect('/admin/pricing');
+    } catch (error) {
+        return next(error);
+    }
+}
+
+async function updatePricing(req, res, next) {
+    try {
+        const id = Number.parseInt(req.params.id, 10);
+        const data = normalizePricingInput(req.body);
+        const validationError = !Number.isInteger(id) || id < 1
+            ? 'Hạng mục bảng giá không hợp lệ'
+            : await validatePricingInput(data);
+        if (validationError) {
+            req.flash('error', validationError);
+            return res.redirect('/admin/pricing');
+        }
+        const result = await query(`UPDATE pricing SET service_id = @serviceId, category = @category,
+            item_name = @itemName, description = @description, price = @price,
+            sort_order = @sortOrder, status = @status WHERE id = @id`, { ...data, id });
+        req.flash(result.rowsAffected[0] ? 'success' : 'error', result.rowsAffected[0]
+            ? 'Đã cập nhật hạng mục bảng giá' : 'Không tìm thấy hạng mục bảng giá');
+        return res.redirect('/admin/pricing');
+    } catch (error) {
+        return next(error);
+    }
+}
+
+async function deletePricing(req, res, next) {
+    try {
+        const id = Number.parseInt(req.params.id, 10);
+        if (!Number.isInteger(id) || id < 1) {
+            req.flash('error', 'Hạng mục bảng giá không hợp lệ');
+            return res.redirect('/admin/pricing');
+        }
+        const result = await query('DELETE FROM pricing WHERE id = @id', { id });
+        req.flash(result.rowsAffected[0] ? 'success' : 'error', result.rowsAffected[0]
+            ? 'Đã xóa hạng mục bảng giá' : 'Không tìm thấy hạng mục bảng giá');
+        return res.redirect('/admin/pricing');
+    } catch (error) {
+        return next(error);
+    }
+}
+
 async function account(req, res, next) {
     try {
         const user = (await query(
@@ -670,4 +768,6 @@ async function updateAccount(req, res, next) {
     }
 }
 
-module.exports = { dashboard, page, bookings, updateBooking, services, createService, updateService, deleteService, account, updateAccount, technicians, createTechnician, updateTechnician, deleteTechnician };
+module.exports = { dashboard, page, bookings, updateBooking, services, createService, updateService, deleteService,
+    pricing, createPricing, updatePricing, deletePricing,
+    account, updateAccount, technicians, createTechnician, updateTechnician, deleteTechnician };

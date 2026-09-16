@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260916-pricing">
+</head>
+<body>
+<div class="wrapper service-dashboard">
+    <%- include('partials/admin-header', { activePage: 'pricing' }) %>
+    <main class="content-wrapper">
+        <section class="content-header dashboard-heading">
+            <div><p class="dashboard-eyebrow">Nội dung website</p><h1><i class="fa-solid fa-tags"></i> Quản lý bảng giá</h1></div>
+            <a class="dashboard-primary-action" href="/pricing" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem bảng giá</a>
+        </section>
+
+        <% if (success_msg?.length) { %><div class="notice success"><%= success_msg[0] %></div><% } %>
+        <% if (error_msg?.length) { %><div class="notice error"><%= error_msg[0] %></div><% } %>
+
+        <% if (can('services', 'create')) { %>
+        <section class="service-admin__card service-create-card" aria-labelledby="create-pricing-title">
+            <div class="service-card-heading"><div><span class="service-card-heading__icon"><i class="fa-solid fa-circle-plus"></i></span><div><h2 id="create-pricing-title">Thêm hạng mục giá</h2><p>Dòng mới sẽ xuất hiện trong nhóm dịch vụ đã chọn.</p></div></div></div>
+            <form method="post" action="/admin/pricing" class="service-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="service-admin__grid">
+                    <div class="form-field"><label for="new-pricing-service">Nhóm dịch vụ *</label><select id="new-pricing-service" name="service_id" required><option value="">Chọn dịch vụ</option><% services.forEach(service => { %><option value="<%= service.id %>"><%= service.name %><%= service.status !== 'active' ? ' (đang ẩn)' : '' %></option><% }) %></select></div>
+                    <div class="form-field"><label for="new-pricing-name">Tên hạng mục *</label><input id="new-pricing-name" name="item_name" maxlength="200" required placeholder="Ví dụ: Bơm gas máy lạnh"></div>
+                    <div class="form-field"><label for="new-pricing-price">Giá tham khảo *</label><input id="new-pricing-price" name="price" maxlength="100" required placeholder="300.000đ - 800.000đ"></div>
+                    <div class="form-field"><label for="new-pricing-category">Tên nhóm phụ</label><input id="new-pricing-category" name="category" maxlength="200" placeholder="Có thể để trống"></div>
+                    <div class="form-field"><label for="new-pricing-order">Thứ tự hiển thị</label><input id="new-pricing-order" name="sort_order" type="number" min="0" value="0"></div>
+                    <div class="form-field"><label for="new-pricing-status">Trạng thái</label><select id="new-pricing-status" name="status"><option value="active">Hiển thị</option><option value="inactive">Ẩn</option></select></div>
+                    <div class="form-field full"><label for="new-pricing-description">Mô tả</label><textarea id="new-pricing-description" name="description" maxlength="500" placeholder="Mô tả ngắn công việc hoặc phạm vi áp dụng"></textarea></div>
+                </div>
+                <div class="service-admin__actions"><button class="btn btn-secondary" type="reset"><i class="fa-solid fa-rotate-left"></i> Làm mới</button><button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Thêm vào bảng giá</button></div>
+            </form>
+        </section>
+        <% } %>
+
+        <section class="service-admin__card service-list-card" aria-labelledby="pricing-list-title">
+            <div class="service-list-toolbar"><div><h2 id="pricing-list-title">Danh sách bảng giá</h2><p><strong><%= pricingItems.length %></strong> hạng mục đang được quản lý</p></div><label class="service-search" for="pricingSearch"><i class="fa-solid fa-magnifying-glass"></i><span class="sr-only">Tìm bảng giá</span><input id="pricingSearch" type="search" placeholder="Tìm dịch vụ hoặc hạng mục"></label></div>
+            <div class="table-responsive service-table-wrap">
+                <table class="table service-list-table pricing-admin-table">
+                    <thead><tr><th>Nhóm dịch vụ</th><th>Hạng mục</th><th>Mô tả</th><th>Giá tham khảo</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                    <tbody id="pricingListBody">
+                    <% pricingItems.forEach(item => { const payload = { id: item.id, service_id: item.service_id, category: item.category || '', item_name: item.item_name, description: item.description || '', price: item.price, sort_order: item.sort_order || 0, status: item.status }; %>
+                        <tr data-pricing-search="<%= `${item.service_name} ${item.item_name} ${item.description || ''} ${item.price}`.toLowerCase() %>" data-pricing='<%- JSON.stringify(payload).replace(/'/g, "&#39;") %>'>
+                            <td><strong><%= item.service_name %></strong><br><code><%= item.service_slug %></code></td>
+                            <td class="product-name"><%= item.item_name %></td>
+                            <td class="pricing-description"><%= item.description || '—' %></td>
+                            <td class="text-price"><%= item.price %></td>
+                            <td><%= item.sort_order || 0 %></td>
+                            <td><span class="badge <%= item.status === 'active' ? 'badge-success' : 'badge-muted' %>"><%= item.status === 'active' ? 'Hiển thị' : 'Ẩn' %></span></td>
+                            <td><div class="service-row-actions">
+                                <% if (can('services', 'update')) { %><button class="btn btn-edit" type="button" data-edit-pricing><i class="fa-solid fa-pen"></i><span>Chỉnh sửa</span></button><% } %>
+                                <% if (can('services', 'delete')) { %><form method="post" action="/admin/pricing/<%= item.id %>/delete" onsubmit="return confirm('Xóa hạng mục giá này?');"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button></form><% } %>
+                            </div></td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <p class="service-empty-state" id="pricingEmptyState" <%= pricingItems.length ? 'hidden' : '' %>>Chưa có hạng mục bảng giá phù hợp.</p>
+        </section>
+    </main>
+    <footer class="main-footer"><div class="float-left">© 2026 <strong>NGUYỄN HÙNG</strong> — Quản trị bảng giá.</div><div class="float-right">Bảng giá dịch vụ</div></footer>
+</div>
+
+<% if (can('services', 'update')) { %>
+<div class="service-modal" id="pricingEditModal" hidden aria-hidden="true">
+    <div class="service-modal__backdrop" data-close-pricing-modal></div>
+    <section class="service-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="edit-pricing-title">
+        <div class="service-modal__header"><div><p class="dashboard-eyebrow">Cập nhật bảng giá</p><h2 id="edit-pricing-title">Chỉnh sửa hạng mục</h2></div><button class="modal-close" type="button" data-close-pricing-modal aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+        <form method="post" action="/admin/pricing" id="pricingEditForm" class="service-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="service-admin__grid">
+                <div class="form-field"><label for="edit-pricing-service">Nhóm dịch vụ *</label><select id="edit-pricing-service" name="service_id" required><% services.forEach(service => { %><option value="<%= service.id %>"><%= service.name %><%= service.status !== 'active' ? ' (đang ẩn)' : '' %></option><% }) %></select></div>
+                <div class="form-field"><label for="edit-pricing-name">Tên hạng mục *</label><input id="edit-pricing-name" name="item_name" maxlength="200" required></div>
+                <div class="form-field"><label for="edit-pricing-price">Giá tham khảo *</label><input id="edit-pricing-price" name="price" maxlength="100" required></div>
+                <div class="form-field"><label for="edit-pricing-category">Tên nhóm phụ</label><input id="edit-pricing-category" name="category" maxlength="200"></div>
+                <div class="form-field"><label for="edit-pricing-order">Thứ tự hiển thị</label><input id="edit-pricing-order" name="sort_order" type="number" min="0"></div>
+                <div class="form-field"><label for="edit-pricing-status">Trạng thái</label><select id="edit-pricing-status" name="status"><option value="active">Hiển thị</option><option value="inactive">Ẩn</option></select></div>
+                <div class="form-field full"><label for="edit-pricing-description">Mô tả</label><textarea id="edit-pricing-description" name="description" maxlength="500"></textarea></div>
+            </div>
+            <div class="service-admin__actions"><button class="btn btn-secondary" type="button" data-close-pricing-modal>Hủy</button><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button></div>
+        </form>
+    </section>
+</div>
+<% } %>
+
+<script src="/admin/js/1.js?v=20260916-pricing"></script>
+<script>
+(() => {
+    const search = document.getElementById('pricingSearch');
+    const rows = [...document.querySelectorAll('#pricingListBody tr')];
+    const empty = document.getElementById('pricingEmptyState');
+    search?.addEventListener('input', () => {
+        const keyword = search.value.trim().toLocaleLowerCase('vi-VN');
+        let visible = 0;
+        rows.forEach(row => { const show = !keyword || row.dataset.pricingSearch.includes(keyword); row.hidden = !show; if (show) visible += 1; });
+        empty.hidden = visible !== 0;
+    });
+    const modal = document.getElementById('pricingEditModal');
+    const form = document.getElementById('pricingEditForm');
+    const close = () => { if (!modal) return; modal.hidden = true; modal.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; };
+    document.querySelectorAll('[data-edit-pricing]').forEach(button => button.addEventListener('click', () => {
+        const item = JSON.parse(button.closest('tr').dataset.pricing);
+        form.action = `/admin/pricing/${item.id}`;
+        Object.entries(item).forEach(([key, value]) => { if (form.elements[key]) form.elements[key].value = value ?? ''; });
+        modal.hidden = false; modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
+        form.elements.item_name.focus();
+    }));
+    document.querySelectorAll('[data-close-pricing-modal]').forEach(element => element.addEventListener('click', close));
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') close(); });
+})();
+</script>
+</body>
+</html>

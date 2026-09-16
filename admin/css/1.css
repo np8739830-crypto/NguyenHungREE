@@ -1590,6 +1590,9 @@ ul {
 .service-list-table .product-thumb { width: 42px; height: 42px; border-radius: 8px; }
 .service-list-table tbody tr { transition: background-color .18s ease; }
 .service-list-table tbody tr:hover { background: #edf6ff; }
+.pricing-admin-table { min-width: 1080px; }
+.pricing-admin-table .pricing-description { min-width: 240px; max-width: 360px; white-space: normal; line-height: 1.45; color: #526b84; }
+.pricing-admin-table td:first-child { min-width: 180px; }
 .badge-muted { border: 1px solid #cbd5df; background: #eef1f4; color: #667789; }
 .service-row-actions { display: flex; align-items: center; gap: 7px; }
 .service-delete-form { margin: 0; }

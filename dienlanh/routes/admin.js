@@ -173,6 +173,10 @@ router.get('/products', requirePermission('services', 'view'), csrfProtect, admi
 router.post('/products', requirePermission('services', 'create'), uploadServiceImage, csrfProtect, adminController.createService);
 router.post('/products/:id', requirePermission('services', 'update'), uploadServiceImage, csrfProtect, adminController.updateService);
 router.post('/products/:id/delete', requirePermission('services', 'delete'), csrfProtect, adminController.deleteService);
+router.get('/pricing', requirePermission('services', 'view'), csrfProtect, adminController.pricing);
+router.post('/pricing', requirePermission('services', 'create'), csrfProtect, adminController.createPricing);
+router.post('/pricing/:id', requirePermission('services', 'update'), csrfProtect, adminController.updatePricing);
+router.post('/pricing/:id/delete', requirePermission('services', 'delete'), csrfProtect, adminController.deletePricing);
 router.get('/orders', requirePermission('bookings', 'view'), (req, res) => res.redirect('/admin/bookings'));
 router.get('/bookings', requirePermission('bookings', 'view'), csrfProtect, adminController.bookings);
 router.post('/bookings/:id', requirePermission('bookings', 'update'), csrfProtect, adminController.updateBooking);
