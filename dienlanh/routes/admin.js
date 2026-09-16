@@ -95,7 +95,7 @@ router.get('/login', (req, res) => {
     });
 });
 
-router.post('/login', rateLimit({ namespace: 'admin-login', max: 10, windowMs: 15 * 60 * 1000 }), rejectBots, async(req, res, next) => {
+router.post('/login', rateLimit({ namespace: 'admin-login', max: 10, windowMs: 15 * 60 * 1000, distributed: true }), rejectBots, async(req, res, next) => {
     try {
         const login = String(req.body.username || req.body.email || '').trim().toLowerCase();
         const user = (await query(`SELECT u.*, r.slug AS role_slug, r.name AS role_name

@@ -5,6 +5,20 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Empty decoy fields are invisible to people but commonly filled by form bots.
+    document.querySelectorAll('#loginForm, #registerForm, #bookingForm, #contactForm, #reviewForm, #emailForm')
+        .forEach(form => {
+            if (form.elements.company_website) return;
+            const trap = document.createElement('input');
+            trap.type = 'text';
+            trap.name = 'company_website';
+            trap.tabIndex = -1;
+            trap.autocomplete = 'off';
+            trap.setAttribute('aria-hidden', 'true');
+            trap.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none';
+            form.prepend(trap);
+        });
+
     // One canonical public-site header. Every public HTML page only provides
     // #siteHeader, so navigation and account UI cannot drift between pages.
     const siteHeader = document.getElementById('siteHeader');

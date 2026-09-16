@@ -228,9 +228,9 @@ const attachmentRoutes = require('./routes/attachments');
 const schedulingRoutes = require('./routes/scheduling');
 const operationsRoutes = require('./routes/operations');
 
-const authRateLimit = rateLimit({ namespace: 'auth', max: 15, windowMs: 15 * 60 * 1000, methods: ['POST'] });
-const requestRateLimit = rateLimit({ namespace: 'customer-request', max: 20, windowMs: 60 * 60 * 1000, methods: ['POST'] });
-const reviewRateLimit = rateLimit({ namespace: 'review', max: 10, windowMs: 60 * 60 * 1000, methods: ['POST'] });
+const authRateLimit = rateLimit({ namespace: 'auth', max: 15, windowMs: 15 * 60 * 1000, methods: ['POST'], distributed: true });
+const requestRateLimit = rateLimit({ namespace: 'customer-request', max: 20, windowMs: 60 * 60 * 1000, methods: ['POST'], distributed: true });
+const reviewRateLimit = rateLimit({ namespace: 'review', max: 10, windowMs: 60 * 60 * 1000, methods: ['POST'], distributed: true });
 
 app.use('/forgot-password', forgotPasswordRoutes);
 app.use('/', homeRoutes);

@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { rateLimit } = require('./security');
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
@@ -28,3 +29,15 @@ function passwordResetRateLimit(req, res, next) {
 }
 
 module.exports = { passwordResetRateLimit };
+
+// On Vercel, use D1 so attempts are shared by every serverless instance.
+// Locally the same middleware automatically falls back to its in-memory bucket.
+module.exports.passwordResetRateLimit = rateLimit({
+    namespace: 'password-reset',
+    max: MAX_ATTEMPTS,
+    windowMs: WINDOW_MS,
+    methods: ['POST'],
+    distributed: true,
+    identity: req => String(req.body?.email || req.body?.identity || '').trim().toLowerCase(),
+    message: 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau 15 phút.'
+});

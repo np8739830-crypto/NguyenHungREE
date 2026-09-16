@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const { createResourceController } = require('../controllers/resourceController');
 const { requireAuth } = require('../middleware/auth');
+const { rejectBots } = require('../middleware/security');
 const { sendBookingNotification } = require('../services/telegramService');
 const { query } = require('../config/database');
 const { uploadRequestImages } = require('../services/requestImageService');
@@ -57,7 +58,7 @@ async function createBooking(req, res, next) {
 router.get('/', (req, res) => res.sendFile(path.resolve(__dirname, '../../dienlanh- web/dat-lich.html')));
 router.post('/', requireAuth, (req, res, next) => uploadRequestImages(req, res, error => {
     if (error) return res.status(400).json({ error: error.code === 'LIMIT_FILE_SIZE' ? 'Mỗi ảnh tối đa 5MB.' : error.message });
-    return createBooking(req, res, next);
+    return rejectBots(req, res, () => createBooking(req, res, next));
 }));
 // This endpoint is customer-facing, therefore it must never return another
 // account's bookings. Administrative listing uses the separate admin routes.
