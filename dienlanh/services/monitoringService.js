@@ -1,7 +1,7 @@
 'use strict';
 
 const os = require('os');
-const { sendTelegramMessage } = require('./telegramService');
+const { sendTelegramAlert } = require('./telegramService');
 
 const recentAlerts = new Map();
 const ALERT_COOLDOWN_MS = 5 * 60 * 1000;
@@ -36,7 +36,7 @@ async function alertSystem(type, error, context = {}) {
         `<b>Host:</b> ${escapeHtml(os.hostname())}`,
         `<b>Thời gian:</b> ${escapeHtml(new Date().toISOString())}`
     ].filter(Boolean).join('\n');
-    return sendTelegramMessage(text);
+    return sendTelegramAlert(text);
 }
 
 function clearAlertCache(now = Date.now()) {

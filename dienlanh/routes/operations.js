@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const database = require('../config/database');
 const { runMaintenance } = require('../services/maintenanceService');
 const { alertSystem } = require('../services/monitoringService');
-const { sendTelegramMessage } = require('../services/telegramService');
+const { sendTelegramAlert } = require('../services/telegramService');
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get('/maintenance', async (req, res) => {
     if (!validSecret(req)) return res.sendStatus(404);
     try {
         const result = await runMaintenance();
-        await sendTelegramMessage([
+        await sendTelegramAlert([
             '✅ <b>Bảo trì website thành công</b>',
             `<b>Database:</b> ${result.provider}`,
             `<b>Session đã dọn:</b> ${result.cleanup.sessions}`,

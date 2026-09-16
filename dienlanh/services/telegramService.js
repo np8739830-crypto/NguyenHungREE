@@ -138,8 +138,9 @@ function telegramConfig() {
     };
 }
 
-async function sendTelegramMessage(text, parseMode = 'HTML') {
-    const { token, chatId } = telegramConfig();
+async function sendTelegramMessage(text, parseMode = 'HTML', chatIdOverride = null) {
+    const { token, chatId: defaultChatId } = telegramConfig();
+    const chatId = chatIdOverride || defaultChatId;
 
     if (!token || !chatId) {
         console.warn('Telegram notification skipped: configuration is missing.');
@@ -176,6 +177,10 @@ async function sendTelegramMessage(text, parseMode = 'HTML') {
         console.error('Telegram notification failed:', error);
         return false;
     }
+}
+
+function sendTelegramAlert(text, parseMode = 'HTML') {
+    return sendTelegramMessage(text, parseMode, process.env.TELEGRAM_ALERT_CHAT_ID || null);
 }
 
 /**
@@ -411,6 +416,7 @@ async function sendContactNotification(data, contactId) {
 
 module.exports = {
     sendTelegramMessage,
+    sendTelegramAlert,
     sendTelegramPhoto,
     sendBookingNotification,
     sendContactNotification,
