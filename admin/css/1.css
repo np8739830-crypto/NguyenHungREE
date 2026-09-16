@@ -1073,6 +1073,9 @@ ul {
 .service-dashboard .content-wrapper {
     margin-left: 250px;
     margin-top: 64px;
+    width: calc(100% - 250px);
+    min-width: 0;
+    flex: 0 0 auto;
     padding: 30px 34px 96px;
 }
 
@@ -1269,6 +1272,7 @@ ul {
 @media (max-width: 991px) {
     .service-dashboard .content-wrapper {
         margin-left: 0;
+        width: 100%;
         padding: 22px 24px 88px;
     }
 
@@ -1319,6 +1323,7 @@ ul {
 
     .service-dashboard.sidebar-collapsed .content-wrapper {
         margin-left: 60px;
+        width: calc(100% - 60px);
     }
 
     .service-dashboard.sidebar-collapsed .main-footer {
@@ -1583,16 +1588,24 @@ ul {
 .service-search { position: relative; display: block; width: min(100%, 310px); }
 .service-search > i { position: absolute; z-index: 1; top: 50%; left: 13px; color: #7e92a8; transform: translateY(-50%); }
 .service-search input { height: 40px; padding: 0 12px 0 37px; font-size: .84rem; }
-.service-table-wrap { margin: 0 -4px; padding: 0 4px; }
+.service-table-wrap { width: 100%; max-width: 100%; margin: 0; padding: 0; overflow-x: auto; }
 .service-list-table { min-width: 800px; }
 .service-list-table th, .service-list-table td { white-space: nowrap; }
 .service-list-table th:first-child, .service-list-table td:first-child { width: 74px; }
 .service-list-table .product-thumb { width: 42px; height: 42px; border-radius: 8px; }
 .service-list-table tbody tr { transition: background-color .18s ease; }
 .service-list-table tbody tr:hover { background: #edf6ff; }
-.pricing-admin-table { min-width: 1080px; }
-.pricing-admin-table .pricing-description { min-width: 240px; max-width: 360px; white-space: normal; line-height: 1.45; color: #526b84; }
-.pricing-admin-table td:first-child { min-width: 180px; }
+.pricing-admin-table { width: 100%; min-width: 980px; table-layout: fixed; }
+.pricing-admin-table th, .pricing-admin-table td { padding-inline: 12px; overflow-wrap: anywhere; white-space: normal; }
+.pricing-admin-table th:nth-child(1) { width: 16%; }
+.pricing-admin-table th:nth-child(2) { width: 17%; }
+.pricing-admin-table th:nth-child(3) { width: 23%; }
+.pricing-admin-table th:nth-child(4) { width: 17%; }
+.pricing-admin-table th:nth-child(5) { width: 7%; }
+.pricing-admin-table th:nth-child(6) { width: 9%; }
+.pricing-admin-table th:nth-child(7) { width: 190px; }
+.pricing-admin-table .pricing-description { line-height: 1.45; color: #526b84; }
+.pricing-admin-table .service-row-actions { flex-wrap: wrap; }
 .badge-muted { border: 1px solid #cbd5df; background: #eef1f4; color: #667789; }
 .service-row-actions { display: flex; align-items: center; gap: 7px; }
 .service-delete-form { margin: 0; }

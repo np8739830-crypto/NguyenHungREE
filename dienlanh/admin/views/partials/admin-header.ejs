@@ -1,9 +1,9 @@
 <%
 const permissionCheck = typeof can === 'function' ? can : (() => false);
 const navItems = [
-    { key: 'pricing', permission: 'services', href: '/admin/pricing', icon: 'fa-solid fa-tags', label: 'Bảng giá' },
     { key: 'dashboard', permission: 'dashboard', href: '/admin', icon: 'fa-solid fa-gauge-high', label: 'Bảng điều khiển' },
     { key: 'products', permission: 'services', href: '/admin/products', icon: 'fa-solid fa-screwdriver-wrench', label: 'Quản lý dịch vụ' },
+    { key: 'pricing', permission: 'services', href: '/admin/pricing', icon: 'fa-solid fa-tags', label: 'Bảng giá' },
     { key: 'bookings', permission: 'bookings', href: '/admin/bookings', icon: 'fa-solid fa-calendar-check', label: 'Lịch đặt dịch vụ' },
     { key: 'customers', permission: 'customers', href: '/admin/customers', icon: 'fa-solid fa-users', label: 'Khách hàng' },
     { key: 'technicians', permission: 'technicians', href: '/admin/technicians', icon: 'fa-solid fa-user-gear', label: 'Kỹ thuật viên' },
