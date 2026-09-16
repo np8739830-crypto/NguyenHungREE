@@ -441,15 +441,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.news-card__image img').forEach(img => {
-                console.log('NEWS IMAGE', img.src, 'complete=', img.complete, 'naturalWidth=', img.naturalWidth, 'naturalHeight=', img.naturalHeight);
-                img.addEventListener('load', () => console.log('NEWS IMAGE loaded:', img.src, 'w=', img.naturalWidth, 'h=', img.naturalHeight));
-                img.addEventListener('error', () => console.error('NEWS IMAGE failed to load:', img.src, 'currentSrc=', img.currentSrc));
-            });
-        });
-    </script>
     <script src="/js/script.js"></script>
     <script src="/js/backend.js?v=20260915-image-folders"></script>
 </body>

@@ -430,8 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const previousTime = appointmentTime?.value || '';
             const requestId = ++availabilityRequest;
             slotsReady = false;
-            console.log('Ngày chọn:', selectedDate || '');
-            console.log('Technician ID:', technicianId || '');
             if (!technicianId || !selectedDate) {
                 renderTimeSlots(workingSlots, previousTime);
                 if (appointmentTime) appointmentTime.disabled = false;
@@ -461,8 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     throw new Error('API kiểm tra lịch chưa trả dữ liệu khung giờ. Vui lòng khởi động lại backend.');
                 }
-                console.log('Booking:', bookings || []);
-                console.log('Available slots:', slots);
                 if (!slots.length) {
                     if (appointmentTime) {
                         appointmentTime.innerHTML = '<option value="">Không còn khung giờ trống</option>';

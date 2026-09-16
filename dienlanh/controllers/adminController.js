@@ -304,12 +304,6 @@ async function updateBooking(req, res, next) {
         ];
 
         const status = String(req.body.status || '').trim();
-        console.log('[admin booking update] req.body date values:', {
-            bookingId: req.params.id,
-            scheduled_date: req.body.scheduled_date,
-            scheduled_time: req.body.scheduled_time
-        });
-
         // Kiểm tra trạng thái
         if (!validStatuses.includes(status)) {
             req.flash('error', 'Trạng thái lịch không hợp lệ');

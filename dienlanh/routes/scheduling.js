@@ -64,12 +64,6 @@ router.get('/bookings/availability', async (req, res, next) => {
         const bookings = await getTechnicianBookings({ technicianId, appointmentDate, excludeBookingId });
         const availableSlots = calculateAvailableSlots(bookings);
         const publicBookings = bookings.map(booking => ({ id: booking.id, appointment_time: booking.appointment_time }));
-        console.log('[booking availability] technician_id:', technicianId);
-        console.log('[booking availability] appointment_date:', appointmentDate);
-        console.log('[booking availability] booking count:', bookings.length);
-        console.log('[booking availability] bookings:', publicBookings);
-        console.log('[booking availability] available slot count:', availableSlots.length);
-
         const payload = {
             success: true,
             available: Boolean(availableSlots.length),

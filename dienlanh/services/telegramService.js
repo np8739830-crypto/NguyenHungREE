@@ -372,8 +372,6 @@ async function sendContactNotification(data, contactId) {
         ? data._storedImages
         : [];
 
-    console.log('Contact images queued for Telegram:', images.map(image => image.filename));
-
     // Gửi từng ảnh lên Telegram
     for (const image of images) {
         if (!image?.filename) {
