@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/admin/css/1.css?v=20260916-pricing">
+    <link rel="stylesheet" href="/admin/css/1.css?v=20260916-pricing-2">
 </head>
 <body>
 <div class="wrapper service-dashboard">
@@ -45,19 +45,18 @@
             <div class="service-list-toolbar"><div><h2 id="pricing-list-title">Danh sách bảng giá</h2><p><strong><%= pricingItems.length %></strong> hạng mục đang được quản lý</p></div><label class="service-search" for="pricingSearch"><i class="fa-solid fa-magnifying-glass"></i><span class="sr-only">Tìm bảng giá</span><input id="pricingSearch" type="search" placeholder="Tìm dịch vụ hoặc hạng mục"></label></div>
             <div class="table-responsive service-table-wrap">
                 <table class="table service-list-table pricing-admin-table">
-                    <thead><tr><th>Nhóm dịch vụ</th><th>Hạng mục</th><th>Mô tả</th><th>Giá tham khảo</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                    <thead><tr><th>Nhóm dịch vụ</th><th>Hạng mục / Mô tả</th><th>Giá tham khảo</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
                     <tbody id="pricingListBody">
                     <% pricingItems.forEach(item => { const payload = { id: item.id, service_id: item.service_id, category: item.category || '', item_name: item.item_name, description: item.description || '', price: item.price, sort_order: item.sort_order || 0, status: item.status }; %>
                         <tr data-pricing-search="<%= `${item.service_name} ${item.item_name} ${item.description || ''} ${item.price}`.toLowerCase() %>" data-pricing='<%- JSON.stringify(payload).replace(/'/g, "&#39;") %>'>
                             <td><strong><%= item.service_name %></strong><br><code><%= item.service_slug %></code></td>
-                            <td class="product-name"><%= item.item_name %></td>
-                            <td class="pricing-description"><%= item.description || '—' %></td>
+                            <td class="product-name"><%= item.item_name %><% if (item.description) { %><span class="pricing-item-description"><%= item.description %></span><% } %></td>
                             <td class="text-price"><%= item.price %></td>
                             <td><%= item.sort_order || 0 %></td>
                             <td><span class="badge <%= item.status === 'active' ? 'badge-success' : 'badge-muted' %>"><%= item.status === 'active' ? 'Hiển thị' : 'Ẩn' %></span></td>
                             <td><div class="service-row-actions">
-                                <% if (can('services', 'update')) { %><button class="btn btn-edit" type="button" data-edit-pricing><i class="fa-solid fa-pen"></i><span>Chỉnh sửa</span></button><% } %>
-                                <% if (can('services', 'delete')) { %><form method="post" action="/admin/pricing/<%= item.id %>/delete" onsubmit="return confirm('Xóa hạng mục giá này?');"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button></form><% } %>
+                                <% if (can('services', 'update')) { %><button class="btn btn-edit" type="button" data-edit-pricing title="Chỉnh sửa" aria-label="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button><% } %>
+                                <% if (can('services', 'delete')) { %><form method="post" action="/admin/pricing/<%= item.id %>/delete" onsubmit="return confirm('Xóa hạng mục giá này?');"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-delete" type="submit" title="Xóa" aria-label="Xóa"><i class="fa-solid fa-trash-can"></i></button></form><% } %>
                             </div></td>
                         </tr>
                     <% }) %>
