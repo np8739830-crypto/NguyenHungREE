@@ -6480,9 +6480,9 @@ body > .hero .hero__illustration { display: none; }
     padding: 9px 16px;
     border: 0;
     border-radius: 8px;
-    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 55%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #7dd3fc 0%, #60a5fa 55%, #3b82f6 100%);
     color: #fff;
-    box-shadow: 0 5px 12px rgba(37, 99, 235, .25);
+    box-shadow: 0 5px 12px rgba(59, 130, 246, .2);
     font: inherit;
     font-weight: 700;
     cursor: pointer;
@@ -6491,7 +6491,7 @@ body > .hero .hero__illustration { display: none; }
 .request-image-upload input[type="file"]:hover::file-selector-button,
 .request-image-upload input[type="file"]:hover::-webkit-file-upload-button {
     filter: brightness(1.08);
-    box-shadow: 0 7px 16px rgba(37, 99, 235, .34);
+    box-shadow: 0 7px 16px rgba(59, 130, 246, .28);
 }
 .request-image-upload input[type="file"]:focus-visible {
     border-radius: 9px;
