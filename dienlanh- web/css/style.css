@@ -5702,7 +5702,7 @@
         overflow: hidden;
         box-shadow: 0 10px 26px rgba(30, 64, 175, .12);
         text-decoration: none;
-        transition: box-shadow var(--transition), transform var(--transition);
+        transition: none;
     }
     
     .news-detail__related-card:hover {
@@ -5771,10 +5771,15 @@
         transition: none;
     }
 
-    .news-detail__related-card .news-detail__related-button:hover {
-        background: linear-gradient(135deg, #38bdf8 0%, #2563eb 55%, #173bb4 100%);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, .28), inset 0 1px 0 rgba(255,255,255,.22);
-        transform: none;
+    .news-detail__related-card .news-detail__related-button:hover,
+    .news-detail__related-card .news-detail__related-button:focus,
+    .news-detail__related-card .news-detail__related-button:active {
+        background: linear-gradient(135deg, #38bdf8 0%, #2563eb 55%, #173bb4 100%) !important;
+        color: #fff !important;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, .28), inset 0 1px 0 rgba(255,255,255,.22) !important;
+        filter: none !important;
+        transform: none !important;
+        transition: none !important;
     }
     
     .news-detail__related-card .news-detail__related-button i {
@@ -5782,8 +5787,11 @@
     }
     
     .news-detail__related-card:hover .news-detail__related-button i,
-    .news-detail__related-card .news-detail__related-button:hover i {
-        transform: none;
+    .news-detail__related-card .news-detail__related-button:hover i,
+    .news-detail__related-card .news-detail__related-button:focus i,
+    .news-detail__related-card .news-detail__related-button:active i {
+        transform: none !important;
+        transition: none !important;
     }
     
     @media (max-width: 767px) {
