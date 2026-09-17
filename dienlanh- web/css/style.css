@@ -5757,8 +5757,10 @@
         align-items: center;
         gap: 8px;
         margin-top: auto;
+        margin-bottom: -4px;
+        margin-left: -4px;
         padding: 9px 14px;
-        border-radius: 8px;
+        border-radius: 999px;
         background: linear-gradient(135deg, #60a5fa, #2563eb);
         color: #fff;
         box-shadow: 0 5px 12px rgba(37, 99, 235, .22);
