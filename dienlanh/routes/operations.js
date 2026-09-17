@@ -32,7 +32,7 @@ router.get('/maintenance', async (req, res) => {
     if (!validSecret(req)) return res.sendStatus(404);
     try {
         const result = await runMaintenance();
-        await sendTelegramAlert([
+        const notificationSent = await sendTelegramAlert([
             '✅ <b>Bảo trì website thành công</b>',
             `<b>Database:</b> ${result.provider}`,
             `<b>Session đã dọn:</b> ${result.cleanup.sessions}`,
@@ -40,6 +40,9 @@ router.get('/maintenance', async (req, res) => {
             `<b>Khôi phục D1:</b> Time Travel đang hoạt động`,
             `<b>Thời gian:</b> ${result.durationMs} ms`
         ].join('\n'));
+        if (!notificationSent) {
+            throw new Error('Maintenance completed, but the Telegram notification could not be delivered.');
+        }
         return res.json({ ...result, recovery: { available: Boolean(result.recovery?.bookmark || result.recovery?.mode) } });
     } catch (error) {
         await alertSystem('Bảo trì/backup thất bại', error, { path: req.path, method: req.method, requestId: req.requestId });

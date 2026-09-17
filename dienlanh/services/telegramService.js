@@ -179,8 +179,19 @@ async function sendTelegramMessage(text, parseMode = 'HTML', chatIdOverride = nu
     }
 }
 
-function sendTelegramAlert(text, parseMode = 'HTML') {
-    return sendTelegramMessage(text, parseMode, process.env.TELEGRAM_ALERT_CHAT_ID || null);
+async function sendTelegramAlert(text, parseMode = 'HTML') {
+    const alertChatId = String(process.env.TELEGRAM_ALERT_CHAT_ID || '').trim();
+    const defaultChatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
+
+    if (!alertChatId || alertChatId === defaultChatId) {
+        return sendTelegramMessage(text, parseMode);
+    }
+
+    const sentToAlertChat = await sendTelegramMessage(text, parseMode, alertChatId);
+    if (sentToAlertChat) return true;
+
+    console.warn('Telegram alert chat failed; retrying with the default chat.');
+    return sendTelegramMessage(text, parseMode);
 }
 
 /**
