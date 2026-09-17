@@ -5706,9 +5706,9 @@
     }
     
     .news-detail__related-card:hover {
-        border-color: #93c5fd;
-        box-shadow: 0 16px 34px rgba(37, 99, 235, .2);
-        transform: translateY(-4px);
+        border-color: #d8e7f7;
+        box-shadow: 0 10px 26px rgba(30, 64, 175, .12);
+        transform: none;
     }
     
     .news-detail__related-card img {
