@@ -6464,7 +6464,40 @@ body > .hero .hero__illustration { display: none; }
     .header__user-dropdown { right: -42px; }
 }
 .request-image-upload { padding: 14px; border: 1px dashed #b6c7d9; border-radius: 8px; background: #f8fbfe; }
-.request-image-upload input[type="file"] { display: block; width: 100%; max-width: 100%; min-width: 0; }
+.request-image-upload input[type="file"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    color: #425b7a;
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+}
+.request-image-upload input[type="file"]::file-selector-button,
+.request-image-upload input[type="file"]::-webkit-file-upload-button {
+    margin-right: 12px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 55%, #1d4ed8 100%);
+    color: #fff;
+    box-shadow: 0 5px 12px rgba(37, 99, 235, .25);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.request-image-upload input[type="file"]:hover::file-selector-button,
+.request-image-upload input[type="file"]:hover::-webkit-file-upload-button {
+    filter: brightness(1.08);
+    box-shadow: 0 7px 16px rgba(37, 99, 235, .34);
+}
+.request-image-upload input[type="file"]:focus-visible {
+    border-radius: 9px;
+    outline: 3px solid rgba(56, 189, 248, .3);
+    outline-offset: 3px;
+}
 .request-image-upload__count { float: right; color: var(--color-blue); font-size: .85rem; font-weight: 700; }
 .request-image-upload__hint { margin: 7px 0 0; color: var(--color-text-light); font-size: .82rem; }
 .request-image-upload__previews, .request-image-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
