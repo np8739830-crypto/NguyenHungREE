@@ -6,7 +6,8 @@ const {
     rangesOverlap,
     normalizeAppointmentDate,
     listAvailableSlots,
-    hasBookingConflict
+    hasBookingConflict,
+    assertAvailableTechnician
 } = require('../services/schedulingService');
 
 test('appointment dates are normalized before querying SQL Server', () => {
@@ -56,4 +57,21 @@ test('database availability check detects partial overlap, not only equal string
     const queryFn = async () => ({ recordset: [{ id: 92, appointment_time: '09:00 - 11:00' }] });
     assert.equal(await hasBookingConflict({ technicianId: 12, appointmentDate: '2026-08-05', appointmentTime: '09:45 - 11:30', queryFn }), true);
     assert.equal(await hasBookingConflict({ technicianId: 12, appointmentDate: '2026-08-05', appointmentTime: '11:00 - 13:00', queryFn }), false);
+});
+
+test('busy technician cannot be selected even when the requested slot has no conflicting booking', async () => {
+    const queryFn = async statement => {
+        assert.match(statement, /work_status/);
+        return { recordset: [{ id: 12, work_status: 'busy' }] };
+    };
+
+    await assert.rejects(
+        assertAvailableTechnician({
+            technicianId: 12,
+            appointmentDate: '2026-09-17',
+            appointmentTime: '07:45 - 09:45',
+            queryFn
+        }),
+        error => error.statusCode === 409 && /đang bận/i.test(error.message)
+    );
 });

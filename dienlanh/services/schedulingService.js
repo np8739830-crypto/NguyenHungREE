@@ -98,11 +98,13 @@ async function assertAvailableTechnician({ technicianId, appointmentDate, appoin
         throw error;
     }
     const technician = (await queryFn(
-        "SELECT id FROM dbo.technicians WHERE id = @id AND work_status IN ('available', 'busy')", { id: technicianId }
+        'SELECT id, work_status FROM dbo.technicians WHERE id = @id', { id: technicianId }
     )).recordset[0];
-    if (!technician) {
-        const error = new Error('Kỹ thuật viên không còn ở trạng thái đang làm việc.');
-        error.statusCode = 400;
+    if (!technician || technician.work_status !== 'available') {
+        const error = new Error(technician?.work_status === 'busy'
+            ? 'Kỹ thuật viên đang bận. Vui lòng chọn kỹ thuật viên khác.'
+            : 'Kỹ thuật viên hiện không thể nhận lịch.');
+        error.statusCode = technician?.work_status === 'busy' ? 409 : 400;
         throw error;
     }
     if (await hasBookingConflict({ technicianId, appointmentDate, appointmentTime, excludeBookingId, queryFn })) {
@@ -147,12 +149,14 @@ async function createBookingAtomically(data) {
             return request.query(statement);
         };
         const technician = (await run(
-            "SELECT id FROM dbo.technicians WITH (UPDLOCK, HOLDLOCK) WHERE id = @id AND work_status IN ('available', 'busy')",
+            'SELECT id, work_status FROM dbo.technicians WITH (UPDLOCK, HOLDLOCK) WHERE id = @id',
             { id: data.technician_id }
         )).recordset[0];
-        if (!technician) {
-            const error = new Error('Kỹ thuật viên không còn ở trạng thái đang làm việc.');
-            error.statusCode = 400;
+        if (!technician || technician.work_status !== 'available') {
+            const error = new Error(technician?.work_status === 'busy'
+                ? 'Kỹ thuật viên đang bận. Vui lòng chọn kỹ thuật viên khác.'
+                : 'Kỹ thuật viên hiện không thể nhận lịch.');
+            error.statusCode = technician?.work_status === 'busy' ? 409 : 400;
             throw error;
         }
 

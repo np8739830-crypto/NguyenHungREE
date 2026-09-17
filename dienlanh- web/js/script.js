@@ -509,9 +509,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(body => {
                     technicians = body.technicians || [];
-                    technicianSelect.innerHTML = '<option value="">Chọn kỹ thuật viên</option>' + technicians.map(technician =>
-                        `<option value="${technician.id}">${technician.fullName} — ${technician.specialty || ''}</option>`
-                    ).join('');
+                    technicianSelect.innerHTML = '<option value="">Chọn kỹ thuật viên</option>' + technicians.map(technician => {
+                        const isAvailable = technician.statusCode === 'available';
+                        const statusSuffix = isAvailable ? '' : ` — ${technician.status || 'Đang bận'}`;
+                        return `<option value="${technician.id}"${isAvailable ? '' : ' disabled'}>${technician.fullName} — ${technician.specialty || ''}${statusSuffix}</option>`;
+                    }).join('');
                     technicianSelect.disabled = !technicians.length;
                     if (!technicians.length) technicianSelect.innerHTML = '<option value="">Chưa có kỹ thuật viên đang làm việc</option>';
                     restoreRequestForm(bookingForm);
@@ -538,8 +540,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         techniciansGrid.innerHTML = '<p class="booking-technicians-empty">Hiện chưa có kỹ thuật viên khả dụng.</p>';
                         return;
                     }
-                    techniciansGrid.innerHTML = publicTechnicians.map(technician => `<article class="booking-technician-card"><img src="${escapeText(technician.avatar || '/images/logo.png')}" alt="${escapeText(technician.fullName)}" class="booking-technician-card__avatar"><div class="booking-technician-card__body"><h3>${escapeText(technician.fullName)}</h3><p><i class="fas fa-phone"></i> ${escapeText(technician.phone)}</p>${technician.specialty ? `<p><i class="fas fa-screwdriver-wrench"></i> ${escapeText(technician.specialty)}</p>` : ''}${technician.experience ? `<p><i class="fas fa-briefcase"></i> ${escapeText(technician.experience)}</p>` : ''}<span class="booking-technician-card__status">${escapeText(technician.status)}</span><button type="button" class="booking-technician-card__select" data-technician-id="${technician.id}" data-technician-name="${escapeText(technician.fullName)}">Chọn kỹ thuật viên</button></div></article>`).join('');
-                    techniciansGrid.querySelectorAll('[data-technician-id]').forEach(button => button.addEventListener('click', () => {
+                    techniciansGrid.innerHTML = publicTechnicians.map(technician => {
+                        const isAvailable = technician.statusCode === 'available';
+                        return `<article class="booking-technician-card${isAvailable ? '' : ' booking-technician-card--busy'}"><img src="${escapeText(technician.avatar || '/images/logo.png')}" alt="${escapeText(technician.fullName)}" class="booking-technician-card__avatar"><div class="booking-technician-card__body"><h3>${escapeText(technician.fullName)}</h3><p><i class="fas fa-phone"></i> ${escapeText(technician.phone)}</p>${technician.specialty ? `<p><i class="fas fa-screwdriver-wrench"></i> ${escapeText(technician.specialty)}</p>` : ''}${technician.experience ? `<p><i class="fas fa-briefcase"></i> ${escapeText(technician.experience)}</p>` : ''}<span class="booking-technician-card__status${isAvailable ? '' : ' booking-technician-card__status--busy'}">${escapeText(technician.status)}</span><button type="button" class="booking-technician-card__select" data-technician-id="${technician.id}" data-technician-name="${escapeText(technician.fullName)}"${isAvailable ? '' : ' disabled aria-disabled="true"'}>${isAvailable ? 'Chọn kỹ thuật viên' : 'Đang bận'}</button></div></article>`;
+                    }).join('');
+                    techniciansGrid.querySelectorAll('[data-technician-id]:not([disabled])').forEach(button => button.addEventListener('click', () => {
                         if (technicianSelect) {
                             technicianSelect.value = button.dataset.technicianId;
                             technicianSelect.dispatchEvent(new Event('change'));

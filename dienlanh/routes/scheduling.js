@@ -24,7 +24,7 @@ router.get('/technicians/:id', requireAdmin, async (req, res, next) => {
 });
 
 function formatTechnician(t) {
-    const statusLabels = { available: 'Đang rảnh', busy: 'Đang làm việc', leave: 'Nghỉ', inactive: 'Nghỉ' };
+    const statusLabels = { available: 'Đang rảnh', busy: 'Đang bận', leave: 'Nghỉ', inactive: 'Nghỉ' };
     return { id: t.id, avatar: t.avatar, fullName: t.full_name, phone: t.phone, email: t.email, specialty: t.specialty, experience: t.experience, workArea: t.service_area, status: statusLabels[t.work_status] || t.work_status, statusCode: t.work_status, employeeType: t.employee_type, jobLevel: t.job_grade, baseSalary: Number(t.base_salary || 0), vehicleUsage: Boolean(t.uses_company_vehicle), startDate: t.start_date, probationStart: t.probation_start_date, probationEnd: t.probation_end_date, createdAt: t.created_at, updatedAt: t.updated_at };
 }
 function technicianInput(body = {}) {
@@ -59,6 +59,20 @@ router.get('/bookings/availability', async (req, res, next) => {
         }
         if (!appointmentDate) {
             return res.status(400).json({ success: false, message: 'Ngày hẹn không hợp lệ. Vui lòng dùng định dạng YYYY-MM-DD.' });
+        }
+
+        const technician = (await query('SELECT work_status FROM dbo.technicians WHERE id=@id', { id: technicianId })).recordset[0];
+        if (!technician || technician.work_status !== 'available') {
+            return res.status(409).json({
+                success: false,
+                available: false,
+                bookings: [],
+                availableSlots: [],
+                slots: [],
+                message: technician?.work_status === 'busy'
+                    ? 'Kỹ thuật viên đang bận. Vui lòng chọn kỹ thuật viên khác.'
+                    : 'Kỹ thuật viên hiện không thể nhận lịch.'
+            });
         }
 
         const bookings = await getTechnicianBookings({ technicianId, appointmentDate, excludeBookingId });
