@@ -56,7 +56,6 @@
         color: var(--text-body);
         line-height: 1.6;
         background: var(--blue-mist);
-        overflow-x: hidden;
         padding-top: var(--header-height);
     }
     
@@ -73,6 +72,43 @@
         max-width: 100%;
         height: auto;
         display: block;
+    }
+
+    /* Prevent content from creating horizontal overflow at its source. */
+    main,
+    section,
+    .container,
+    [class*="__container"],
+    [class*="__grid"],
+    [class*="__content"] {
+        min-width: 0;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+        max-width: 100%;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    li,
+    td,
+    th {
+        overflow-wrap: anywhere;
+    }
+
+    pre,
+    code {
+        max-width: 100%;
+    }
+
+    pre {
+        overflow-x: auto;
     }
     
     button {
@@ -5829,7 +5865,6 @@
     body {
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden;
     }
     
     img,
@@ -6691,15 +6726,22 @@ body > .hero .hero__illustration { display: none; }
 @media (max-width: 900px) { .reviews-page .reviews-hero { min-height: 340px; padding: 75px 0 58px; } .reviews-page .reviews-main { padding: 58px 0 72px; } .reviews-layout { gap: 48px; } .reviews-form__row, .reviews-real-list { grid-template-columns: 1fr; } .reviews-process__grid { grid-template-columns: 1fr; } .reviews-process__card { min-height: 0; } }
 @media (max-width: 600px) { .reviews-page .reviews-hero { min-height: 300px; padding: 55px 0 45px; } .reviews-hero__icon { width: 50px; height: 50px; border-radius: 15px; } .reviews-form-card { padding: 25px 18px; border-radius: 20px; } .reviews-card-heading { align-items: flex-start; gap: 13px; margin-bottom: 26px; padding-bottom: 23px; } .reviews-card-heading > span { flex-basis: 48px; height: 48px; border-radius: 14px; } .reviews-card-heading p { font-size: .84rem; } .review-rating__content { display: block; } .review-rating__stars { gap: 8px; } .review-rating__stars label { min-width: 42px; min-height: 44px; display: grid; place-items: center; font-size: 1.85rem; } .review-rating__status { display: block; margin-top: 7px; } .reviews-submit { width: 100%; } .reviews-process__card { padding: 24px; } .review-real-card__head { flex-wrap: wrap; } .review-real-card__head time { width: 100%; margin-left: 61px; } .reviews-thank-you { padding: 35px 20px; } }
 
-/* ===== CANONICAL PUBLIC HEADER ===== */
+/* ===== CANONICAL PUBLIC HEADER =====
+   Keep all shared-header breakpoints here so later page rules do not have to
+   override one another. */
 :root { --header-height: 80px; }
-.header--shared { height: var(--header-height); }
-.header--shared .header__container { width: 100%; max-width: 1800px; height: 100%; margin: 0 auto; padding: 0 28px; gap: 22px; }
+.header--shared { width: 100%; max-width: 100%; height: var(--header-height); box-sizing: border-box; }
+.header--shared .header__container { width: 100%; max-width: 100%; min-width: 0; height: 100%; margin: 0 auto; padding: 0 28px; gap: 22px; box-sizing: border-box; }
 .header--shared .header__logo { flex: 0 0 auto; }
 .header--shared .header__logo-img { width: 48px; height: 48px; flex-basis: 48px; }
-.header--shared .header__menu { gap: clamp(13px, 1.35vw, 27px); }
+.header--shared .header__nav { min-width: 0; flex: 1 1 auto; }
+.header--shared .header__menu { min-width: 0; justify-content: center; gap: clamp(13px, 1.35vw, 27px); }
 .header--shared .header__menu-link { white-space: nowrap; }
-.header--shared .header__actions { flex: 0 0 auto; gap: 12px; }
+.header--shared .header__actions,
+.header--shared .header__auth { min-width: 0; display: flex; align-items: center; flex-shrink: 1; }
+.header--shared .header__actions { flex: 0 0 auto; margin-left: auto; gap: 12px; }
+.header--shared .header__auth { margin-left: 0; }
+.header--shared .header__actions .btn { min-width: 0; max-width: 100%; white-space: nowrap; flex-shrink: 1; }
 .header--shared .header__booking { min-height: 46px; padding: 0 19px; white-space: nowrap; }
 .header--shared[data-auth-state="loading"] .header__auth,
 .header--shared[data-auth-state="loading"] .header__nav-auth,
@@ -6728,127 +6770,12 @@ body > .hero .hero__illustration { display: none; }
     .header--shared .header__menu-link { width: 100%; padding: 11px 14px; color: rgba(255,255,255,.88); }
     .header--shared .header__menu-link::after { display: none; }
     .header--shared .header__toggle { display: flex; }
-    .header--shared .header__auth { display: none !important; }
-    .header--shared .header__nav-auth { display: flex !important; }
-    .header--shared .header__nav-auth[hidden] { display: none !important; }
-}
-@media (max-width: 700px) {
-    :root { --header-height: 72px; }
-    .header--shared .header__container { padding-inline: 12px; gap: 8px; }
-    .header--shared .header__logo-img { width: 44px; height: 44px; flex-basis: 44px; }
-    .header--shared .header__booking { min-height: 42px; padding: 0 13px; }
-    .header--shared .header__booking span { display: none; }
-    .header--shared .header__user-name, .header--shared .header__user-arrow { display: none; }
-}
-@media (max-width: 520px) { .header--shared .header__logo-text { display: none; } }
-
-/* Keep the complete Nguyên Hùng identity visible on phones. */
-@media (max-width: 700px) {
-    .header--shared .header__container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .header--shared .header__logo {
-        flex: 1 1 auto;
-        min-width: 0;
-        gap: 9px;
-    }
-    .header--shared .header__logo-img {
-        width: 54px;
-        height: 54px;
-        flex: 0 0 54px;
-    }
-    .header--shared .header__logo-text {
-        display: flex;
-        min-width: 0;
-        align-items: baseline;
-        gap: 5px;
-        white-space: nowrap;
-    }
-    .header--shared .header__logo-brand {
-        display: inline-block;
-        flex: 0 0 auto;
-        color: rgba(255, 255, 255, .72);
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: .08em;
-    }
-    .header--shared .header__logo-text strong {
-        display: inline-block;
-        flex: 0 0 auto;
-        color: var(--color-red);
-        font-size: 17px;
-        font-weight: 800;
-        line-height: 1;
-        white-space: nowrap;
-    }
-    .header--shared .header__actions { flex: 0 0 auto; gap: 5px; }
-    .header--shared .header__toggle {
-        width: 46px;
-        height: 46px;
-        flex: 0 0 46px;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 399px) {
-    .header--shared .header__container { padding-inline: 9px; gap: 4px; }
-    .header--shared .header__logo { gap: 6px; }
-    .header--shared .header__logo-img { width: 48px; height: 48px; flex-basis: 48px; }
-    .header--shared .header__logo-text { gap: 3px; }
-    .header--shared .header__logo-brand { font-size: 12px; letter-spacing: .035em; }
-    .header--shared .header__logo-text strong { font-size: 14px; }
-    .header--shared .header__actions { gap: 3px; }
-    .header--shared .header__user-avatar { width: 36px; height: 36px; }
-    .header--shared .header__toggle { width: 44px; height: 44px; flex-basis: 44px; }
-}
-
-@media (max-width: 359px) {
-    .header--shared .header__logo-img { width: 44px; height: 44px; flex-basis: 44px; }
-    .header--shared .header__logo-brand { display: none; }
-    .header--shared .header__logo-text strong { font-size: 14px; letter-spacing: .01em; }
-}
-
-/* Keep every header action inside the viewport, including the register button. */
-.header--shared {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-.header--shared .header__container {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-}
-.header--shared .header__nav {
-    min-width: 0;
-    flex: 1 1 auto;
-}
-.header--shared .header__menu {
-    min-width: 0;
-    justify-content: center;
-}
-.header--shared .header__actions,
-.header--shared .header__auth {
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    flex-shrink: 1;
-}
-.header--shared .header__actions {
-    margin-left: auto;
-}
-.header--shared .header__auth {
-    margin-left: 0;
-}
-.header--shared .header__actions .btn {
-    min-width: 0;
-    max-width: 100%;
-    white-space: nowrap;
-    flex-shrink: 1;
+    .header--shared .header__container { gap: 10px; }
+    .header--shared .header__actions { gap: 8px; }
+    .header--shared .header__auth { display: flex !important; gap: 7px; }
+    .header--shared .header__nav-auth { display: none !important; }
+    .header--shared .header__booking { padding-inline: 14px; }
+    .header--shared .btn--auth { padding-inline: 13px; }
 }
 
 @media (min-width: 1181px) and (max-width: 1450px) {
@@ -6861,47 +6788,36 @@ body > .hero .hero__illustration { display: none; }
     .header--shared .btn--auth { padding-inline: 12px; }
 }
 
-@media (max-width: 1180px) {
-    .header--shared .header__container { gap: 10px; }
-    .header--shared .header__actions { gap: 8px; }
-    .header--shared .header__auth {
-        display: flex !important;
-        gap: 7px;
-    }
-    .header--shared .header__nav-auth { display: none !important; }
-    .header--shared .header__booking { padding-inline: 14px; }
-    .header--shared .btn--auth { padding-inline: 13px; }
-}
-
 @media (max-width: 768px) {
-    .header--shared .header__container { padding-inline: 12px; gap: 7px; }
-    .header--shared .header__logo { flex: 1 1 auto; }
-    .header--shared .header__actions { flex: 0 1 auto; gap: 5px; }
-    .header--shared .header__auth { gap: 5px; }
+    :root { --header-height: 68px; }
+    .header--shared .header__container { padding-inline: 10px; gap: 6px; }
+    .header--shared .header__logo { display: flex; flex: 1 1 auto; min-width: 0; gap: 7px; overflow: hidden; }
+    .header--shared .header__logo-img { width: 40px; height: 40px; flex: 0 0 40px; }
+    .header--shared .header__logo-text { display: flex !important; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; line-height: 1; white-space: nowrap; }
+    .header--shared .header__logo-brand { display: block; color: rgba(255,255,255,.72); font-size: .62rem; font-weight: 700; letter-spacing: .08em; }
+    .header--shared .header__logo-text strong { display: block; color: #f04d43; font-size: .86rem; font-weight: 850; letter-spacing: .015em; white-space: nowrap; }
+    .header--shared .header__actions { flex: 0 0 auto; gap: 7px; }
+    .header--shared .header__auth { display: none !important; }
     .header--shared .header__actions > .header__booking {
         display: inline-flex;
         width: auto;
-        height: 38px;
-        min-height: 38px;
-        padding: 0 9px;
-        border-radius: 35px;
-        font-size: .72rem;
+        min-width: 106px;
+        height: 40px;
+        min-height: 40px;
+        padding: 0 11px;
+        gap: 6px;
+        border-radius: 999px;
+        font-size: .66rem;
     }
-    .header--shared .header__booking span { display: inline; }
-    .header--shared .btn--auth {
-        height: 38px;
-        padding-inline: 9px;
-        font-size: .72rem;
-    }
-}
-
-@media (max-width: 640px) {
-    .header--shared .header__logo-text { display: none; }
-    .header--shared .header__logo { flex: 1 1 44px; }
-    .header--shared .header__logo-img { width: 44px; height: 44px; flex-basis: 44px; }
-    .header--shared .header__actions > .header__booking,
-    .header--shared .btn--auth { padding-inline: 7px; font-size: .67rem; }
-    .header--shared .header__toggle { width: 40px; height: 40px; flex-basis: 40px; }
+    .header--shared .header__booking span { display: inline !important; white-space: nowrap; }
+    .header--shared .header__user-name,
+    .header--shared .header__user-arrow { display: none !important; }
+    .header--shared .header__user-avatar { width: 40px; height: 40px; flex: 0 0 40px; }
+    .header--shared .header__toggle { display: flex !important; width: 40px; height: 40px; flex: 0 0 40px; align-items: center; justify-content: center; }
+    .header--shared .header__nav { top: var(--header-height); padding: 12px 14px 18px; }
+    .header--shared .header__nav-auth { display: flex !important; width: 100%; margin-top: 10px; gap: 10px; }
+    .header--shared .header__nav-auth[hidden] { display: none !important; }
+    .header--shared .header__nav-auth .btn--auth { flex: 1 1 0; }
 }
 
 /* Distribute the public navigation items evenly on desktop. */
@@ -6935,6 +6851,16 @@ body > .hero .hero__illustration { display: none; }
         padding-inline: clamp(5px, .55vw, 11px);
         text-align: center;
     }
+}
+
+@media (max-width: 370px) {
+    .header--shared .header__container { padding-inline: 7px; gap: 4px; }
+    .header--shared .header__logo { gap: 5px; }
+    .header--shared .header__logo-img { width: 36px; height: 36px; flex-basis: 36px; }
+    .header--shared .header__logo-brand { display: none; }
+    .header--shared .header__logo-text strong { font-size: .61rem; }
+    .header--shared .header__actions > .header__booking { min-width: 99px; height: 38px; min-height: 38px; padding-inline: 8px; font-size: .61rem; }
+    .header--shared .header__toggle { width: 38px; height: 38px; flex-basis: 38px; }
 }
 
 /* ===== PREMIUM BOOKING FORM CARD ===== */
@@ -7252,91 +7178,7 @@ a.btn[href='/booking']:focus-visible,
     body {
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden;
     }
-
-    :root { --header-height: 64px; }
-
-    .header--shared {
-        height: var(--header-height);
-    }
-
-    .header--shared .header__container {
-        width: 100%;
-        min-width: 0;
-        padding: 0 12px;
-        gap: 8px;
-    }
-
-    .header--shared .header__logo {
-        flex: 1 1 auto;
-        min-width: 0;
-        gap: 0;
-    }
-
-    .header--shared .header__logo-img {
-        width: 44px;
-        height: 44px;
-        flex: 0 0 44px;
-    }
-
-    .header--shared .header__logo-text,
-    .header--shared .header__auth {
-        display: none !important;
-    }
-
-    .header--shared .header__actions {
-        flex: 0 0 auto;
-        margin-left: auto;
-        gap: 7px;
-    }
-
-    .header--shared .header__actions > .header__booking {
-        display: inline-flex;
-        width: 42px;
-        height: 42px;
-        min-width: 42px;
-        min-height: 42px;
-        padding: 0;
-        justify-content: center;
-        border-radius: 50%;
-    }
-
-    .header--shared .header__booking span,
-    .header--shared .header__user-name,
-    .header--shared .header__user-arrow {
-        display: none !important;
-    }
-
-    .header--shared .header__user-avatar {
-        width: 40px;
-        height: 40px;
-        flex: 0 0 40px;
-    }
-
-    .header--shared .header__toggle {
-        display: flex !important;
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .header--shared .header__nav {
-        top: var(--header-height);
-        padding: 12px 14px 18px;
-    }
-
-    .header--shared .header__nav-auth {
-        display: flex !important;
-        width: 100%;
-        margin-top: 10px;
-        gap: 10px;
-    }
-
-    .header--shared .header__nav-auth[hidden] { display: none !important; }
-    .header--shared .header__nav-auth .btn--auth { flex: 1 1 0; }
 
     body > .hero {
         min-height: 0;
@@ -7369,8 +7211,8 @@ a.btn[href='/booking']:focus-visible,
     }
 
     body > .hero .hero__content {
-        width: calc(100vw - 36px);
-        max-width: calc(100vw - 36px);
+        width: 100%;
+        max-width: 100%;
         min-width: 0;
         margin: 0;
         text-align: left;
@@ -7529,7 +7371,7 @@ a.btn[href='/booking']:focus-visible,
 
 @media (max-width: 380px) {
     body > .hero .hero__container { padding-inline: 14px; }
-    body > .hero .hero__content { width: calc(100vw - 28px); max-width: calc(100vw - 28px); }
+    body > .hero .hero__content { width: 100%; max-width: 100%; }
     body > .hero .hero__title { font-size: 1.92rem; }
     body > .hero .hero__benefits { gap: 8px; }
     body > .hero .hero__benefits > div { min-height: 108px; padding-inline: 6px; }
@@ -7544,95 +7386,6 @@ a.btn[href='/booking']:focus-visible,
 
     body > .hero .hero__description,
     body > .hero .hero__desc { font-size: .9rem; }
-}
-
-/* Keep the company identity and booking label visible in the phone header. */
-@media (max-width: 768px) {
-    :root { --header-height: 68px; }
-
-    .header--shared .header__container {
-        padding-inline: 10px;
-        gap: 6px;
-    }
-
-    .header--shared .header__logo {
-        display: flex;
-        flex: 1 1 auto;
-        gap: 7px;
-        overflow: hidden;
-    }
-
-    .header--shared .header__logo-img {
-        width: 40px;
-        height: 40px;
-        flex-basis: 40px;
-    }
-
-    .header--shared .header__logo-text {
-        display: flex !important;
-        min-width: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 1px;
-        line-height: 1;
-        white-space: nowrap;
-    }
-
-    .header--shared .header__logo-brand {
-        display: block;
-        color: rgba(255, 255, 255, .72);
-        font-size: .62rem;
-        font-weight: 700;
-        letter-spacing: .08em;
-    }
-
-    .header--shared .header__logo-text strong {
-        display: block;
-        color: #f04d43;
-        font-size: .86rem;
-        font-weight: 850;
-        letter-spacing: .015em;
-        white-space: nowrap;
-    }
-
-    .header--shared .header__actions > .header__booking {
-        width: auto;
-        min-width: 106px;
-        height: 40px;
-        min-height: 40px;
-        padding: 0 11px;
-        gap: 6px;
-        border-radius: 999px;
-        font-size: .66rem;
-    }
-
-    .header--shared .header__booking span {
-        display: inline !important;
-        white-space: nowrap;
-    }
-
-    .header--shared .header__toggle {
-        width: 40px;
-        height: 40px;
-        flex-basis: 40px;
-    }
-}
-
-@media (max-width: 370px) {
-    .header--shared .header__container { padding-inline: 7px; gap: 4px; }
-    .header--shared .header__logo { gap: 5px; }
-    .header--shared .header__logo-img { width: 36px; height: 36px; flex-basis: 36px; }
-    .header--shared .header__logo-brand { display: none; }
-    .header--shared .header__logo-text strong { font-size: .61rem; }
-    .header--shared .header__actions > .header__booking {
-        min-width: 99px;
-        height: 38px;
-        min-height: 38px;
-        padding-inline: 8px;
-        font-size: .61rem;
-    }
-    .header--shared .header__toggle { width: 38px; height: 38px; flex-basis: 38px; }
 }
 
 /* Service detail: put the service name and reference price first on phones. */
